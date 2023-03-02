@@ -7,7 +7,7 @@
 <section class="hero is-fullheight-with-navbar">
 	<div class="hero-body is-flex is-flex-direction-column justify-center text-center">
 			<p class="image is-256x256">
-				<img class="" src={icon}>
+				<img alt="icon" src={icon}>
 			</p>
 
 			<p class="title">
@@ -27,6 +27,5 @@
 <style>
 	.is-256x256 {
 		width: 256px;
-		height: 256px;
 	}
 </style>

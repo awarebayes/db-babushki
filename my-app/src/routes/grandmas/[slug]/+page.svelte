@@ -4,7 +4,7 @@
     import {onMount} from "svelte";
     import Meal from "../../meals/meal.svelte";
     let username = $page.params.slug;
-    let grandma = {};
+    let grandma = null;
     let meals = [];
 
     async function updateGrandma () {
@@ -26,14 +26,15 @@
 
 
 <section>
-    <div class="columns is-vcentered is-flex h-max">
-        <div class="column is-half is-offset-one-quarter mt-7">
+    <div class="columns is-centered is-vcentered is-flex min-h-screen">
+        <div class="column is-half-desktop is-two-fifths-fullhd mt-7">
+            {#if grandma !== null}
             <div class="box is-flex is-flex-direction-column is-align-items-center">
                 <figure class="image is-128x128 avatar" style="background-image: url('{grandma.url}')">
                 </figure>
                 <div class="title pt-2 is-3">{grandma.name}</div>
                 <div class="subtitle is-5">@{grandma.username}</div>
-                <div class="box has-text-centered is-shadowless border-2 border-gray-200">
+                <div class="box has-text-centered is-shadowless border-t-2 border-t-gray-200 rounded-t-none">
                     {@html grandma.description}
                 </div>
             </div>
@@ -45,6 +46,9 @@
             {#each meals as meal }
                 <Meal meal={meal}/>
             {/each}
+            {:else}
+                <h1 class="has-text-centered title">Бабушка не найдена:(</h1>
+            {/if}
 
         </div>
     </div>
@@ -61,8 +65,4 @@
         border-radius: 50%;
     }
 
-    .sep {
-        padding-left: 5px;
-        padding-right: 5px;
-    }
 </style>

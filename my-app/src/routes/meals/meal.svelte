@@ -74,7 +74,7 @@
     <div class="columns">
         <div class="column is-two-fifths">
             <figure class="image is-256x256">
-                <img src={meal.url} alt="grandma photo" class="rounded">
+                <img src={meal.url} alt="Meal photo" class="rounded">
             </figure>
         </div>
         <div class="column">
@@ -111,7 +111,7 @@
                 </span>
                 <span>{meal.rating}/5</span>
                 <span class="sep"></span>
-                <span>by {meal.cooked_by}</span>
+                <span>by <a class="text-blue-900" href="/grandmas/{meal.cooked_by_username}">{meal.cooked_by}</a></span>
             </p>
             <p class="pt-2">{@html meal.description}</p>
         </div>

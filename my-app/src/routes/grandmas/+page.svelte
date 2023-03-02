@@ -24,8 +24,8 @@
 </script>
 
 <section>
-    <div class="columns is-vcentered is-flex h-max">
-        <div class="column is-half is-offset-one-quarter mt-7">
+    <div class="columns is-centered is-flex h-max">
+        <div class="column is-half-desktop is-two-fifths-fullhd mt-7">
             <h1 class="title has-text-centered">Бабушки в вашем районе!</h1>
             <h1 class="subtitle has-text-centered">Голодным уйти будет сложно.....</h1>
             <div class="field is-flex is-align-items-center justify-center">
@@ -50,13 +50,13 @@
             {#each records as grandma }
             <div class="box">
                 <div class="columns">
-                    <div class="column is-two-fifths">
-                        <figure class="image is-256x256">
-                            <img src={grandma.url} alt="grandma photo" class="rounded">
-                        </figure>
+                    <div class="column is-two-fifths has-text-centered">
+                        <img src={grandma.url} alt="grandma photo" class="rounded image is-256x256 center-image">
                     </div>
                     <div class="column">
-                        <a class="subtitle is-3 text-blue-400" href="/grandmas/{grandma.username}">{grandma.name}</a>
+                        <p>
+                            <a class="subtitle is-3 text-blue-400" href="/grandmas/{grandma.username}">{grandma.name}</a>
+                        </p>
                         <p class="icon-text">
                             <span class="icon">
                                 <i class="fas fa-star text-yellow-400"></i>
@@ -102,4 +102,15 @@
         padding-left: 5px;
         padding-right: 5px;
     }
+
+    .center-image {
+        display: block;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    .is-256x256 {
+        width: 256px;
+    }
+
 </style>

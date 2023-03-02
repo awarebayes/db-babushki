@@ -39,6 +39,7 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource/roboto": "^4.5.8",
-		"bulma": "^0.9.4"
+		"bulma": "^0.9.4",
+		"pocketbase": "^0.12.0"
 	}
 }

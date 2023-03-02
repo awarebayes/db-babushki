@@ -22,7 +22,7 @@
                     <CartItem meal={item}/>
                 {/each}
                 <hr class="dropdown-divider">
-                <a class="dropdown-item has-text-centered">
+                <a class="dropdown-item has-text-centered" href="/checkout">
                     Заказать
                 </a>
             {:else}
