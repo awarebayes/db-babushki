@@ -1,5 +1,5 @@
-<script>
-    import {authRepository} from "../data/singletons.js";
+<script lang="ts">
+    import {authRepository} from "../data/singletons";
 
     let auth_failed = false;
     let email = "";

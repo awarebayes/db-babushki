@@ -1,5 +1,5 @@
-<script>
-    import {authRepository} from "../data/singletons.js";
+<script lang="ts">
+    import {authRepository} from "../data/singletons";
 
     let name = "";
     let username = "";
@@ -18,7 +18,6 @@
                 password: password,
                 password_verification: password_verification
             })
-
             window.location.href = "/";
         } catch (e) {
             sign_up_failed = true;

@@ -2,7 +2,15 @@
 	import Cart from "./Cart/Cart.svelte"
 	import icon from "../lib/images/icon.png"
 	import {authRepository} from "./data/singletons";
+
 	let user = authRepository.getAuthenticatedUser();
+	let logged_in: boolean = user != null;
+
+	async function logOut()
+	{
+		await authRepository.logOut();
+		logged_in = false;
+	}
 </script>
 
 <header>
@@ -47,7 +55,7 @@
 			</div>
 
 			<div class="navbar-end">
-				{#if user == null }
+				{#if !logged_in }
 				<div class="navbar-item">
 					<div class="buttons">
 						<a class="button is-primary" href="/sign-up">
@@ -73,7 +81,7 @@
 									Настройки
 								</a>
 								<hr class="navbar-divider">
-								<a class="navbar-item" on:click={authRepository.logOut}>
+								<a class="navbar-item" on:click={logOut}>
 									Выйти
 								</a>
 							</div>
