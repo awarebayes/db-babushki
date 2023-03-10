@@ -15,6 +15,11 @@ export interface IDataRepository<T> {
 export interface IUserRepository extends IDataRepository<User>
 {
     getByUsername: (username: string) => Promise<User>;
+    getWithGrandmas: (
+        pageIndex: number,
+        pageLimit: number,
+        queryParams?: object,
+    ) => Promise<Array<User>>;
 }
 
 export interface IMealRepository extends IDataRepository<Meal>

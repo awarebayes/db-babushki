@@ -8,17 +8,10 @@
     let grandma: User | null = null;
     let meals: Array<Meal> = [];
 
-    async function updateGrandma () {
-        grandma = await userRepository.getSingle(`username="${username}"`);
+    onMount(async () => {
+        grandma = await userRepository.getByUsername(username);
         meals = await mealRepository.getMealsOfGrandma(grandma);
-        for (let i of meals)
-        {
-            i.rating = Math.floor(Math.random() * 5) + 1;
-            i.cooked_by = grandma.name;
-        }
-
-    }
-    onMount(updateGrandma);
+    });
 </script>
 
 
@@ -44,6 +37,7 @@
                 <div>
                     <MealComponent meal={meal}/>
                 </div>
+                <br/>
             {/each}
             {:else}
                 <h1 class="has-text-centered title">Бабушка не найдена:(</h1>

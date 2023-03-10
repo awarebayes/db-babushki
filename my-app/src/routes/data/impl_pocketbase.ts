@@ -40,24 +40,29 @@ export class PocketBaseUserRepository extends PocketBaseRepository<User> impleme
 
     async getSingle(query: string): Promise<User> {
         let r = await super.getSingle(query);
-
-        // @ts-ignore
-        r.avatar_url = pb.getFileUrl(r, r.avatar, {'thumb': '256x256'});
+        this.processElement(r);
         return r;
+    }
+
+    processElement(user: any)
+    {
+        user.avatar_url = pb.getFileUrl(user, user.avatar, {'thumb': '256x256'});
+        user.rating = Math.floor(Math.random() * 5) + 1;
+        user.time_reply = Math.floor(Math.random() * 50) + 5;
     }
 
     async getPaged(pageIndex: number, pageLimit: number, queryParams?: object): Promise<Array<User>> {
         let results = await super.getPaged(pageIndex, pageLimit, queryParams);
-        for (let r of results)
-        {
-            // @ts-ignore
-            r.avatar_url = pb.getFileUrl(r, r.avatar, {'thumb': '256x256'});
-        }
+        results.map(this.processElement);
         return results;
     }
 
     getByUsername(username: string): Promise<User> {
         return this.getSingle(`username="${username}"`);
+    }
+
+    getWithGrandmas(pageIndex: number, pageLimit: number, queryParams: object | undefined): Promise<Array<User>> {
+        return this.getPaged(pageIndex, pageLimit, {...queryParams, filter: 'grandma_id != null'})
     }
 }
 
@@ -70,19 +75,21 @@ export class PocketBaseMealRepository extends PocketBaseRepository<Meal> impleme
 
     async getSingle(query: string): Promise<Meal> {
         let r = await super.getSingle(query);
-
-        // @ts-ignore
-        r.picture_url = pb.getFileUrl(r, r.picture, {'thumb': '256x256'});
+        this.processElement(r);
         return r;
     }
 
+    processElement(meal: any)
+    {
+        meal.picture_url = pb.getFileUrl(meal, meal.picture, {'thumb': '256x256'});
+        meal.rating = Math.floor(Math.random() * 5) + 1;
+        meal.cooked_by = meal?.expand?.granny_id?.expand?.user_id?.name;
+        meal.cooked_by_username = meal?.expand?.granny_id?.expand?.user_id?.username;
+    }
+
     async getPaged(pageIndex: number, pageLimit: number, queryParams?: object): Promise<Array<Meal>> {
-        let results = await super.getPaged(pageIndex, pageLimit, queryParams);
-        for (let r of results)
-        {
-            // @ts-ignore
-            r.picture_url = pb.getFileUrl(r, r.picture, {'thumb': '256x256'});
-        }
+        let results = await super.getPaged(pageIndex, pageLimit, {...queryParams,  expand: 'granny_id.user_id'});
+        results.map(this.processElement)
         return results;
     }
 

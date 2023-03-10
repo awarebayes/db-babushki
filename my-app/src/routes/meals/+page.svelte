@@ -3,16 +3,11 @@
 
     import {onMount} from "svelte";
     import {mealRepository} from "../data/singletons";
+    import {Meal} from "../data/models";
 
-    let records = [];
+    let records: Array<Meal> = [];
     onMount(async function () {
-        records = await mealRepository.getPaged(1, 50, {sort: '-created', expand: 'granny_id.user_id'});
-        for (let i of records)
-        {
-            i.rating = Math.floor(Math.random() * 5) + 1;
-            i.cooked_by = i?.expand?.granny_id?.expand?.user_id?.name;
-            i.cooked_by_username = i?.expand?.granny_id?.expand?.user_id?.username;
-        }
+        records = await mealRepository.getPaged(1, 50, {sort: '-created'});
     });
 </script>
 

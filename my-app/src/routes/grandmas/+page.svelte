@@ -6,13 +6,8 @@
     let sort_by = '-created';
 
     let records: Array<User> = [];
-
     async function updateGrandmas() {
-        records = await userRepository.getPaged(1, 5, {filter: 'grandma_id != null', sort: sort_by});
-        for (let i of records) {
-            i.rating = Math.floor(Math.random() * 5) + 1;
-            i.time_reply = Math.floor(Math.random() * 50) + 5;
-        }
+        records = await userRepository.getWithGrandmas(1, 5, {sort: sort_by});
     }
 
     onMount(updateGrandmas);
