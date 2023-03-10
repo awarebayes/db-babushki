@@ -1,5 +1,5 @@
 <script>
-    import {pb} from "../singletons.js";
+    import {authRepository} from "../data/singletons.js";
 
     let name = "";
     let username = "";
@@ -9,20 +9,16 @@
     let sign_up_failed = false;
     let error_message = "";
 
-    async function signUp()
-    {
+    async function signUp() {
         try {
-            const user_record = await pb.collection('users').create(
-                {
-                    "username": username,
-                    "email": email,
-                    "emailVisibility": true,
-                    "password": password,
-                    "passwordConfirm": password_verification,
-                    "name": name,
-                    "verified_ours": false,
-                    "grandma_id": null,
-                });
+            await authRepository.signUp({
+                name: name,
+                username: username,
+                email: email,
+                password: password,
+                password_verification: password_verification
+            })
+
             window.location.href = "/";
         } catch (e) {
             sign_up_failed = true;
@@ -35,7 +31,7 @@
 
 <section class="hero is-fullheight-with-navbar">
     <div class="hero-body columns is-vcentered is-flex h-max">
-        <div class="column is-half is-offset-one-quarter mt-7">
+        <div class="column is-half-desktop is-offset-one-quarter mt-7">
             <form class="box">
 
                 <div class="field">
@@ -77,9 +73,9 @@
 
 
             {#if sign_up_failed}
-            <div class="notification is-danger"  >
-                Something went wrong! Try again...
-            </div>
+                <div class="notification is-danger">
+                    Something went wrong! Try again...
+                </div>
             {/if}
 
         </div>

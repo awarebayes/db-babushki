@@ -1,18 +1,8 @@
-<script>
-	import {pb} from "./singletons.js"
+<script lang="ts">
 	import Cart from "./Cart/Cart.svelte"
 	import icon from "../lib/images/icon.png"
-
-	let auth_store = pb.authStore;
-	let authenticated = auth_store.isValid;
-	let user = auth_store.model;
-
-	async function logOut()
-	{
-		pb.authStore.clear();
-		authenticated = false;
-	}
-
+	import {authRepository} from "./data/singletons";
+	let user = authRepository.getAuthenticatedUser();
 </script>
 
 <header>
@@ -20,7 +10,7 @@
 		<div class="navbar-brand">
 			<a class="navbar-item" href="/" id="logo-font">
 				<span class="image is-32x32">
-					<img src={icon} class="pl-1 mt-0.5">
+					<img src={icon} class="pl-1 mt-0.5" alt="icon">
 				</span>
 				<span class="ml-2">
 					Бабушка готовит
@@ -57,7 +47,7 @@
 			</div>
 
 			<div class="navbar-end">
-				{#if !authenticated }
+				{#if user == null }
 				<div class="navbar-item">
 					<div class="buttons">
 						<a class="button is-primary" href="/sign-up">
@@ -83,7 +73,7 @@
 									Настройки
 								</a>
 								<hr class="navbar-divider">
-								<a class="navbar-item" on:click={logOut}>
+								<a class="navbar-item" on:click={authRepository.logOut}>
 									Выйти
 								</a>
 							</div>

@@ -1,28 +1,31 @@
-<script>
-    export let meal;
+<script lang="ts">
+
+    import {Meal} from "../data/models";
+
+    export let meal: Meal;
     import { cart } from '../singletons.js';
 
-    let inCart = false;
+    let inCart: boolean;
     let quantity = 0;
 
     $: {
         inCart = false;
-        $cart.forEach((item) => {
+        for (const item of $cart) {
             if (item.id === meal.id) {
                 inCart = true;
                 quantity = item.quantity;
             }
-        });
+        }
     }
 
     function getItemCount(meal)
     {
         let quantity = 0;
-        $cart.forEach((item) => {
+        for (const item of $cart) {
             if (item.id === meal.id) {
                 quantity = item.quantity;
             }
-        });
+        }
         return quantity;
     }
 
@@ -74,7 +77,7 @@
     <div class="columns">
         <div class="column is-two-fifths">
             <figure class="image is-256x256">
-                <img src={meal.url} alt="Meal photo" class="rounded">
+                <img src={meal.picture_url} alt="Meal photo" class="rounded">
             </figure>
         </div>
         <div class="column">

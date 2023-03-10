@@ -1,5 +1,5 @@
 <script>
-    import { cart } from "../singletons.js"
+    import { cart } from "../singletons.ts"
     import CartItem from "./CartItem.svelte";
     let active = false;
 </script>

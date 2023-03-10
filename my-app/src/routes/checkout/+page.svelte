@@ -1,16 +1,13 @@
-<script>
+<script lang="ts">
     import Meal from "../meals/meal.svelte"
-    import {cart, pb} from "../singletons.js"
+    import {cart} from "../singletons.ts"
+    import {authRepository} from "../data/singletons";
 
-    let auth_store = pb.authStore;
-    let authenticated = auth_store?.isValid;
-    let user = auth_store?.model;
-
-    console.log("user", user)
+    let user = authRepository.getAuthenticatedUser();
 </script>
 
 <div class="columns is-flex is-centered min-h-screen">
-    <div class="column is-two-fifths-fullhd is-half-desktop mt-7">
+    <div class="column is-half-desktop mt-7">
         <h1 class="title has-text-centered">Заказ еды!</h1>
         <h1 class="subtitle has-text-centered">Мы быстро до вас доставим!</h1>
         {#if $cart.length > 0}

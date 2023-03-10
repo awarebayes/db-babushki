@@ -1,5 +1,6 @@
 <script>
-    import { pb } from "../singletons.js";
+    import {authRepository} from "../data/singletons.js";
+
     let auth_failed = false;
     let email = "";
     let password = "";
@@ -7,7 +8,7 @@
     async function signIn()
     {
         try {
-            const authData = await pb.collection('users').authWithPassword(email, password);
+            await authRepository.logIn(email, password);
             auth_failed = false;
             console.log("Auth successful!");
             window.location.href = "/";
@@ -20,7 +21,7 @@
 
 <section class="hero is-fullheight-with-navbar">
     <div class="hero-body columns is-vcentered is-flex h-max">
-        <div class="column is-half is-offset-one-quarter mt-7">
+        <div class="column is-half-desktop is-offset-one-quarter mt-7">
             <form class="box">
                 <div class="field">
                     <label class="label">Email</label>
