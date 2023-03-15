@@ -3,19 +3,23 @@
 	import icon from "../lib/images/icon.png"
 
 	import {onMount} from "svelte";
-	import {orderClient} from "../lib/trpc/client";
+	import {orderClient, setTRPCToken} from "../lib/trpc/client";
+
 
 	let greeting = 'TRPC not retrieved yet...';
 
-	import { authRepository } from "../../../backend/shared/data/impl_pocketbase_browser"
+	import { authRepository, pb } from "../../../backend/shared/data/impl_pocketbase_browser"
 	let user = authRepository.getAuthenticatedUser();
-	let token = authRepository.getToken();
 
 	const loadData = async () => {
+		let token = await authRepository.getToken();
+		setTRPCToken(token);
 		greeting = await orderClient.ping.query(token);
 	};
 
 	onMount(loadData);
+
+
 
 </script>
 

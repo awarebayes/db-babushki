@@ -7,7 +7,6 @@ export class PocketBaseRepository<T> implements IDataRepository<T> {
     }
 
     getPB() {
-        console.log("This pb get", this.pb)
         return this.pb;
     }
 
@@ -99,6 +98,7 @@ export class PocketBaseMealRepository extends PocketBaseRepository<Meal> impleme
 
 export class PocketBaseAuthRepository implements IAuthRepository {
     pb: any
+    jwt_token: string | null = null
 
     constructor(pb: any) {
         this.pb = pb;
@@ -134,7 +134,12 @@ export class PocketBaseAuthRepository implements IAuthRepository {
         this.pb.authStore.clear();
     }
 
-    getToken(): string {
-        return this.pb.authStore.token;
+    async getToken(): Promise<string> {
+        if (this.jwt_token == null)
+        {
+            let token = await this.pb.send("/api/get_jwt", {});
+            this.jwt_token = token["token"];
+        }
+        return this.jwt_token as string;
     }
 }

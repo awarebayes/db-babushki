@@ -1,5 +1,6 @@
 <script lang="ts">
     import {authRepository} from "../../../../backend/shared/data/impl_pocketbase_browser";
+    import {redirect} from "@sveltejs/kit";
 
     let auth_failed = false;
     let email = "";
@@ -10,7 +11,7 @@
             await authRepository.logIn(email, password);
             auth_failed = false;
             console.log("Auth successful!");
-            window.location.href = "/";
+            redirect(300, "#")
         } catch (e) {
             auth_failed = true;
         }

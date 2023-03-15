@@ -11,7 +11,7 @@ import {authRepository} from "../shared/data/impl_pocketbase_server";
 
 
 (async ()=> {
-
+    console.log(process.env.PB_ADMIN_EMAIL, process.env.PB_ADMIN_PASSWORD)
     //@ts-ignore
     await authRepository.logIn(process.env.PB_ADMIN_EMAIL, process.env.PB_ADMIN_PASSWORD);
 })()

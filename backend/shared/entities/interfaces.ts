@@ -36,5 +36,5 @@ export interface IAuthRepository {
     getAuthenticatedUser: () => User | null;
     signUp: (user: SignUpData) => Promise<void>;
 
-    getToken: () => string;
+    getToken: () => Promise<string>;
 }
