@@ -2,17 +2,42 @@ version: "3.7"
 
 services:
   order_service:
+    depends_on:
+      pocketbase_service:
+        condition: service_healthy
     build:
       context: .
       dockerfile: OrderService.Dockerfile
     volumes:
       - ./:/home/node/app/
     container_name: order_service
-    expose:
-      - "4000"
-      - "8090"
     ports:
       - "4000:4000"
     command: npm run order_service
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+
+    networks:
+      - some-net
+
+  pocketbase_service:
+    volumes:
+      - ./:/home/node/app/
+    build:
+      context: .
+      dockerfile: PocketbaseService.Dockerfile
+    ports:
+      - "8090:8090"
+    working_dir: /home/node/app/pocketbase_service
+    command: go run ppo serve --http=0.0.0.0:8090
+
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://0.0.0.0:8090/_" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+    networks:
+      - some-net
+networks:
+  some-net:
+    driver: bridge
+    external: true

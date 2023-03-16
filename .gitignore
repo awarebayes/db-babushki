@@ -248,6 +248,4 @@ go.work
 # SQLite
 *.db
 
-/pb_data
-
-ppo
+/backend/pocketbase_service/pb_data

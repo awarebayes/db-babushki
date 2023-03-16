@@ -1,4 +1,4 @@
-FROM node:latest
+FROM node:hydrogen-alpine3.17
 
 WORKDIR /home/node/app/
 

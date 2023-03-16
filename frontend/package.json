@@ -39,6 +39,11 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource/roboto": "^4.5.8",
+		"@tanstack/react-query": "^4.26.1",
+		"@trpc/client": "^10.16.0",
+		"@trpc/next": "^10.16.0",
+		"@trpc/react-query": "^10.16.0",
+		"@trpc/server": "^10.16.0",
 		"bulma": "^0.9.4",
 		"dotenv": "^16.0.3",
 		"pocketbase": "^0.12.0"

@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	_ = godotenv.Load("backend/.env")
+	_ = godotenv.Load("../.env")
 	app := pocketbase.New()
 
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {

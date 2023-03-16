@@ -4,7 +4,7 @@ import {PocketBaseAuthRepository, PocketBaseMealRepository, PocketBaseUserReposi
 import {IAuthRepository, IMealRepository, IUserRepository} from "../entities/interfaces";
 
 
-export const pb = new PocketBase('http://127.0.0.1:8090');
+export const pb = new PocketBase('http://0.0.0.0:8090');
 
 export const userRepository: IUserRepository = new PocketBaseUserRepository("users", pb);
 export const mealRepository: IMealRepository = new PocketBaseMealRepository("meals", pb);
