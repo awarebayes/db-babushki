@@ -1,5 +1,5 @@
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
-import type { OrderServiceAppRouter } from "../../../../backend/order_service/routes/trpcRouter";
+import type { OrderServiceAppRouter } from "../../../../backend/node_service/routes/trpcRouter";
 
 let token: string;
 

@@ -1,25 +1,22 @@
 <script lang="ts">
 	import "@fontsource/roboto";
 	import icon from "../lib/images/icon.png"
-
-	import {onMount} from "svelte";
 	import {orderClient, setTRPCToken} from "../lib/trpc/client";
 
 
-	let greeting = 'TRPC not retrieved yet...';
-
 	import { authRepository, pb } from "../../../backend/shared/data/impl_pocketbase_browser"
+	import {jwtLoaded} from "./singletons";
 	let user = authRepository.getAuthenticatedUser();
 
+	let greeting = 'TRPC not retrieved yet...';
+
 	const loadData = async () => {
-		let token = await authRepository.getToken();
-		setTRPCToken(token);
-		greeting = await orderClient.ping.query(token);
+		if (!$jwtLoaded)
+			return;
+		greeting = await orderClient.ping.query("misha");
 	};
 
-	onMount(loadData);
-
-
+	$: $jwtLoaded, loadData();
 
 </script>
 

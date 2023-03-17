@@ -3,3 +3,4 @@ export const trpcController = {
         return `Message: ${message}`;
     },
 };
+

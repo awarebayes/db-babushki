@@ -1,19 +1,20 @@
 version: "3.7"
 
 services:
-  order_service:
+  node_service:
     depends_on:
       pocketbase_service:
         condition: service_healthy
     build:
       context: .
-      dockerfile: OrderService.Dockerfile
+      dockerfile: NodeService.Dockerfile
     volumes:
       - ./:/home/node/app/
-    container_name: order_service
+    container_name: node_service
     ports:
       - "4000:4000"
-    command: npm run order_service
+    command: > 
+      npm run node_service
 
     networks:
       - some-net
@@ -37,7 +38,25 @@ services:
 
     networks:
       - some-net
+
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5433:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - some-net
+
 networks:
   some-net:
     driver: bridge
     external: true
+
+volumes:
+  db:
+    driver: local

@@ -7,7 +7,6 @@ export const verifyJwt = <T>(
         const publicKey = process.env.ACCESS_PRIVATE_KEY as string;
         return jwt.verify(token, publicKey, {"algorithms": ["HS256"]}) as T;
     } catch (error) {
-        console.log(error);
         return null;
     }
 };

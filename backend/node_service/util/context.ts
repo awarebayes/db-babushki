@@ -1,12 +1,9 @@
 import {inferAsyncReturnType,} from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import {verifyJwt} from "./jwt_utils";
+import {UserClaim} from "../../shared/entities/models";
 
-interface UserClaim {
-    id: string,
-    username: string,
-    expiration: number,
-}
+
 
 export async function createContext({
                                         req,
