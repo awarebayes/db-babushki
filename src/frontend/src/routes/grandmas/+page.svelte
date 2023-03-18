@@ -1,17 +1,21 @@
 <script lang="ts">
     import {onMount} from "svelte";
-    import {userRepository} from "../../../../backend/shared/data/impl_pocketbase_browser";
-    import type {User} from "../../../../backend/shared/entities/models";
-
+    import type {Grandma} from "@prisma/client";
+	import { loggedInUser } from "$lib/misc/singletons";
+	import { trpcClient } from "$lib/trpc/client";
     let sort_by = '-created';
 
-    let records: Array<User> = [];
+    let records: Array<Grandma> = [];
 
     async function updateGrandmas() {
-        records = await userRepository.getWithGrandmas(1, 5, {sort: sort_by});
+        let maybeRecords = await trpcClient.getGrandmas.query(0);
+        if (!maybeRecords)
+            return;
+        records = maybeRecords as Array<Grandma>;
     }
 
-    onMount(updateGrandmas);
+    $: $loggedInUser, updateGrandmas()
+
 </script>
 
 <section>
@@ -41,13 +45,18 @@
                 <div class="box">
                     <div class="columns">
                         <div class="column is-two-fifths has-text-centered">
-                            <img src={grandma.avatar_url} alt="grandma photo"
-                                 class="rounded image is-256x256 center-image">
+                            <img src={grandma.pictureUrl} alt="grandma photo"
+                                 class="rounded image is-256x256 center-image object-cover">
                         </div>
                         <div class="column">
                             <p>
                                 <a class="subtitle is-3 text-blue-400"
-                                   href="/grandmas/{grandma.username}">{grandma.name}</a>
+                                   href="/grandmas/{grandma.username}">
+                                    {grandma.name}
+                                    {#if grandma.verified}
+                                                <i class="fas text-sm fa-certificate text-yellow-400"></i>
+                                    {/if}
+                                </a>
                             </p>
                             <p class="icon-text">
                             <span class="icon">
@@ -60,16 +69,9 @@
                                 <span class="icon">
                                 <i class="fas fa-clock text-blue-800"></i>
                             </span>
-                                <span>{grandma.time_reply} min</span>
+                                <span>{grandma.timeReply} min</span>
 
                                 <span class="sep"></span>
-
-                                {#if grandma.verified_ours}
-                            <span class="icon">
-                                <i class="fas fa-certificate text-pink-400"></i>
-                            </span>
-                                    <span>Подтвержденная бабушка</span>
-                                {/if}
 
                             </p>
                             <p class="pt-2">{@html grandma.description}</p>
@@ -103,6 +105,7 @@
 
     .is-256x256 {
         width: 256px;
+        height: 256px;
     }
 
 </style>

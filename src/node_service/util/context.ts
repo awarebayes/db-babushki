@@ -1,7 +1,7 @@
 import {inferAsyncReturnType,} from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
+import { UserClaim } from "../entities/models";
 import {verifyJwt} from "./jwt_utils";
-import {UserClaim} from "../../shared/entities/models";
 
 
 

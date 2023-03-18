@@ -248,4 +248,10 @@ go.work
 # SQLite
 *.db
 
-/backend/pocketbase_service/pb_data
+*.db-shm
+
+*.db-wal
+
+
+/src/prisma/migrations
+/src/pocketbase_service/pb_data

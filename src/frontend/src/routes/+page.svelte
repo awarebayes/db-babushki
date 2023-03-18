@@ -1,11 +1,11 @@
 <script lang="ts">
 	import "@fontsource/roboto";
 	import icon from "../lib/images/icon.png"
-	import {orderClient, setTRPCToken} from "../lib/trpc/client";
+	import {trpcClient, setTRPCToken} from "../lib/trpc/client";
 
 
-	import { authRepository, pb } from "../../../backend/shared/data/impl_pocketbase_browser"
-	import {jwtLoaded} from "./singletons";
+	import {jwtLoaded} from "../lib/misc/singletons";
+	import {authRepository} from "../lib/misc/impl_pocketbase_browser";
 	let user = authRepository.getAuthenticatedUser();
 
 	let greeting = 'TRPC not retrieved yet...';
@@ -13,7 +13,7 @@
 	const loadData = async () => {
 		if (!$jwtLoaded)
 			return;
-		greeting = await orderClient.ping.query("misha");
+		greeting = await trpcClient.ping.query("misha");
 	};
 
 	$: $jwtLoaded, loadData();

@@ -2,16 +2,32 @@
     import { page } from '$app/stores';
     import {onMount} from "svelte";
     import MealComponent from "../../meals/meal.svelte";
-    import {mealRepository, userRepository} from "../../../../../backend/shared/data/impl_pocketbase_browser";
-    import type {Meal, User} from "../../../../../backend/shared/entities/models";
+    import type {Meal, Grandma} from "@prisma/client";
+	import { trpcClient } from '$lib/trpc/client';
+	import { jwtLoaded } from '$lib/misc/singletons';
+	import type { FrontEndMealClaim } from '$lib/misc/types';
     let username = $page.params.slug;
-    let grandma: User | null = null;
-    let meals: Array<Meal> = [];
+    let grandma: Grandma | null = null;
+    let meals: Array<FrontEndMealClaim> = [];
 
-    onMount(async () => {
-        grandma = await userRepository.getByUsername(username);
-        meals = await mealRepository.getMealsOfGrandma(grandma);
+    const loadGrandma = (async () => {
+        if (!$jwtLoaded)
+            return;
+        grandma = await trpcClient.getGrandmaWithUsername.query(username);
+        if (!grandma)
+            throw "Grandma not found";
+        
+        let maybeMeals = await trpcClient.getMealsOfGrandma.query(grandma.id) ;
+        if (!maybeMeals)
+            throw "Meals not found";
+        
+        meals = maybeMeals.map((el)=> {
+            return {meal: el, mealId: el.id, count: 0} as FrontEndMealClaim
+        });
     });
+
+    $: $jwtLoaded, loadGrandma();
+
 </script>
 
 
@@ -20,7 +36,7 @@
         <div class="column is-half-desktop mt-7">
             {#if grandma !== null}
             <div class="box is-flex is-flex-direction-column is-align-items-center">
-                <figure class="image is-128x128 avatar" style="background-image: url('{grandma.avatar_url}')">
+                <figure class="image is-128x128 avatar" style="background-image: url('{grandma.pictureUrl}')">
                 </figure>
                 <div class="title pt-2 is-3">{grandma.name}</div>
                 <div class="subtitle is-5">@{grandma.username}</div>
@@ -33,21 +49,18 @@
                 Бабушкины блюда
             </h1>
 
-            {#each meals as meal }
+            {#each meals as meal}
                 <div>
-                    <MealComponent meal={meal}/>
+                    <MealComponent mealClaim={meal}/>
                 </div>
                 <br/>
-            {/each}
+            {/each} 
             {:else}
                 <h1 class="has-text-centered title">Бабушка не найдена:(</h1>
             {/if}
 
         </div>
     </div>
-
-
-
 </section>
 
 <style>

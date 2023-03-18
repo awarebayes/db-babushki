@@ -3,6 +3,7 @@ import * as trpcExpress from "@trpc/server/adapters/express";
 import { z } from "zod";
 import { trpcController } from "../controllers/trpcController";
 import {createContext, Context} from "../util/context";
+import {UserClaimSchema} from "../data/zod_schemas";
 
 // create trpc router
 const trpc = initTRPC.context<Context>().create();
@@ -24,13 +25,23 @@ const router = trpc.router({
     getMealsOfGrandma: trpc.procedure.input(z.number()).query(({input, ctx}) => {
         return trpcController.getMealsOfGrandma(input)
     }),
+
+    getGrandmaWithUsername: trpc.procedure.input(z.string()).query(({input, ctx}) => {
+        return trpcController.getGrandmaWithUsername(input)
+    }),
+
+    whoAmI: trpc.procedure.query(({input, ctx}) => {
+        if (ctx.user)
+            return trpcController.whoAmI(ctx.user)
+        return null;
+    }),
 });
 
 // export types and express router
-type OrderServiceAppRouter = typeof router;
+type NodeServiceAppRouter = typeof router;
 const trpcRouter = trpcExpress.createExpressMiddleware({
     router,
     createContext
 });
 
-export { OrderServiceAppRouter, trpcRouter };
+export { NodeServiceAppRouter, trpcRouter };

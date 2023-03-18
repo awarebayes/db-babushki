@@ -1,5 +1,5 @@
 <script>
-    import { cart } from "../singletons.ts"
+	import { cart } from "$lib/misc/singletons";
     import CartItem from "./CartItem.svelte";
     let active = false;
 </script>
@@ -19,7 +19,7 @@
         <div class="dropdown-content">
             {#if $cart.length > 0}
                 {#each $cart as item}
-                    <CartItem meal={item}/>
+                    <CartItem mealClaim={item}/>
                 {/each}
                 <hr class="dropdown-divider">
                 <a class="dropdown-item has-text-centered" href="/checkout">

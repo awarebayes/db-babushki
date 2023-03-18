@@ -1,53 +1,55 @@
 <script lang="ts">
+	import type { FrontEndMealClaim } from "$lib/misc/types";
+    import type { Meal } from "@prisma/client";
+    import { cart, fileServerUrl } from '$lib/misc/singletons.js';
 
-    import {Meal} from "../../../../backend/shared/entities/models";
+    export let mealClaim: FrontEndMealClaim;
 
-    export let meal: Meal;
-    import { cart } from '../singletons.js';
-
+    let meal: Meal = mealClaim.meal;
     let inCart: boolean;
     let quantity = 0;
 
     $: {
         inCart = false;
         for (const item of $cart) {
-            if (item.id === meal.id) {
+            if (item.mealId === meal.id) {
                 inCart = true;
-                quantity = item.quantity;
+                quantity = item.count;
             }
         }
     }
 
-    function getItemCount(meal)
+    function getItemCount(meal: Meal)
     {
         let quantity = 0;
         for (const item of $cart) {
-            if (item.id === meal.id) {
-                quantity = item.quantity;
+            if (item.mealId === meal.id) {
+                quantity = item.count;
             }
         }
         return quantity;
     }
 
-    function addToCart(meal) {
+    function addToCart(meal: Meal) {
         let quantity = getItemCount(meal);
         let updatedCart;
+        let claim: FrontEndMealClaim = { count: 1, mealId: meal.id, meal: meal };
         if (quantity === 0) {
-            updatedCart = [...$cart, { ...meal, quantity: 1 }];
+            updatedCart = [...$cart, claim];
         } else {
             updatedCart = $cart;
             for (let item of $cart)
             {
-                if (item.id === meal.id)
+                if (item.mealId === meal.id)
                 {
-                    item.quantity++;
+                    item.count++;
                 }
             }
         }
         cart.set(updatedCart);
     }
 
-    function removeFromCart(meal) {
+    function removeFromCart(meal: Meal) {
         let updatedCart;
         let quantity = getItemCount(meal);
         if (quantity <= 0) {
@@ -56,15 +58,15 @@
         if (quantity === 1)
         {
             updatedCart = $cart.filter((el) => {
-                return el.id !== meal.id;
+                return el.mealId !== meal.id;
             });
         } else {
             updatedCart = $cart;
             for (let item of $cart)
             {
-                if (item.id === meal.id)
+                if (item.mealId === meal.id)
                 {
-                    item.quantity--;
+                    item.count--;
                 }
             }
         }
@@ -76,9 +78,7 @@
 <div class="box">
     <div class="columns">
         <div class="column is-two-fifths">
-            <figure class="image is-256x256">
-                <img src={meal.picture_url} alt="Meal photo" class="rounded">
-            </figure>
+            <img src="{fileServerUrl}{meal.pictureUrl}" alt="Meal photo" class="image rounded is-256x256 object-cover">
         </div>
         <div class="column">
             <div class="is-flex is-justify-content-space-between">
@@ -114,7 +114,7 @@
                 </span>
                 <span>{meal.rating}/5</span>
                 <span class="sep"></span>
-                <span>by <a class="text-blue-900" href="/grandmas/{meal.cooked_by_username}">{meal.cooked_by}</a></span>
+                <span>by <a class="text-blue-900" href="/grandmas/{meal.cookedBy}">{meal.cookedByName}</a></span>
             </p>
             <p class="pt-2">{@html meal.description}</p>
         </div>
@@ -125,5 +125,10 @@
     .sep {
         padding-left: 5px;
         padding-right: 5px;
+    }
+
+    .is-256x256 {
+        width: 256px;
+        height: 256px;
     }
 </style>

@@ -27,7 +27,7 @@ export interface IUserRepository extends IDataRepository<User>
 
 export interface IGrandmaRepository extends IDataRepository<Grandma>
 {
-
+    getWithUsername: (username: string) => Promise<Grandma | null>;
 }
 
 export interface IMealRepository extends IDataRepository<Meal>

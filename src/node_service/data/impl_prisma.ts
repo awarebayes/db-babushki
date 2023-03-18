@@ -92,6 +92,17 @@ export class PrismaGrandmaRepository implements IGrandmaRepository {
             },
         )
     }
+
+    getWithUsername(username: string): Promise<Grandma | null>
+    {
+        return this.client.grandma.findFirst({
+            where: {
+                User: {
+                    username: username
+                }
+            }
+        })   
+    }
 }
 
 export class PrismaMealRepository implements IMealRepository {

@@ -1,5 +1,5 @@
 import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
-import type { OrderServiceAppRouter } from "../../../../backend/node_service/routes/trpcRouter";
+import type {NodeServiceAppRouter} from "../../../../node_service/routes/trpcRouter";
 
 let token: string;
 
@@ -12,7 +12,7 @@ export function setTRPCToken(newToken: string)
     token = newToken;
 }
 
-export const orderClient: ReturnType<typeof createTRPCProxyClient<OrderServiceAppRouter>> = createTRPCProxyClient<OrderServiceAppRouter>({
+export const trpcClient: ReturnType<typeof createTRPCProxyClient<NodeServiceAppRouter>> = createTRPCProxyClient<NodeServiceAppRouter>({
     links: [
         httpBatchLink({
             url: "http://localhost:4000/trpc",

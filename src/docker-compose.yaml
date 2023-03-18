@@ -10,7 +10,6 @@ services:
       dockerfile: NodeService.Dockerfile
     volumes:
       - ./:/home/node/app/
-    container_name: node_service
     ports:
       - "4000:4000"
     command: > 

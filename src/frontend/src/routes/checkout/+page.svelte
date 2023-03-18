@@ -1,9 +1,8 @@
 <script lang="ts">
+	import { cart, loggedInUser } from "$lib/misc/singletons";
     import Meal from "../meals/meal.svelte"
-    import {cart} from "../singletons.ts"
-    import {authRepository} from "../../../../backend/shared/data/impl_pocketbase_browser";
 
-    let user = authRepository.getAuthenticatedUser();
+    let user = $loggedInUser;
 </script>
 
 <div class="columns is-flex is-centered min-h-screen">
@@ -13,7 +12,7 @@
         {#if $cart.length > 0}
             <section>
                 {#each $cart as item}
-                    <Meal meal={item}></Meal>
+                    <Meal mealClaim={item}></Meal>
                 {/each}
             </section>
             <br/>
@@ -29,7 +28,7 @@
                         <div class="field-body">
                             <div class="field">
                                 <p class="control is-expanded has-icons-left">
-                                    <input class="input" type="text" placeholder="Name" value="{user.name}">
+                                    <input class="input" type="text" placeholder="Name" value="{user?.name}">
                                     <span class="icon is-small is-left">
                                       <i class="fas fa-user"></i>
                                     </span>
@@ -37,7 +36,7 @@
                             </div>
                             <div class="field">
                                 <p class="control is-expanded has-icons-left has-icons-right">
-                                    <input class="input" type="email" placeholder="Email" value="{user.email}">
+                                    <input class="input" type="email" placeholder="Email" value="email@example.com">
                                     <span class="icon is-small is-left">
                                       <i class="fas fa-envelope"></i>
                                     </span>

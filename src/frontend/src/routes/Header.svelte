@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Cart from "./Cart/Cart.svelte"
 	import icon from "../lib/images/icon.png"
-	import {authRepository} from "../../../backend/shared/data/impl_pocketbase_browser";
+	import {authRepository} from "../lib/misc/impl_pocketbase_browser";
 
 	let user = authRepository.getAuthenticatedUser();
 	let logged_in: boolean = user != null;

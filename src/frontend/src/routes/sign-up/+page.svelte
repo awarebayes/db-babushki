@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {authRepository} from "../../../../backend/shared/data/impl_pocketbase_browser";
+	import { authRepository } from "$lib/misc/impl_pocketbase_browser";
 
     let name = "";
     let username = "";

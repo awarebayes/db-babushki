@@ -1,5 +1,3 @@
-cd backend || exit
+cd src || exit
 docker-compose up -d
-cd ..
-cd frontend || exit
 npm run dev -- --open

@@ -10,6 +10,6 @@ export interface UserClaim {
 }
 
 export interface MealClaim {
-    meal_id: string
+    mealId: number,
     count: number
 }

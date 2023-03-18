@@ -1,7 +1,12 @@
-<script>
-    import {cart} from "../singletons.ts";
+<script lang="ts">
+	import { cart } from "$lib/misc/singletons";
+	import type { FrontEndMealClaim } from "$lib/misc/types";
+	import type { Meal } from "@prisma/client";
 
-    export let meal;
+
+
+    export let mealClaim: FrontEndMealClaim;
+    let meal: Meal = mealClaim.meal;
 
     let inCart = false;
     let quantity = 0;
@@ -9,43 +14,44 @@
     $: {
         inCart = false;
         $cart.forEach((item) => {
-            if (item.id === meal.id) {
+            if (item.mealId === meal.id) {
                 inCart = true;
-                quantity = item.quantity;
+                quantity = item.count;
             }
         });
     }
 
-    function getItemCount(meal)
+    function getItemCount(meal: Meal)
     {
         let quantity = 0;
-        $cart.forEach((item) => {
-            if (item.id === meal.id) {
-                quantity = item.quantity;
+        for (const item of $cart) {
+            if (item.mealId === meal.id) {
+                quantity = item.count;
             }
-        });
+        }
         return quantity;
     }
 
-    function addToCart(meal) {
+    function addToCart(meal: Meal) {
         let quantity = getItemCount(meal);
         let updatedCart;
+        let claim: FrontEndMealClaim = { count: 1, mealId: meal.id, meal: meal };
         if (quantity === 0) {
-            updatedCart = [...$cart, { ...meal, quantity: 1 }];
+            updatedCart = [...$cart, claim];
         } else {
             updatedCart = $cart;
             for (let item of $cart)
             {
-                if (item.id === meal.id)
+                if (item.mealId === meal.id)
                 {
-                    item.quantity++;
+                    item.count++;
                 }
             }
         }
         cart.set(updatedCart);
     }
 
-    function removeFromCart(meal) {
+    function removeFromCart(meal: Meal) {
         let updatedCart;
         let quantity = getItemCount(meal);
         if (quantity <= 0) {
@@ -54,20 +60,21 @@
         if (quantity === 1)
         {
             updatedCart = $cart.filter((el) => {
-                return el.id !== meal.id;
+                return el.mealId !== meal.id;
             });
         } else {
             updatedCart = $cart;
             for (let item of $cart)
             {
-                if (item.id === meal.id)
+                if (item.mealId === meal.id)
                 {
-                    item.quantity--;
+                    item.count--;
                 }
             }
         }
         cart.set(updatedCart);
     }
+
 </script>
 
 <p class="dropdown-item is-flex is-flex-direction-row justify-between">
@@ -78,7 +85,7 @@
                 <i class="fas fa-minus"></i>
             </span>
         </a>
-        <span>{meal.quantity}</span>
+        <span>{mealClaim.count}</span>
         <a class="button is-small border-0" on:click={()=>addToCart(meal)}>
             <span class="icon">
                 <i class="fas fa-plus"></i>

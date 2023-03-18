@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator zod {
+  provider       = "zod-prisma-types"
+  createInputTypes                 = false // default is true
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  authId   String @unique
+  username String @unique
+  name     String
+
+  grannyId Int?     @unique
+  grandma  Grandma? @relation(fields: grannyId, references: [id])
+  Order    Order[]
+}
+
+model Grandma {
+  id          Int    @id @default(autoincrement())
+  username    String
+  name        String
+  description String
+  pictureUrl  String
+  timeReply   Int
+  rating      Float
+  verified     Boolean
+
+  meals Meal[]
+  User  User?
+}
+
+model Meal {
+  id          Int    @id @default(autoincrement())
+  name        String
+  price       Int
+  rating      Float
+  pictureUrl  String
+  description String
+  grannyId    Int
+  cookedBy    String
+  cookedByName String
+
+  grandma Grandma @relation(fields: [grannyId], references: [id])
+}
+
+model MealCategories {
+  id   Int    @id @default(autoincrement())
+  name String
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  statusId Int
+  status   OrderStatus @relation(fields: [statusId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  items OrderItem[]
+}
+
+model OrderStatus {
+  id    Int     @id @default(autoincrement())
+  name  String
+  Order Order[]
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+
+  orderId Int
+  order   Order @relation(fields: [orderId], references: [id])
+}

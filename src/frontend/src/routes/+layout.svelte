@@ -4,19 +4,29 @@
 	import Header from "./Header.svelte";
 	import Footer from "./Footer.svelte";
 
-	import {setTRPCToken} from "../lib/trpc/client";
+	import {setTRPCToken, trpcClient} from "../lib/trpc/client";
 	import {onMount} from "svelte";
-	import {jwtLoaded} from "./singletons";
+	import {jwtLoaded, loggedInUser} from "../lib/misc/singletons";
+	import {authRepository} from "../lib/misc/impl_pocketbase_browser";
+	import type {User} from "@prisma/client";
 
 	let user = authRepository.getAuthenticatedUser();
 
-	const loadData = async () => {
+	const getJwtToken = async () => {
 		let token = await authRepository.getToken();
 		setTRPCToken(token);
 		$jwtLoaded = true;
+		await fetchUser();
 	};
 
-	onMount(loadData);
+	const fetchUser = async () => {
+		let maybeLoggedInUser = await trpcClient.whoAmI.query();
+		if (!maybeLoggedInUser)
+			return;
+		$loggedInUser = maybeLoggedInUser as User;
+	}
+
+	onMount(getJwtToken);
 </script>
 
 <div class="app h-max">
