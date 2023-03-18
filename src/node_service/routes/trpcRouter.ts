@@ -12,6 +12,18 @@ const router = trpc.router({
         let uname = ctx.user?.username;
         return trpcController.ping(uname as string);
     }),
+
+    getGrandmas: trpc.procedure.input(z.number()).query(({input, ctx}) => {
+        return trpcController.getGrandmas(input)
+    }),
+
+    getMeals: trpc.procedure.input(z.number()).query(({input, ctx}) => {
+        return trpcController.getMeals(input)
+    }),
+
+    getMealsOfGrandma: trpc.procedure.input(z.number()).query(({input, ctx}) => {
+        return trpcController.getMealsOfGrandma(input)
+    }),
 });
 
 // export types and express router

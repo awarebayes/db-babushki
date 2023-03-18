@@ -1,7 +1,7 @@
 import PocketBase from 'pocketbase';
 
-import {PocketBaseAuthRepository} from "../data/impl_pocketbase";
-import {IAuthRepository, IMealRepository, IUserRepository} from "../entities/interfaces";
+import {PocketBaseAuthRepository} from "../../../../backend/node_service/data/impl_pocketbase";
+import type { IAuthRepository } from "../../../../backend/node_service/entities/interfaces"
 
 
 const pb = new PocketBase('http://0.0.0.0:8090');

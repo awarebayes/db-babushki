@@ -1,6 +1,6 @@
-import {IRepositories} from "../../shared/entities/repository";
+import {IRepositories} from "../repository";
 import {User} from "@prisma/client";
-import {MealClaim, UserClaim} from "../../shared/entities/models";
+import {MealClaim, UserClaim} from "../models";
 
 function placeOrder(repos: IRepositories, userClaim: UserClaim, meal_claims: Array<MealClaim>)
 {

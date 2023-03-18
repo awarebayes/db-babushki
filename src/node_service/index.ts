@@ -6,7 +6,7 @@ import {trpcRouter} from "./routes/trpcRouter";
 import {expressRouter} from "./routes/expressRouter";
 
 import cors from "cors";
-import {authRepository} from "../shared/data/impl_pocketbase_server";
+import {authRepository} from "../shared/data/impl_repositories_server";
 
 
 

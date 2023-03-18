@@ -2,8 +2,6 @@
     import MealComponent from "./meal.svelte";
 
     import {onMount} from "svelte";
-    import {mealRepository} from "../../../../backend/shared/data/impl_pocketbase_browser";
-    import {Meal} from "../../../../backend/shared/entities/models";
 
     let records: Array<Meal> = [];
     onMount(async function () {

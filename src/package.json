@@ -30,6 +30,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "pocketbase": "^0.12.1",
-    "zod": "^3.19.1"
+    "zod": "^3.19.1",
+    "zod-prisma-types": "^2.5.1"
   }
 }
