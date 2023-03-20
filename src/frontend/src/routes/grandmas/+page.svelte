@@ -8,13 +8,10 @@
     let records: Array<Grandma> = [];
 
     async function updateGrandmas() {
-        let maybeRecords = await trpcClient.getGrandmas.query(0);
-        if (!maybeRecords)
-            return;
-        records = maybeRecords as Array<Grandma>;
+        records = await trpcClient.getGrandmas.query(0)! as Array<Grandma>; 
     }
 
-    $: $loggedInUser, updateGrandmas()
+   onMount(updateGrandmas)
 
 </script>
 
@@ -44,7 +41,7 @@
             {#each records as grandma }
                 <div class="box">
                     <div class="columns">
-                        <div class="column is-two-fifths has-text-centered">
+                        <div class="column is-two-fifths display-flex content-center align-middle">
                             <img src={grandma.pictureUrl} alt="grandma photo"
                                  class="rounded image is-256x256 center-image object-cover">
                         </div>
@@ -81,7 +78,6 @@
                                 <span class="tag is-info is-light">Картошка</span>
                                 <span class="tag is-success is-light">Супы</span>
                                 <span class="tag is-warning is-light">Хачапури</span>
-                                <span class="tag is-danger is-light">Торты</span>
                             </div>
                         </div>
                     </div>

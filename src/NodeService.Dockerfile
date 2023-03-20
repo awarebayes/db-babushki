@@ -4,8 +4,6 @@ WORKDIR /home/node/app/
 
 COPY ./package.json ./
 
+RUN git clone url
+
 RUN npm install
-
-
-
-

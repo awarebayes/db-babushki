@@ -8,4 +8,3 @@ export async function getGrandmas(repos: IRepositories, page: number): Promise<A
 export async function getGrandmaWithUsername(repos: IRepositories, username: string): Promise<Grandma | null> {
     return repos.grandmaRepository.getWithUsername(username);
 }
-

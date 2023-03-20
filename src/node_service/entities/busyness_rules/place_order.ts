@@ -1,8 +1,14 @@
 import {IRepositories} from "../repository";
-import {User} from "@prisma/client";
+import {OrderItem, Prisma, User} from "@prisma/client";
 import {MealClaim, UserClaim} from "../models";
 
-function placeOrder(repos: IRepositories, userClaim: UserClaim, meal_claims: Array<MealClaim>)
+function placeOrder(repos: IRepositories, userClaim: UserClaim, mealClaims: Array<MealClaim>)
 {
-    let user: User;
+    let username = userClaim.username;
+    let items: Array<OrderItem> = [];
+
+    for (const c of mealClaims)
+    {
+        
+    }
 }

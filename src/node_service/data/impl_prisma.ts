@@ -5,7 +5,7 @@ import {
     IOrderRepository,
     IUserRepository
 } from "../entities/interfaces";
-import {Grandma, Meal, Order, OrderItem, OrderStatus, PrismaClient, User} from "@prisma/client";
+import {Grandma, Meal, Order, OrderItem, OrderStatus, Prisma, PrismaClient, User} from "@prisma/client";
 
 export class PrismaUserRepository implements IUserRepository {
     constructor(private client: PrismaClient) {
@@ -22,7 +22,7 @@ export class PrismaUserRepository implements IUserRepository {
         });
     }
 
-    create(item: User): Promise<User> {
+    create(item: Prisma.UserCreateInput): Promise<User | null> {
         return this.client.user.create(
             { data: item }
         )
@@ -246,7 +246,7 @@ export class PrismaOrderRepository implements IOrderRepository {
         });
     }
 
-    create(item: Order): Promise<Order> {
+    create(item: Prisma.OrderCreateInput): Promise<Order | null> {
         return this.client.order.create(
             { data: item }
         )

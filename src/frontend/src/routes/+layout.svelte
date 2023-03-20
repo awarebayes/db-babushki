@@ -21,6 +21,7 @@
 
 	const fetchUser = async () => {
 		let maybeLoggedInUser = await trpcClient.whoAmI.query();
+		console.log("logged in user", maybeLoggedInUser)
 		if (!maybeLoggedInUser)
 			return;
 		$loggedInUser = maybeLoggedInUser as User;

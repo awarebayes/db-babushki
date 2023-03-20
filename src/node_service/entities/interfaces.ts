@@ -1,5 +1,5 @@
-import {Grandma, Meal, Order, User} from "@prisma/client";
-import {AuthUser} from "./models";
+import {Grandma, Meal, Order, Prisma, User} from "@prisma/client";
+import type {AuthUser, SignUpData} from "./models";
 
 export interface IDataRepository<T> {
     getPaged: (
@@ -10,19 +10,12 @@ export interface IDataRepository<T> {
     getSingle: (
         id: number
     ) => Promise<T | null>;
-
-    create: (
-        item: T
-    ) => Promise<T>;
-
-    createBulk: (
-        items: Array<T>
-    ) => any;
 }
 
 export interface IUserRepository extends IDataRepository<User>
 {
     getByUsername: (username: string) => Promise<User | null>;
+    create: (input: Prisma.UserCreateInput) => Promise<User | null>;
 }
 
 export interface IGrandmaRepository extends IDataRepository<Grandma>
@@ -35,19 +28,17 @@ export interface IMealRepository extends IDataRepository<Meal>
     getMealsOfGrandma: (grandmaId: number) => Promise<Array<Meal>>;
 }
 
-
 export interface IOrderRepository extends IDataRepository<Order>
 {
     getOrdersOfUser: (userId: number) => Promise<Array<Order>>;
+    create: (input: Prisma.OrderCreateInput) => Promise<Order | null>;
 }
-
-export type SignUpData = {username: string, email: string, name: string, password: string, password_verification: string};
 
 export interface IAuthRepository {
     logIn: (email: string, password: string) => Promise<void>;
+    logInAdmin: (email: string, password: string) => Promise<void>;
     logOut: () => void;
     getAuthenticatedUser: () => AuthUser | null;
-    signUp: (user: SignUpData) => Promise<void>;
-
+    signUp: (user: SignUpData) => Promise<string | null>;
     getToken: () => Promise<string>;
 }

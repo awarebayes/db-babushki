@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { authRepository } from "$lib/misc/impl_pocketbase_browser";
+	import { jwtLoaded } from "$lib/misc/singletons";
+	import { trpcClient } from "$lib/trpc/client";
+	import type { TRPCError } from "@trpc/server";
 
     let name = "";
     let username = "";
@@ -11,7 +13,7 @@
 
     async function signUp() {
         try {
-            await authRepository.signUp({
+            await trpcClient.signUp.query({
                 name: name,
                 username: username,
                 email: email,
@@ -19,13 +21,14 @@
                 password_verification: password_verification
             })
             window.location.href = "/";
-        } catch (e) {
+        } catch (e: any) {
             sign_up_failed = true;
-            error_message = e.data;
+            error_message = e.message;
             console.log(e);
         }
-
     }
+
+
 
 </script>
 

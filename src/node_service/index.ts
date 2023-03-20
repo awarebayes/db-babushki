@@ -6,13 +6,11 @@ import {trpcRouter} from "./routes/trpcRouter";
 import {expressRouter} from "./routes/expressRouter";
 
 import cors from "cors";
-import { authRepository } from "./data/impl_repositories_server";
-
-
+import { repositories } from "./data/impl_repositories_server";
 
 (async ()=> {
-    console.log(process.env.PB_ADMIN_EMAIL, process.env.PB_ADMIN_PASSWORD)
-    await authRepository.logIn(process.env.PB_ADMIN_EMAIL!, process.env.PB_ADMIN_PASSWORD!);
+    await repositories.authRepository.logInAdmin(process.env.PB_ADMIN_EMAIL!, process.env.PB_ADMIN_PASSWORD!);
+    console.log("Logged in as", process.env.PB_ADMIN_EMAIL!)
 })()
 
 const app = express();

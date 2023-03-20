@@ -1,5 +1,5 @@
-import {IAuthRepository, IDataRepository, IMealRepository, IUserRepository, SignUpData} from "../entities/interfaces";
-import {AuthUser} from "../entities/models";
+import {IAuthRepository, IDataRepository, IMealRepository, IUserRepository, } from "../entities/interfaces";
+import {AuthUser, SignUpData} from "../entities/models";
 
 
 export class PocketBaseAuthRepository implements IAuthRepository {
@@ -22,8 +22,12 @@ export class PocketBaseAuthRepository implements IAuthRepository {
         await this.pb.collection('users').authWithPassword(email, password);
     }
 
-    async signUp(user: SignUpData) : Promise<void> {
-        await this.pb.collection('users').create(
+    async logInAdmin(email: string, password: string): Promise<void> {
+        await this.pb.admins.authWithPassword(email, password);
+    }
+
+    async signUp(user: SignUpData) : Promise<string | null> {
+        let created = await this.pb.collection('users').create(
             {
                 "username": user.username,
                 "email": user.email,
@@ -31,6 +35,7 @@ export class PocketBaseAuthRepository implements IAuthRepository {
                 "password": user.password,
                 "passwordConfirm": user.password_verification,
             });
+        return created.id;
     }
 
     logOut(): void {

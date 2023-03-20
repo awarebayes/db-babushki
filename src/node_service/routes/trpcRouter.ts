@@ -3,7 +3,7 @@ import * as trpcExpress from "@trpc/server/adapters/express";
 import { z } from "zod";
 import { trpcController } from "../controllers/trpcController";
 import {createContext, Context} from "../util/context";
-import {UserClaimSchema} from "../data/zod_schemas";
+import {SignUpDataSchema, UserClaimSchema} from "../data/zod_schemas";
 
 // create trpc router
 const trpc = initTRPC.context<Context>().create();
@@ -35,6 +35,15 @@ const router = trpc.router({
             return trpcController.whoAmI(ctx.user)
         return null;
     }),
+
+    signUp: trpc.procedure.input(SignUpDataSchema).query(({input, ctx}) => {
+        if (ctx.user)
+            new TRPCError({
+                    message: "User is logged in, log out before signing up!",
+                    code: "BAD_REQUEST"
+                })
+        return trpcController.signUp(input);
+    })
 });
 
 // export types and express router
