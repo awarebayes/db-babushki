@@ -10,7 +10,7 @@ export const trpcController = {
         return `Your JWT username: ${uname}`
     },
 
-    getGrandmas: async (page: number): Promise<Array<Grandma> | null> => {
+    getGrandmas: async (page: number): Promise<Grandma[] | null> => {
         return getGrandmas(repositories, page)
     },
 
@@ -18,11 +18,11 @@ export const trpcController = {
         return whoAmI(repositories, userClaim)
     },
 
-    getMeals: async (page: number): Promise<Array<Meal> | null> => {
+    getMeals: async (page: number): Promise<Meal[] | null> => {
         return getMeals(repositories, page)
     },
 
-    getMealsOfGrandma: async (page: number): Promise<Array<Meal> | null> => {
+    getMealsOfGrandma: async (page: number): Promise<Meal[] | null> => {
         return getMealsForGrandma(repositories, page)
     },
 

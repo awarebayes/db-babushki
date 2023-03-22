@@ -6,6 +6,7 @@ import {
     IDataRepository,
     IGrandmaRepository,
     IMealRepository, IOrderRepository,
+    IReviewRepository,
     IUserRepository
 } from "../entities/interfaces";
 import {IRepositories} from "../entities/repository";
@@ -15,6 +16,7 @@ import {
     PrismaOrderItemRepository,
     PrismaOrderRepository,
     PrismaOrderStatusRepository,
+    PrismaReviewRepository,
     PrismaUserRepository
 } from "./impl_prisma";
 import {Order, OrderItem, OrderStatus, PrismaClient} from "@prisma/client";
@@ -31,6 +33,7 @@ class BackendRepositories implements IRepositories {
     orderItemsRepository: IDataRepository<OrderItem> = new PrismaOrderItemRepository(prismaClient);
     orderRepository: IOrderRepository = new PrismaOrderRepository(prismaClient);
     orderStatusRepository: IDataRepository<OrderStatus> = new PrismaOrderStatusRepository(prismaClient);
+    reviewRepository: IReviewRepository = new PrismaReviewRepository(prismaClient);
 }
 
 export const repositories: IRepositories = new BackendRepositories();

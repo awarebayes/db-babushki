@@ -5,10 +5,10 @@
 	import { trpcClient } from "$lib/trpc/client";
     let sort_by = '-created';
 
-    let records: Array<Grandma> = [];
+    let records: Grandma[] = [];
 
     async function updateGrandmas() {
-        records = await trpcClient.getGrandmas.query(0)! as Array<Grandma>; 
+        records = await trpcClient.getGrandmas.query(0)! as Grandma[]; 
     }
 
    onMount(updateGrandmas)

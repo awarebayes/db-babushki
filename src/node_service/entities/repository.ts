@@ -4,6 +4,7 @@ import {
     IGrandmaRepository,
     IMealRepository,
     IOrderRepository,
+    IReviewRepository,
     IUserRepository
 } from "./interfaces";
 import {Order, OrderItem, OrderStatus} from "@prisma/client";
@@ -16,4 +17,5 @@ export interface IRepositories {
     orderItemsRepository: IDataRepository<OrderItem>;
     orderRepository: IOrderRepository;
     orderStatusRepository: IDataRepository<OrderStatus>;
+    reviewRepository: IReviewRepository;
 }

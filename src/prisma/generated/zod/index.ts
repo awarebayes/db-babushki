@@ -16,13 +16,15 @@ export const MealCategoriesScalarFieldEnumSchema = z.enum(['id','name']);
 
 export const MealScalarFieldEnumSchema = z.enum(['id','name','price','rating','pictureUrl','description','grannyId','cookedBy','cookedByName']);
 
-export const OrderItemScalarFieldEnumSchema = z.enum(['id','orderId']);
+export const OrderItemScalarFieldEnumSchema = z.enum(['id','orderId','mealId','count']);
 
-export const OrderScalarFieldEnumSchema = z.enum(['id','statusId','userId']);
+export const OrderScalarFieldEnumSchema = z.enum(['id','statusId','userId','grandmaId']);
 
 export const OrderStatusScalarFieldEnumSchema = z.enum(['id','name']);
 
 export const QueryModeSchema = z.enum(['default','insensitive']);
+
+export const ReviewScalarFieldEnumSchema = z.enum(['id','grandmaId','userId','rating','review']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
 
@@ -101,6 +103,7 @@ export const OrderSchema = z.object({
   id: z.number().int(),
   statusId: z.number().int(),
   userId: z.number().int(),
+  grandmaId: z.number().int(),
 })
 
 export type Order = z.infer<typeof OrderSchema>
@@ -123,6 +126,22 @@ export type OrderStatus = z.infer<typeof OrderStatusSchema>
 export const OrderItemSchema = z.object({
   id: z.number().int(),
   orderId: z.number().int(),
+  mealId: z.number().int(),
+  count: z.number().int(),
 })
 
 export type OrderItem = z.infer<typeof OrderItemSchema>
+
+/////////////////////////////////////////
+// REVIEW SCHEMA
+/////////////////////////////////////////
+
+export const ReviewSchema = z.object({
+  id: z.number().int(),
+  grandmaId: z.number().int(),
+  userId: z.number().int(),
+  rating: z.number(),
+  review: z.string(),
+})
+
+export type Review = z.infer<typeof ReviewSchema>

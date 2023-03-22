@@ -6,8 +6,8 @@ generator client {
 }
 
 generator zod {
-  provider       = "zod-prisma-types"
-  createInputTypes                 = false // default is true
+  provider         = "zod-prisma-types"
+  createInputTypes = false // default is true
 }
 
 datasource db {
@@ -24,34 +24,38 @@ model User {
   grannyId Int?     @unique
   grandma  Grandma? @relation(fields: grannyId, references: [id])
   Order    Order[]
+  Review   Review[]
 }
 
 model Grandma {
-  id          Int    @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   username    String
   name        String
   description String
   pictureUrl  String
   timeReply   Int
   rating      Float
-  verified     Boolean
+  verified    Boolean
 
-  meals Meal[]
-  User  User?
+  meals  Meal[]
+  User   User?
+  Order  Order[]
+  Review Review[]
 }
 
 model Meal {
-  id          Int    @id @default(autoincrement())
-  name        String
-  price       Int
-  rating      Float
-  pictureUrl  String
-  description String
-  grannyId    Int
-  cookedBy    String
+  id           Int    @id @default(autoincrement())
+  name         String
+  price        Int
+  rating       Float
+  pictureUrl   String
+  description  String
+  grannyId     Int
+  cookedBy     String
   cookedByName String
 
-  grandma Grandma @relation(fields: [grannyId], references: [id])
+  grandma     Grandma     @relation(fields: [grannyId], references: [id])
+  ordersItems OrderItem[]
 }
 
 model MealCategories {
@@ -68,6 +72,9 @@ model Order {
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
+  grandmaId Int
+  grandma   Grandma @relation(fields: [grandmaId], references: [id])
+
   items OrderItem[]
 }
 
@@ -82,4 +89,22 @@ model OrderItem {
 
   orderId Int
   order   Order @relation(fields: [orderId], references: [id])
+
+  mealId Int
+  meal   Meal @relation(fields: [mealId], references: [id])
+
+  count Int
+}
+
+model Review {
+  id Int @id @default(autoincrement())
+
+  grandmaId Int
+  grandma   Grandma @relation(fields: [grandmaId], references: [id])
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  rating Float
+  review String
 }

@@ -3,9 +3,11 @@ import {
     IGrandmaRepository,
     IMealRepository,
     IOrderRepository,
+    IReviewRepository,
     IUserRepository
 } from "../entities/interfaces";
-import {Grandma, Meal, Order, OrderItem, OrderStatus, Prisma, PrismaClient, User} from "@prisma/client";
+import {Grandma, Meal, Order, OrderItem, OrderStatus, Prisma, PrismaClient, Review, User} from "@prisma/client";
+import { OrderStatusEnum } from "../entities/models";
 
 export class PrismaUserRepository implements IUserRepository {
     constructor(private client: PrismaClient) {
@@ -28,7 +30,7 @@ export class PrismaUserRepository implements IUserRepository {
         )
     }
 
-    createBulk(items: Array<User>) {
+    createBulk(items: User[]) {
         return this.client.user.createMany(
             {
                 data: items,
@@ -45,7 +47,7 @@ export class PrismaUserRepository implements IUserRepository {
         });
     }
 
-    getPaged(pageIndex: number, pageLimit: number): Promise<Array<User> | null> {
+    getPaged(pageIndex: number, pageLimit: number): Promise<User[] | null> {
         return this.client.user.findMany(
             {
                 skip: pageIndex * pageLimit,
@@ -76,7 +78,7 @@ export class PrismaGrandmaRepository implements IGrandmaRepository {
         )
     }
 
-    createBulk(items: Array<Grandma>) {
+    createBulk(items: Grandma[]) {
         return this.client.grandma.createMany(
             {
                 data: items,
@@ -85,7 +87,7 @@ export class PrismaGrandmaRepository implements IGrandmaRepository {
         );
     }
 
-    getPaged(pageIndex: number, pageLimit: number): Promise<Array<Grandma> | null> {
+    getPaged(pageIndex: number, pageLimit: number): Promise<Grandma[] | null> {
         return this.client.grandma.findMany({
                 skip: pageIndex * pageLimit,
                 take: pageLimit,
@@ -120,13 +122,21 @@ export class PrismaMealRepository implements IMealRepository {
         });
     }
 
+    getMany(ids: number[]): Promise<Meal[] | null> {
+        return this.client.meal.findMany({
+            where: {
+                id: { in: ids }
+            }
+        })
+    }
+
     create(item: Meal): Promise<Meal> {
         return this.client.meal.create(
             { data: item }
         )
     }
 
-    createBulk(items: Array<Meal>) {
+    createBulk(items: Meal[]) {
         return this.client.meal.createMany(
             {
                 data: items,
@@ -135,7 +145,7 @@ export class PrismaMealRepository implements IMealRepository {
         );
     }
 
-    getPaged(pageIndex: number, pageLimit: number): Promise<Array<Meal> | null> {
+    getPaged(pageIndex: number, pageLimit: number): Promise<Meal[] | null> {
         return this.client.meal.findMany({
                 skip: pageIndex * pageLimit,
                 take: pageLimit,
@@ -143,7 +153,7 @@ export class PrismaMealRepository implements IMealRepository {
         )
     }
 
-    getMealsOfGrandma(grandmaId: number): Promise<Array<Meal>> {
+    getMealsOfGrandma(grandmaId: number): Promise<Meal[]> {
         return this.client.meal.findMany(
             {
                 where: {
@@ -152,6 +162,8 @@ export class PrismaMealRepository implements IMealRepository {
             }
         )
     }
+
+    
 }
 
 export class PrismaOrderItemRepository implements IDataRepository<OrderItem> {
@@ -209,19 +221,6 @@ export class PrismaOrderStatusRepository implements IDataRepository<OrderStatus>
         });
     }
 
-    create(item: OrderStatus): Promise<OrderStatus> {
-        throw "Do not create statuses from backend, use admin panel instead"
-    }
-
-    createBulk(items: Array<OrderStatus>) {
-        return this.client.orderStatus.createMany(
-            {
-                data: items,
-                skipDuplicates: true
-            }
-        );
-    }
-
     getPaged(pageIndex: number, pageLimit: number): Promise<Array<OrderStatus> | null> {
         return this.client.orderStatus.findMany({
                 skip: pageIndex * pageLimit,
@@ -252,7 +251,18 @@ export class PrismaOrderRepository implements IOrderRepository {
         )
     }
 
-    createBulk(items: Array<Order>) {
+    updateStatus(orderId: number, statusId: OrderStatusEnum): Promise<Order | null> {
+        return this.client.order.update({
+            where: {
+                id: orderId,
+            },
+            data : {
+                statusId
+            }
+        })
+    }
+
+    createBulk(items: Order[]) {
         return this.client.order.createMany(
             {
                 data: items,
@@ -261,7 +271,7 @@ export class PrismaOrderRepository implements IOrderRepository {
         );
     }
 
-    getPaged(pageIndex: number, pageLimit: number): Promise<Array<Order> | null> {
+    getPaged(pageIndex: number, pageLimit: number): Promise<Order[] | null> {
         return this.client.order.findMany({
                 skip: pageIndex * pageLimit,
                 take: pageLimit,
@@ -269,15 +279,80 @@ export class PrismaOrderRepository implements IOrderRepository {
         )
     }
 
-    getOrdersOfUser(userId: number): Promise<Array<Order>> {
+    getOrdersOfUser(userId: number): Promise<Order[]> {
         return this.client.order.findMany(
             {
                 where: {
-                    userId: userId,
+                    userId,
                 }
             }
         )
     }
 
+
+    getOrdersOfUserForGrandma(userId: number, grandmaId: number): Promise<Order[]> {
+        return this.client.order.findMany({
+            where: {
+                userId,
+                grandmaId
+            }
+        })
+    }
+
 }
 
+
+export class PrismaReviewRepository implements IReviewRepository {
+    constructor(private client: PrismaClient) {
+
+    }
+
+    async getSingle (
+        id: number
+    ): Promise<Review | null> {
+        return this.client.review.findUnique({
+            where: {
+                id: id
+            }
+        });
+    }
+
+    getPaged(pageIndex: number, pageLimit: number): Promise<Review[] | null> {
+        return this.client.review.findMany({
+                skip: pageIndex * pageLimit,
+                take: pageLimit,
+            },
+        )
+    }
+
+    create(input: Prisma.ReviewCreateInput): Promise<Review | null> {
+        return this.client.review.create(
+            { data: input }
+        )
+    }
+    
+
+    remove(orderId: number): Promise<Review> {
+        return this.client.review.delete(
+            { where: {id: orderId} }
+        )
+    }
+
+    update(orderId: number, updateRec: Prisma.ReviewUpdateInput): Promise<Review> {
+        return this.client.review.update({
+            where: { id: orderId },
+            data: updateRec
+        })
+    }
+
+
+    getForGrandma(grandmaUsername: string): Promise<Review[]> {
+        return this.client.review.findMany({
+            where: {
+                grandma: {
+                    username: grandmaUsername
+                }
+            }
+        });
+    }
+}

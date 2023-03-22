@@ -5,7 +5,7 @@
 	import { jwtLoaded } from "$lib/misc/singletons";
 	import type { FrontEndMealClaim } from "$lib/misc/types";
 
-    let records: Array<FrontEndMealClaim> = [];
+    let records: FrontEndMealClaim[] = [];
     async function loadMeals () {
         let maybeMeals = await trpcClient.getMeals.query(0);
         if (!maybeMeals)
