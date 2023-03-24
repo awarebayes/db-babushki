@@ -1,7 +1,6 @@
-import {Grandma, Meal, Order, OrderItem, Prisma} from "@prisma/client";
+import {Grandma, Meal, Order, Prisma} from "@prisma/client";
 import {IRepositories} from "../repository";
 import {MealClaim, OrderStatusEnum, UserClaim} from "../models";
-import { TRPCError } from "@trpc/server";
 
 
 export async function placeOrder(repos: IRepositories, userClaim: UserClaim, mealClaims: MealClaim[]): Promise<Order | null>
@@ -69,7 +68,7 @@ export async function cancelOrder(repos: IRepositories, userClaim: UserClaim, or
     await repos.orderRepository.updateStatus(orderToDelete.id, OrderStatusEnum.Cancelled);
 }
 
-async function updateOrderStatusAsGrandma(repos: IRepositories, userClaim: UserClaim, orderId: number, newStatus: OrderStatusEnum): Promise<void> {
+export async function updateOrderStatusAsGrandma(repos: IRepositories, userClaim: UserClaim, orderId: number, newStatus: OrderStatusEnum): Promise<void> {
     let username = userClaim.username;
 
     let maybeOrder = await repos.orderRepository.getSingle(orderId);
@@ -93,10 +92,11 @@ export async function startCookingOrder(repos: IRepositories, userClaim: UserCla
 }
 
 export async function startDeliveringOrder(repos: IRepositories, userClaim: UserClaim, orderId: number): Promise<void> {
+    const minute_in_ms = 100*60;
     await updateOrderStatusAsGrandma(repos, userClaim, orderId, OrderStatusEnum.Delivering);
     setTimeout(async ()=> {
         await updateOrderStatusAsGrandma(repos, userClaim, orderId, OrderStatusEnum.Completed)
-    }, 1000*60);
+    }, minute_in_ms);
 }
 
 

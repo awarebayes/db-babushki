@@ -9,6 +9,7 @@ import {
     IDataRepository,
     IGrandmaRepository,
     IMealRepository, IOrderRepository,
+    IReviewRepository,
     IUserRepository
 } from "../entities/interfaces";
 
@@ -17,6 +18,7 @@ import {
     PrismaGrandmaRepository,
     PrismaMealRepository,
     PrismaOrderItemRepository, PrismaOrderRepository, PrismaOrderStatusRepository,
+    PrismaReviewRepository,
     PrismaUserRepository
 } from "./impl_prisma";
 
@@ -28,6 +30,7 @@ class MockRepositories implements IRepositories {
     orderItemsRepository: IDataRepository<OrderItem> = new PrismaOrderItemRepository( undefined as any as PrismaClient);
     orderRepository: IOrderRepository = new PrismaOrderRepository( undefined as any as PrismaClient);
     orderStatusRepository: IDataRepository<OrderStatus> = new PrismaOrderStatusRepository( undefined as any as PrismaClient);
+    reviewRepository: IReviewRepository = new PrismaReviewRepository(undefined as any as PrismaClient);
 }
 
 export const mockRepositories: IRepositories = new MockRepositories();
