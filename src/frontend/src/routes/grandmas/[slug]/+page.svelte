@@ -4,7 +4,7 @@
     import MealComponent from "../../meals/meal.svelte";
     import type {Meal, Grandma} from "@prisma/client";
 	import { trpcClient } from '$lib/trpc/client';
-	import { jwtLoaded } from '$lib/misc/singletons';
+	import { fileServerUrl, jwtLoaded } from '$lib/misc/singletons';
 	import type { FrontEndMealClaim } from '$lib/misc/types';
     let username = $page.params.slug;
     let grandma: Grandma | null = null;
@@ -36,7 +36,7 @@
         <div class="column is-half-desktop mt-7">
             {#if grandma !== null}
             <div class="box is-flex is-flex-direction-column is-align-items-center">
-                <figure class="image is-128x128 avatar" style="background-image: url('{grandma.pictureUrl}')">
+                <figure class="image is-128x128 avatar" style="background-image: url('{fileServerUrl}{grandma.pictureUrl}')">
                 </figure>
                 <div class="title pt-2 is-3">{grandma.name}</div>
                 <div class="subtitle is-5">@{grandma.username}</div>

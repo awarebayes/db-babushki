@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import type { Prisma } from '@prisma/client';
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -40,10 +39,10 @@ export const UserScalarFieldEnumSchema = z.enum(['id','authId','username','name'
 /////////////////////////////////////////
 
 export const UserSchema = z.object({
-  id: z.number().int(),
-  authId: z.string(),
-  username: z.string(),
-  name: z.string(),
+  id: z.number().int().nonnegative(),
+  authId: z.string().nonempty(),
+  username: z.string().nonempty(),
+  name: z.string().nonempty(),
   grannyId: z.number().int().nullable(),
 })
 
@@ -54,13 +53,13 @@ export type User = z.infer<typeof UserSchema>
 /////////////////////////////////////////
 
 export const GrandmaSchema = z.object({
-  id: z.number().int(),
-  username: z.string(),
-  name: z.string(),
-  description: z.string(),
-  pictureUrl: z.string(),
-  timeReply: z.number().int(),
-  rating: z.number(),
+  id: z.number().int().nonnegative(),
+  username: z.string().nonempty(),
+  name: z.string().nonempty(),
+  description: z.string().nonempty(),
+  pictureUrl: z.string().url().nonempty(),
+  timeReply: z.number().int().positive(),
+  rating: z.number().nonnegative(),
   verified: z.boolean(),
 })
 
@@ -72,14 +71,14 @@ export type Grandma = z.infer<typeof GrandmaSchema>
 
 export const MealSchema = z.object({
   id: z.number().int(),
-  name: z.string(),
+  name: z.string().nonempty(),
   price: z.number().int(),
-  rating: z.number(),
-  pictureUrl: z.string(),
-  description: z.string(),
-  grannyId: z.number().int(),
-  cookedBy: z.string(),
-  cookedByName: z.string(),
+  rating: z.number().nonnegative(),
+  pictureUrl: z.string().url().nonempty(),
+  description: z.string().nonempty(),
+  grannyId: z.number().int().positive(),
+  cookedBy: z.string().nonempty(),
+  cookedByName: z.string().nonempty(),
 })
 
 export type Meal = z.infer<typeof MealSchema>
@@ -89,8 +88,8 @@ export type Meal = z.infer<typeof MealSchema>
 /////////////////////////////////////////
 
 export const MealCategoriesSchema = z.object({
-  id: z.number().int(),
-  name: z.string(),
+  id: z.number().int().nonnegative(),
+  name: z.string().nonempty(),
 })
 
 export type MealCategories = z.infer<typeof MealCategoriesSchema>
@@ -100,10 +99,10 @@ export type MealCategories = z.infer<typeof MealCategoriesSchema>
 /////////////////////////////////////////
 
 export const OrderSchema = z.object({
-  id: z.number().int(),
-  statusId: z.number().int(),
-  userId: z.number().int(),
-  grandmaId: z.number().int(),
+  id: z.number().int().nonnegative(),
+  statusId: z.number().int().nonnegative(),
+  userId: z.number().int().nonnegative(),
+  grandmaId: z.number().int().nonnegative(),
 })
 
 export type Order = z.infer<typeof OrderSchema>
@@ -113,8 +112,8 @@ export type Order = z.infer<typeof OrderSchema>
 /////////////////////////////////////////
 
 export const OrderStatusSchema = z.object({
-  id: z.number().int(),
-  name: z.string(),
+  id: z.number().int().nonnegative().max(6),
+  name: z.string().nonempty(),
 })
 
 export type OrderStatus = z.infer<typeof OrderStatusSchema>
@@ -124,10 +123,10 @@ export type OrderStatus = z.infer<typeof OrderStatusSchema>
 /////////////////////////////////////////
 
 export const OrderItemSchema = z.object({
-  id: z.number().int(),
-  orderId: z.number().int(),
-  mealId: z.number().int(),
-  count: z.number().int(),
+  id: z.number().int().nonnegative(),
+  orderId: z.number().int().nonnegative(),
+  mealId: z.number().int().nonnegative(),
+  count: z.number().int().nonnegative().max(100),
 })
 
 export type OrderItem = z.infer<typeof OrderItemSchema>
@@ -137,11 +136,11 @@ export type OrderItem = z.infer<typeof OrderItemSchema>
 /////////////////////////////////////////
 
 export const ReviewSchema = z.object({
-  id: z.number().int(),
-  grandmaId: z.number().int(),
-  userId: z.number().int(),
-  rating: z.number(),
-  review: z.string(),
+  id: z.number().int().nonnegative(),
+  grandmaId: z.number().int().nonnegative(),
+  userId: z.number().int().nonnegative(),
+  rating: z.number().nonnegative().max(5),
+  review: z.string().nonempty(),
 })
 
 export type Review = z.infer<typeof ReviewSchema>

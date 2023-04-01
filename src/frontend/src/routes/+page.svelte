@@ -38,7 +38,7 @@
 
 			<div class="buttons">
 				<a class="button is-primary is-light" href="/grandmas">Подобрать бабушку</a>
-				<a class="button is-link is-light">Стать бабушкой</a>
+				<a class="button is-link is-light" href="/new-grandma">Стать бабушкой</a>
 			</div>
 	</div>
 </section>

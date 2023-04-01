@@ -44,7 +44,7 @@
 					Блюда
 				</a>
 
-				<a class="navbar-item">
+				<a class="navbar-item" href="/new-grandma">
 					Готовьте с нами
 				</a>
 
