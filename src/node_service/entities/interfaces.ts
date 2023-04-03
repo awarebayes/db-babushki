@@ -1,4 +1,4 @@
-import {Grandma, Meal, Order, Prisma, Review, User} from "@prisma/client";
+import {Grandma, Meal, Order, OrderCreateInput, Review, ReviewCreateInput, ReviewUpdateInput, User, UserCreateInput} from "./generated_models";
 import type {AuthUser, OrderStatusEnum, SignUpData} from "./models";
 
 export interface IDataRepository<T> {
@@ -15,7 +15,7 @@ export interface IDataRepository<T> {
 export interface IUserRepository extends IDataRepository<User>
 {
     getByUsername: (username: string) => Promise<User | null>;
-    create: (input: Prisma.UserCreateInput) => Promise<User | null>;
+    create: (input: UserCreateInput) => Promise<User | null>;
 }
 
 export interface IGrandmaRepository extends IDataRepository<Grandma>
@@ -33,16 +33,16 @@ export interface IOrderRepository extends IDataRepository<Order>
 {
     getOrdersOfUser: (userId: number) => Promise<Order[]>;
     getOrdersOfUserForGrandma: (userId: number, grandmaId: number) => Promise<Order[]>;
-    create: (input: Prisma.OrderCreateInput) => Promise<Order | null>;
+    create: (input: OrderCreateInput) => Promise<Order | null>;
     updateStatus: (orderId: number, statusId: OrderStatusEnum) => Promise<Order | null>;
 }
 
 export interface IReviewRepository extends IDataRepository<Review>
 {
     getForGrandma: (grandmaUsername: string) => Promise<Review[]>;
-    create: (input: Prisma.ReviewCreateInput) => Promise<Review | null>;
+    create: (input: ReviewCreateInput) => Promise<Review | null>;
     remove: (orderId: number) => Promise<Review>;
-    update: (orderId: number, updateRec: Prisma.ReviewUpdateInput) => Promise<Review>;
+    update: (updateRec: ReviewUpdateInput) => Promise<Review>;
 }
 
 export interface IAuthRepository {

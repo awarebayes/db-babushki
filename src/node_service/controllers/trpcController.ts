@@ -1,4 +1,4 @@
-import {Grandma, Meal, User} from "@prisma/client";
+import {Grandma, Meal, User} from "../entities/generated_models";
 import {repositories} from "../data/impl_repositories_server";
 import {getGrandmas, getGrandmaWithUsername} from "../entities/busyness_rules/grandmas";
 import {getMeals, getMealsForGrandma} from "../entities/busyness_rules/meals";

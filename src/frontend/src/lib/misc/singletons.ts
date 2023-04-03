@@ -1,6 +1,5 @@
 import {writable} from "svelte/store";
-import type {User} from "@prisma/client";
-import type { MealClaim } from "../../../../node_service/entities/models";
+import type { User } from "../../../../node_service/entities/generated_models";
 import type { FrontEndMealClaim } from "./types";
 
 export const cart = writable<Array<FrontEndMealClaim>>([]);

@@ -1,5 +1,5 @@
-import {Grandma, Meal, Order, Prisma} from "@prisma/client";
-import {IRepositories} from "../repository";
+import type {Grandma, Meal, Order, OrderCreateInput} from "../generated_models";
+import type {IRepositories} from "../repository";
 import {MealClaim, OrderStatusEnum, UserClaim} from "../models";
 
 
@@ -19,25 +19,27 @@ export async function placeOrder(repos: IRepositories, userClaim: UserClaim, mea
     if (uniqueIds > 1)
         throw "Meals from different grandmas cannot be placed in a single order";
 
-    let orderToCreate: Prisma.OrderCreateInput = {
-        user: {
-            connect: {
-                username: username
-            }
-        },
-        grandma:  {
-            connect: {
-                id: grandmaId,
-            }
-        },
-        status: {
-            connect: {
-                id: OrderStatusEnum.Initialized,
-            }
-        },
-        items: {
-            createMany: {
-                data: mealClaims
+    let orderToCreate: OrderCreateInput = {
+        data: {
+            user: {
+                connect: {
+                    username: username
+                }
+            },
+            grandma:  {
+                connect: {
+                    id: grandmaId,
+                }
+            },
+            status: {
+                connect: {
+                    id: OrderStatusEnum.Initialized,
+                }
+            },
+            items: {
+                createMany: {
+                    data: mealClaims
+                }
             }
         }
     }

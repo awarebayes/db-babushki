@@ -8,6 +8,7 @@ import {
 } from "../entities/interfaces";
 import {Grandma, Meal, Order, OrderItem, OrderStatus, Prisma, PrismaClient, Review, User} from "@prisma/client";
 import { OrderStatusEnum } from "../entities/models";
+import { OrderCreateInput, ReviewCreateInput, ReviewUpdateInput, UserCreateInput } from "../entities/generated_models";
 
 export class PrismaUserRepository implements IUserRepository {
     constructor(private client: PrismaClient) {
@@ -24,9 +25,9 @@ export class PrismaUserRepository implements IUserRepository {
         });
     }
 
-    create(item: Prisma.UserCreateInput): Promise<User | null> {
+    create(item: UserCreateInput): Promise<User | null> {
         return this.client.user.create(
-            { data: item }
+            item
         )
     }
 
@@ -245,9 +246,9 @@ export class PrismaOrderRepository implements IOrderRepository {
         });
     }
 
-    create(item: Prisma.OrderCreateInput): Promise<Order | null> {
+    create(item: OrderCreateInput): Promise<Order | null> {
         return this.client.order.create(
-            { data: item }
+            item
         )
     }
 
@@ -325,9 +326,9 @@ export class PrismaReviewRepository implements IReviewRepository {
         )
     }
 
-    create(input: Prisma.ReviewCreateInput): Promise<Review | null> {
+    create(input: ReviewCreateInput): Promise<Review | null> {
         return this.client.review.create(
-            { data: input }
+            input
         )
     }
     
@@ -338,11 +339,8 @@ export class PrismaReviewRepository implements IReviewRepository {
         )
     }
 
-    update(orderId: number, updateRec: Prisma.ReviewUpdateInput): Promise<Review> {
-        return this.client.review.update({
-            where: { id: orderId },
-            data: updateRec
-        })
+    update(item: ReviewUpdateInput): Promise<Review> {
+        return this.client.review.update(item)
     }
 
 

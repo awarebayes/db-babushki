@@ -1,6 +1,6 @@
-import { Grandma, Prisma, Review, User } from "@prisma/client";
-import { ReviewClaim, UserClaim } from "../models";
+import type { ReviewClaim, UserClaim } from "../models";
 import { IRepositories } from "../repository";
+import type { Grandma, Review, ReviewCreateInput, ReviewUpdateInput, User } from "../generated_models";
 
 export async function addReview(repos: IRepositories, userClaim: UserClaim, reviewClaim: ReviewClaim) {
     let maybeGrandma = await repos.grandmaRepository.getSingle(reviewClaim.grandmaId);
@@ -16,17 +16,19 @@ export async function addReview(repos: IRepositories, userClaim: UserClaim, revi
     if (ordersForGrandma.length === 0)
         throw "User didnt order anything!";
 
-    let reviewToCreate: Prisma.ReviewCreateInput = {
-        review: reviewClaim.review,
-        rating: reviewClaim.rating,
-        grandma: {
-            connect: {
-                id: grandma.id,
-            }
-        },
-        user: {
-            connect: {
-                id: user.id,
+    let reviewToCreate: ReviewCreateInput = {
+        data: {
+            review: reviewClaim.review,
+            rating: reviewClaim.rating,
+            grandma: {
+                connect: {
+                    id: grandma.id,
+                }
+            },
+            user: {
+                connect: {
+                    id: user.id,
+                }
             }
         }
     };
@@ -59,12 +61,16 @@ export async function updateReview(repos: IRepositories, userClaim: UserClaim, r
     if (review.userId != user.id)
         throw "Trying to update a review of different user!";
     
-    let reviewToUpdate: Prisma.ReviewUpdateInput = {
-        review: reviewClaim.review,
-        rating: reviewClaim.rating,
+    let reviewToUpdate: ReviewUpdateInput = 
+    { 
+        data: {
+            review: reviewClaim.review,
+            rating: reviewClaim.rating,
+        },
+        where: {id: reviewId}
     };
 
-    await repos.reviewRepository.update(reviewId, reviewToUpdate);
+    await repos.reviewRepository.update(reviewToUpdate);
 }
 
 export async function getReviewsForGrandma(repos: IRepositories, username: string) {

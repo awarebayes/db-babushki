@@ -19,7 +19,8 @@ import {
     PrismaReviewRepository,
     PrismaUserRepository
 } from "./impl_prisma";
-import {Order, OrderItem, OrderStatus, PrismaClient} from "@prisma/client";
+import {OrderItem, OrderStatus} from "../entities/generated_models";
+import { PrismaClient } from "@prisma/client";
 
 const PocketBase = require('pocketbase/cjs');
 const pb = new PocketBase('http://pocketbase_service:8090');

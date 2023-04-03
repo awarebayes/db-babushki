@@ -1,4 +1,4 @@
-import {
+import type {
     IAuthRepository,
     IDataRepository,
     IGrandmaRepository,
@@ -7,7 +7,8 @@ import {
     IReviewRepository,
     IUserRepository
 } from "./interfaces";
-import {Order, OrderItem, OrderStatus} from "@prisma/client";
+
+import type {OrderItem, OrderStatus} from "../entities/generated_models";
 
 export interface IRepositories {
     authRepository: IAuthRepository;

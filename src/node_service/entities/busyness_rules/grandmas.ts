@@ -1,5 +1,5 @@
-import {IRepositories} from "../repository";
-import {Grandma} from "@prisma/client";
+import type {IRepositories} from "../repository";
+import type {Grandma} from "../generated_models";
 
 export async function getGrandmas(repos: IRepositories, page: number): Promise<Grandma[] | null> {
     return repos.grandmaRepository.getPaged(page, 25);

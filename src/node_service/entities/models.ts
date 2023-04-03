@@ -1,4 +1,5 @@
 
+
 export enum OrderStatusEnum {
     Initialized = 1,
     Confirmed = 2,
@@ -12,7 +13,6 @@ export interface AuthUser {
     id: string,
     username: string,
 }
-
 
 export interface UserClaim {
     id: string,

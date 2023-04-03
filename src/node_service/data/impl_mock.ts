@@ -3,7 +3,8 @@ import {IRepositories} from "../entities/repository";
 jest.mock('./impl_pocketbase')
 import {PocketBaseAuthRepository} from "./impl_pocketbase";
 
-import {Order, OrderItem, OrderStatus, PrismaClient} from "@prisma/client";
+import {Order, OrderItem, OrderStatus} from "../entities/generated_models";
+
 import {
     IAuthRepository,
     IDataRepository,
@@ -21,6 +22,7 @@ import {
     PrismaReviewRepository,
     PrismaUserRepository
 } from "./impl_prisma";
+import { PrismaClient } from "@prisma/client";
 
 class MockRepositories implements IRepositories {
     authRepository: IAuthRepository = new PocketBaseAuthRepository(undefined);

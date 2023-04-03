@@ -32,14 +32,16 @@ describe('placeOrder', () => {
       const userClaim = { username: 'mock_user' } as UserClaim;
       const mealClaims = [{ mealId: 1, count: 2 }];
       const expectedOrder = {
-        user: {
-          connect: {
-            username: 'mock_user'
-          }
-        },
-        grandma: { connect: { id: 1 } },
-        status: { connect: { id: OrderStatusEnum.Initialized } },
-        items: { createMany: { data: [{ mealId: 1, count: 2 }] } }
+        data: {
+          user: {
+            connect: {
+              username: 'mock_user'
+            }
+          },
+          grandma: { connect: { id: 1 } },
+          status: { connect: { id: OrderStatusEnum.Initialized } },
+          items: { createMany: { data: [{ mealId: 1, count: 2 }] } }
+        }
       };
       repos.orderRepository.create =  jest.fn().mockResolvedValue(expectedOrder)
       const createdOrder = await placeOrder(repos, userClaim, mealClaims);

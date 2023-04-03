@@ -1,7 +1,6 @@
 import { Grandma, Order, Review, User } from "@prisma/client";
 import { mockRepositories } from "../../../data/impl_mock";
 import { MealClaim, OrderStatusEnum, ReviewClaim, UserClaim } from "../../models";
-import { IRepositories } from "../../repository";
 import { addReview, removeReview, updateReview } from "../reviews";
 
 const repos = mockRepositories;
