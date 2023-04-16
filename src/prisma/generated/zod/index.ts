@@ -1,35 +1,81 @@
-import { z } from 'zod';
+import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
 /////////////////////////////////////////
 
-
 /////////////////////////////////////////
 // ENUMS
 /////////////////////////////////////////
 
-export const GrandmaScalarFieldEnumSchema = z.enum(['id','username','name','description','pictureUrl','timeReply','rating','verified']);
+export const GrandmaScalarFieldEnumSchema = z.enum([
+  "id",
+  "username",
+  "name",
+  "description",
+  "pictureUrl",
+  "timeReply",
+  "rating",
+  "verified",
+]);
 
-export const MealCategoriesScalarFieldEnumSchema = z.enum(['id','name']);
+export const MealCategoriesScalarFieldEnumSchema = z.enum(["id", "name"]);
 
-export const MealScalarFieldEnumSchema = z.enum(['id','name','price','rating','pictureUrl','description','grannyId','cookedBy','cookedByName']);
+export const MealScalarFieldEnumSchema = z.enum([
+  "id",
+  "name",
+  "price",
+  "rating",
+  "pictureUrl",
+  "description",
+  "grannyId",
+  "cookedBy",
+  "cookedByName",
+]);
 
-export const OrderItemScalarFieldEnumSchema = z.enum(['id','orderId','mealId','count']);
+export const OrderItemScalarFieldEnumSchema = z.enum([
+  "id",
+  "orderId",
+  "mealId",
+  "count",
+]);
 
-export const OrderScalarFieldEnumSchema = z.enum(['id','statusId','userId','grandmaId']);
+export const OrderScalarFieldEnumSchema = z.enum([
+  "id",
+  "statusId",
+  "userId",
+  "grandmaId",
+]);
 
-export const OrderStatusScalarFieldEnumSchema = z.enum(['id','name']);
+export const OrderStatusScalarFieldEnumSchema = z.enum(["id", "name"]);
 
-export const QueryModeSchema = z.enum(['default','insensitive']);
+export const QueryModeSchema = z.enum(["default", "insensitive"]);
 
-export const ReviewScalarFieldEnumSchema = z.enum(['id','grandmaId','userId','rating','review']);
+export const ReviewScalarFieldEnumSchema = z.enum([
+  "id",
+  "grandmaId",
+  "userId",
+  "rating",
+  "review",
+]);
 
-export const SortOrderSchema = z.enum(['asc','desc']);
+export const SortOrderSchema = z.enum(["asc", "desc"]);
 
-export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
+export const TransactionIsolationLevelSchema = z.enum([
+  "ReadUncommitted",
+  "ReadCommitted",
+  "RepeatableRead",
+  "Serializable",
+]);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','authId','username','name','grannyId']);
+export const UserScalarFieldEnumSchema = z.enum([
+  "id",
+  "authId",
+  "username",
+  "name",
+  "grannyId",
+]);
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -39,31 +85,31 @@ export const UserScalarFieldEnumSchema = z.enum(['id','authId','username','name'
 /////////////////////////////////////////
 
 export const UserSchema = z.object({
-  id: z.number().int().nonnegative(),
-  authId: z.string().nonempty(),
-  username: z.string().nonempty(),
-  name: z.string().nonempty(),
+  id: z.number().int(),
+  authId: z.string(),
+  username: z.string(),
+  name: z.string(),
   grannyId: z.number().int().nullable(),
-})
+});
 
-export type User = z.infer<typeof UserSchema>
+export type User = z.infer<typeof UserSchema>;
 
 /////////////////////////////////////////
 // GRANDMA SCHEMA
 /////////////////////////////////////////
 
 export const GrandmaSchema = z.object({
-  id: z.number().int().nonnegative(),
-  username: z.string().nonempty(),
-  name: z.string().nonempty(),
-  description: z.string().nonempty(),
-  pictureUrl: z.string().url().nonempty(),
-  timeReply: z.number().int().positive(),
-  rating: z.number().nonnegative(),
+  id: z.number().int(),
+  username: z.string(),
+  name: z.string(),
+  description: z.string(),
+  pictureUrl: z.string(),
+  timeReply: z.number().int(),
+  rating: z.number(),
   verified: z.boolean(),
-})
+});
 
-export type Grandma = z.infer<typeof GrandmaSchema>
+export type Grandma = z.infer<typeof GrandmaSchema>;
 
 /////////////////////////////////////////
 // MEAL SCHEMA
@@ -71,76 +117,76 @@ export type Grandma = z.infer<typeof GrandmaSchema>
 
 export const MealSchema = z.object({
   id: z.number().int(),
-  name: z.string().nonempty(),
+  name: z.string(),
   price: z.number().int(),
-  rating: z.number().nonnegative(),
-  pictureUrl: z.string().url().nonempty(),
-  description: z.string().nonempty(),
-  grannyId: z.number().int().positive(),
-  cookedBy: z.string().nonempty(),
-  cookedByName: z.string().nonempty(),
-})
+  rating: z.number(),
+  pictureUrl: z.string(),
+  description: z.string(),
+  grannyId: z.number().int(),
+  cookedBy: z.string(),
+  cookedByName: z.string(),
+});
 
-export type Meal = z.infer<typeof MealSchema>
+export type Meal = z.infer<typeof MealSchema>;
 
 /////////////////////////////////////////
 // MEAL CATEGORIES SCHEMA
 /////////////////////////////////////////
 
 export const MealCategoriesSchema = z.object({
-  id: z.number().int().nonnegative(),
-  name: z.string().nonempty(),
-})
+  id: z.number().int(),
+  name: z.string(),
+});
 
-export type MealCategories = z.infer<typeof MealCategoriesSchema>
+export type MealCategories = z.infer<typeof MealCategoriesSchema>;
 
 /////////////////////////////////////////
 // ORDER SCHEMA
 /////////////////////////////////////////
 
 export const OrderSchema = z.object({
-  id: z.number().int().nonnegative(),
-  statusId: z.number().int().nonnegative(),
-  userId: z.number().int().nonnegative(),
-  grandmaId: z.number().int().nonnegative(),
-})
+  id: z.number().int(),
+  statusId: z.number().int(),
+  userId: z.number().int(),
+  grandmaId: z.number().int(),
+});
 
-export type Order = z.infer<typeof OrderSchema>
+export type Order = z.infer<typeof OrderSchema>;
 
 /////////////////////////////////////////
 // ORDER STATUS SCHEMA
 /////////////////////////////////////////
 
 export const OrderStatusSchema = z.object({
-  id: z.number().int().nonnegative().max(6),
-  name: z.string().nonempty(),
-})
+  id: z.number().int(),
+  name: z.string(),
+});
 
-export type OrderStatus = z.infer<typeof OrderStatusSchema>
+export type OrderStatus = z.infer<typeof OrderStatusSchema>;
 
 /////////////////////////////////////////
 // ORDER ITEM SCHEMA
 /////////////////////////////////////////
 
 export const OrderItemSchema = z.object({
-  id: z.number().int().nonnegative(),
-  orderId: z.number().int().nonnegative(),
-  mealId: z.number().int().nonnegative(),
-  count: z.number().int().nonnegative().max(100),
-})
+  id: z.number().int(),
+  orderId: z.number().int(),
+  mealId: z.number().int(),
+  count: z.number().int(),
+});
 
-export type OrderItem = z.infer<typeof OrderItemSchema>
+export type OrderItem = z.infer<typeof OrderItemSchema>;
 
 /////////////////////////////////////////
 // REVIEW SCHEMA
 /////////////////////////////////////////
 
 export const ReviewSchema = z.object({
-  id: z.number().int().nonnegative(),
-  grandmaId: z.number().int().nonnegative(),
-  userId: z.number().int().nonnegative(),
-  rating: z.number().nonnegative().max(5),
-  review: z.string().nonempty(),
-})
+  id: z.number().int(),
+  grandmaId: z.number().int(),
+  userId: z.number().int(),
+  rating: z.number(),
+  review: z.string(),
+});
 
-export type Review = z.infer<typeof ReviewSchema>
+export type Review = z.infer<typeof ReviewSchema>;

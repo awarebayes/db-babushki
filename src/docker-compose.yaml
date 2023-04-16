@@ -12,11 +12,30 @@ services:
       - ./:/home/node/app/
     ports:
       - "4000:4000"
-    command: > 
+    command: >
       npm run node_service
+    env_file:
+      - .env
 
     networks:
       - some-net
+  tests:
+    depends_on:
+      pocketbase_service:
+        condition: service_healthy
+    build:
+      context: .
+      dockerfile: NodeService.Dockerfile
+    env_file:
+      - .env.test
+    volumes:
+      - ./:/home/node/app/
+    command: >
+      npm run my_tests
+    networks:
+      - some-net
+    profiles:
+      - test
 
   pocketbase_service:
     volumes:
@@ -30,7 +49,7 @@ services:
     command: go run ppo serve --http=0.0.0.0:8090
 
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://0.0.0.0:8090/_" ]
+      test: ["CMD", "curl", "-f", "http://0.0.0.0:8090/_"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -45,9 +64,22 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
-      - '5433:5432'
-    volumes:
-      - db:/var/lib/postgresql/data
+      - "5433:5432"
+    networks:
+      - some-net
+
+  db-test:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5434:5432"
+
+    profiles:
+      - test
+
     networks:
       - some-net
 

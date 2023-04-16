@@ -3,9 +3,7 @@
     "target": "es2015",
     "lib": ["es6", "DOM"],
     "module": "CommonJS",
-    "rootDirs": [
-      "./"
-    ],
+    "rootDirs": ["./"],
     "resolveJsonModule": true,
     "outDir": "build",
     "esModuleInterop": true,
