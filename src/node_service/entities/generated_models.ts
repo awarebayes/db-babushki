@@ -257,3 +257,18 @@ export type GrandmaCreateInput = {
     verified: boolean;
   };
 };
+
+export type MealCreateInput = {
+  grandma: {
+      connect: {
+        username: string;
+      };
+  };
+  name: string;
+  price: number;
+  rating: number;
+  pictureUrl: string;
+  description: string;
+  cookedBy: string;
+  cookedByName: string;
+};

@@ -1,8 +1,9 @@
-import { Prisma } from "@prisma/client";
+import { OrderStatus, Prisma } from "@prisma/client";
 import {
   Grandma,
   GrandmaCreateInput,
   Meal,
+  MealCreateInput,
   Order,
   OrderCreateInput,
   Review,
@@ -34,6 +35,7 @@ export interface IGrandmaRepository extends IDataRepository<Grandma> {
 export interface IMealRepository extends IDataRepository<Meal> {
   getMealsOfGrandma: (grandmaId: number) => Promise<Meal[]>;
   getMany: (ids: Array<number>) => Promise<Meal[] | null>;
+  create: (input: MealCreateInput) => Promise<Meal | null>;
 }
 
 export interface IOrderRepository extends IDataRepository<Order> {

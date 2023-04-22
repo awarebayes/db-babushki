@@ -1,5 +1,5 @@
 import type { IRepositories } from "../repository";
-import type { Meal } from "../generated_models";
+import type { Meal, MealCreateInput } from "../generated_models";
 
 export async function getMeals(
   repos: IRepositories,
@@ -13,4 +13,11 @@ export async function getMealsForGrandma(
   grandmaId: number
 ): Promise<Meal[] | null> {
   return repos.mealRepository.getMealsOfGrandma(grandmaId);
+}
+
+export async function createNewMealForGrandma(
+  repos: IRepositories,
+  meal: MealCreateInput
+): Promise<Meal | null> {
+  return repos.mealRepository.create(meal)
 }

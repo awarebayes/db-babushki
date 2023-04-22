@@ -20,6 +20,7 @@ import {
 import { OrderStatusEnum } from "../entities/models";
 import {
   GrandmaCreateInput,
+  MealCreateInput,
   OrderCreateInput,
   ReviewCreateInput,
   ReviewUpdateInput,
@@ -131,8 +132,8 @@ export class PrismaMealRepository implements IMealRepository {
     });
   }
 
-  create(item: Meal): Promise<Meal> {
-    return this.client.meal.create({ data: item });
+  create(item: MealCreateInput): Promise<Meal> {
+    return this.client.meal.create({data: item});
   }
 
   async delete(id: number) {

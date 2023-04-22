@@ -214,7 +214,7 @@ describe("updateOrder", () => {
       updateOrderStatusAsGrandma(repos, userClaim, 1, OrderStatusEnum.Confirmed)
     ).rejects.toEqual("Order was created for other grandma");
     expect(repos.orderRepository.getSingle).toHaveBeenCalledWith(1);
-    expect(repos.grandmaRepository.getSingle).toHaveBeenCalledWith(1);
+    expect(repos.grandmaRepository.getSingle).toHaveBeenCalledWith(10);
   });
 
   it("should update order successfully", async () => {
@@ -248,6 +248,6 @@ describe("updateOrder", () => {
       updateOrderStatusAsGrandma(repos, userClaim, 1, OrderStatusEnum.Confirmed)
     );
     expect(repos.orderRepository.getSingle).toHaveBeenCalledWith(1);
-    expect(repos.grandmaRepository.getSingle).toHaveBeenCalledWith(1);
+    expect(repos.grandmaRepository.getSingle).toHaveBeenCalledWith(10);
   });
 });

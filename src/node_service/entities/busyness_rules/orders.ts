@@ -96,7 +96,7 @@ export async function updateOrderStatusAsGrandma(
   let maybeOrder = await repos.orderRepository.getSingle(orderId);
   if (!maybeOrder) throw "Order was not found";
   let order = maybeOrder!;
-  let grandma = (await repos.grandmaRepository.getSingle(orderId)!) as Grandma;
+  let grandma = (await repos.grandmaRepository.getSingle(order.grandmaId)!) as Grandma;
 
   if (username != grandma.username) throw "Order was created for other grandma";
 
