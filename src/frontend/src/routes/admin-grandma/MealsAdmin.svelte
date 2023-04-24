@@ -10,7 +10,7 @@
     async function get_meals() {
         let user = await trpcClient.whoAmI.query()
         let grandma = await trpcClient.getGrandmaWithUsername.query(user?.username!)
-        meals = await trpcClient.getMealsOfGrandma.query(grandma?.id!)
+        meals = (await trpcClient.getMealsOfGrandma.query(grandma?.id!))!
     }
 
     onMount(get_meals)
@@ -27,9 +27,12 @@
         Ваши блюда
     </h2>
 
-    {#each meals as meal}
-        <div class="mb-2">
-            <MealAdmin {meal}/>       
-        </div>
-    {/each}
+    <div class="grid md:grid-cols-3 md:gap-3">
+        {#each meals as meal}
+            <div class="mb-2">
+                <MealAdmin {meal}/>       
+            </div>
+        {/each}
+    </div>
+
 </div>

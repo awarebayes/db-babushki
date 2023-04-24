@@ -1,8 +1,9 @@
-import { PocketBaseAuthRepository } from "../data/impl_pocketbase";
+import { PocketBaseAuthRepository, PocketBaseImageRepository } from "../data/impl_pocketbase";
 import {
   IAuthRepository,
   IDataRepository,
   IGrandmaRepository,
+  IImageRepository,
   IMealRepository,
   IOrderRepository,
   IReviewRepository,
@@ -27,6 +28,7 @@ export let prismaClient = new PrismaClient();
 
 class BackendRepositories implements IRepositories {
   authRepository: IAuthRepository = new PocketBaseAuthRepository(pb);
+  imageRepository: IImageRepository = new PocketBaseImageRepository(pb);
   userRepository: IUserRepository = new PrismaUserRepository(prismaClient);
   mealRepository: IMealRepository = new PrismaMealRepository(prismaClient);
   grandmaRepository: IGrandmaRepository = new PrismaGrandmaRepository(
@@ -44,5 +46,6 @@ class BackendRepositories implements IRepositories {
 
 export const repositories: IRepositories = new BackendRepositories();
 export const authRepository: IAuthRepository = repositories.authRepository;
+
 
 export default { pb };

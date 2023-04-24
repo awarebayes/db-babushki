@@ -1,6 +1,7 @@
 import type { IRepositories } from "../repository";
 import type { Meal, MealCreateInput } from "../generated_models";
 import { create_meal_for_grandma } from "./is_utils";
+import { UserClaim } from "../models";
 
 export async function getMeals(
   repos: IRepositories,
@@ -14,6 +15,20 @@ export async function getMealsForGrandma(
   grandmaId: number
 ): Promise<Meal[] | null> {
   return repos.mealRepository.getMealsOfGrandma(grandmaId);
+}
+
+export async function getSingleMealForGrandma(
+  repos: IRepositories,
+  userClaim: UserClaim,
+  mealId: number,
+): Promise<Meal> {
+  let grandma = (await repos.grandmaRepository.getWithUsername(userClaim.username))!
+  let meal = (await repos.mealRepository.getSingle(mealId))
+  if (!meal)
+    throw "Meal not found"
+  if (meal.grannyId !== grandma.id)
+    throw "Meal belongs to different grandma!"
+  return meal
 }
 
 export async function createNewMealForGrandma(

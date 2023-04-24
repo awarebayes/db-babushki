@@ -1,10 +1,11 @@
 import {
   IAuthRepository,
   IDataRepository,
+  IImageRepository,
   IMealRepository,
   IUserRepository,
 } from "../entities/interfaces";
-import { AuthUser, SignUpData } from "../entities/models";
+import { AuthUser, SignUpData, UserClaim } from "../entities/models";
 
 export class PocketBaseAuthRepository implements IAuthRepository {
   pb: any;
@@ -50,5 +51,22 @@ export class PocketBaseAuthRepository implements IAuthRepository {
       this.jwt_token = token["token"];
     }
     return this.jwt_token as string;
+  }
+}
+
+export class PocketBaseImageRepository implements IImageRepository {
+  pb: any;
+
+  constructor(pb: any) {
+    this.pb = pb;
+  }
+
+  async uploadImage(image: File): Promise<string> {
+    let formData = new FormData()
+    formData.append('createdBy', "unknown")
+    formData.append('documents', image)
+    const createRecord = await this.pb.collection("imageFiles").create(formData)
+    const url = this.pb.getUrl(createRecord, image.name, {'thumb': '400x400'});
+    return url
   }
 }

@@ -60,26 +60,42 @@ services:
   db:
     image: postgres:15-alpine
     restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
     ports:
       - "5433:5432"
     networks:
       - some-net
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ../db/postgres-data:/var/lib/postgresql/data
 
   db-test:
     image: postgres:15-alpine
     restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
     ports:
       - "5434:5432"
-
     profiles:
       - test
+    networks:
+      - some-net
+    volumes:
+      - ../db/postgres-test-data:/var/lib/postgresql/data
 
+  minio1:
+    image: quay.io/minio/minio:RELEASE.2023-04-20T17-56-55Z
+    command: server --console-address ":9001" /data/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    hostname: minio1
+    volumes:
+      - ../db/minio_storage:/data/minio
     networks:
       - some-net
 
@@ -87,7 +103,3 @@ networks:
   some-net:
     driver: bridge
     external: true
-
-volumes:
-  db:
-    driver: local

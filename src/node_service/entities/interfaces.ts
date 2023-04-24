@@ -14,7 +14,7 @@ import {
   User,
   UserCreateInput,
 } from "./generated_models";
-import type { AuthUser, OrderStatusEnum, SignUpData } from "./models";
+import type { AuthUser, OrderStatusEnum, SignUpData, UserClaim } from "./models";
 
 export interface IDataRepository<T> {
   getPaged: (pageIndex: number, pageLimit: number) => Promise<Array<T> | null>;
@@ -69,4 +69,8 @@ export interface IAuthRepository {
   getAuthenticatedUser: () => AuthUser | null;
   signUp: (user: SignUpData) => Promise<string | null>;
   getToken: () => Promise<string>;
+}
+
+export interface IImageRepository {
+  uploadImage: (image: File) => Promise<string>;
 }

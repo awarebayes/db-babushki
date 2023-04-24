@@ -1,6 +1,9 @@
-import { Grandma, Meal, User, MealCreateInput } from "../generated_models";
+import { Grandma, Meal, User, MealCreateInput, OrderCreateInput } from "../generated_models";
 import { faker } from "@faker-js/faker";
 import { IRepositories } from "../repository";
+import { MealClaim, UserClaim } from "../models";
+import { getMealsForGrandma } from "./meals";
+import { placeOrder } from "./orders";
 
 export async function create_dummy_user(
   repositories: IRepositories
@@ -129,4 +132,20 @@ export async function create_meal_for_grandma(
   let meal = await repositories.mealRepository.create(input);
 
   return meal!;
+}
+
+export async function create_dummy_order_for_admin(
+  repositories: IRepositories,
+  claim: UserClaim
+) {
+  let grandmas = (await repositories.grandmaRepository.getPaged(0, 25))!;
+  let random_grandma = grandmas[Math.floor(Math.random() * grandmas.length)]
+  let meals = (await getMealsForGrandma(repositories, random_grandma.id))!;
+  let random_meal = meals[Math.floor(Math.random() * meals?.length)]
+
+  let meal_claim: MealClaim = {
+    mealId: random_meal.id,
+    count: 32
+  }
+  return (await placeOrder(repositories, claim, [meal_claim]))!
 }

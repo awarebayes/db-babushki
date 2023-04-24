@@ -14,7 +14,7 @@
         </p>
         <div class="text-center mt-2">
             <ButtonGroup>
-                <Button color="yellow">Изменить</Button>
+                <Button color="yellow" href="/admin-grandma/change-meal?meal_id={meal.id}">Изменить</Button>
                 <Button color="red">Удалить</Button>
             </ButtonGroup>
         </div>

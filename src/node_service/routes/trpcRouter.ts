@@ -10,6 +10,7 @@ import {
   UserClaimSchema,
 } from "../data/zod_schemas";
 import {
+  create_dummy_order_for_admin,
   create_dummy_user,
   create_grandma_for_user,
   create_grandma_for_user_full,
@@ -22,7 +23,7 @@ import {
   getUnverified,
   verifyGrandma,
 } from "../entities/busyness_rules/grandmas";
-import { generateFakeMeals } from "../entities/busyness_rules/meals";
+import { generateFakeMeals, getSingleMealForGrandma } from "../entities/busyness_rules/meals";
 import {
   cancelOrder,
   placeOrder,
@@ -81,6 +82,14 @@ const router = trpc.router({
       return trpcController.getMealsOfGrandma(input);
     }),
 
+  getSingleMealOfGrandma: authedProcedure
+    .input(z.number())
+    .query(({ input, ctx }) => {
+      return getSingleMealForGrandma(repositories, ctx.user!, input)
+    }),
+
+
+
   getGrandmaWithUsername: trpc.procedure
     .input(z.string())
     .query(({ input, ctx }) => {
@@ -137,11 +146,16 @@ const router = trpc.router({
       await cancelOrder(repositories, ctx.user!, input);
     }),  
     
-    
   updateOrderStatusAsGrandma: authedProcedure
     .input(z.object({orderId: z.number(), newStatus: z.number()}))
     .query(async ({ input, ctx }) => {
       await updateOrderStatusAsGrandma(repositories, ctx.user!, input.orderId, input.newStatus)
+    }),
+
+  updateOrderStatusAsAdmin: authedProcedure
+    .input(z.object({orderId: z.number(), newStatus: z.number()}))
+    .query(async ({ input, ctx }) => {
+      await repositories.orderRepository.updateStatus(input.orderId, input.newStatus);
     }),
 
   getMyOrders: authedProcedure.query(async ({ input, ctx }) => {
@@ -191,8 +205,19 @@ const router = trpc.router({
     .input(z.string())
     .query(async ({ input, ctx }) => {
       return getReviewsForGrandma(repositories, input)
-    }),
+    }),  
 
+  createDummyOrderForAdmin: adminProcedure
+    .query(async ({ input, ctx }) => {
+      return create_dummy_order_for_admin(repositories, ctx.user!)
+    }),  
+
+  getOrdersAdmin: adminProcedure
+    .input(z.number())
+    .query(async ({ input, ctx }) => {
+      return repositories.orderRepository.getPaged(input, 25)
+    }),  
+    
   signUp: trpc.procedure.input(SignUpDataSchema).query(({ input, ctx }) => {
     if (ctx.user)
       new TRPCError({

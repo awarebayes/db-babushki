@@ -5,10 +5,16 @@
 	import { onMount } from "svelte";
 
     let current_profile: Grandma | null = null
+    let name = ""
+    let description = ""
+    let profile_pic = ""
 
     async function load_profile() {
         let user = await trpcClient.whoAmI.query()
-        current_profile = await trpcClient.getGrandmaWithUsername.query(user?.username!)
+        current_profile =(await trpcClient.getGrandmaWithUsername.query(user?.username!))!
+        name = current_profile.name
+        description = current_profile.description
+        profile_pic = current_profile.pictureUrl
     }
 
     onMount(load_profile)
@@ -17,14 +23,17 @@
 </script>
 
 <section>
+    <div>
+        <img src="{profile_pic}" alt="profile picture" class="rounded-lg max-w-3xl mx-auto">
+    </div>
     <div class="mb-2">
-        <Label for="textarea-id" class="mb-2">Имя</Label>
-        <Input type="text" id="first_name" placeholder="Галина" value={current_profile?.name} required  />
+        <Label class="mb-2">Имя</Label>
+        <Input  type="text" placeholder="Галина" bind:value={name} required  />
     </div>
 
     <div class="mb-2">
         <Label for="textarea-id" class="mb-2">Описание бабушки</Label>
-        <Textarea id="textarea-id" placeholder="Ваше описание" rows="4" name="message" value={current_profile?.description} required/>
+        <Textarea id="textarea-id" placeholder="Ваше описание" rows="4" name="message" bind:value={description} required/>
     </div>
 
     <Label class="space-y-2 mb-2">

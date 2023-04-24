@@ -5,8 +5,9 @@
 	import { Tabs, TabItem } from 'flowbite-svelte';
 	import AdminGrandmas from './AdminGrandmas/AdminGrandmas.svelte';
 	import AdminUsers from './AdminUsers.svelte';
-	import AdminMeals from './AdminMeals.svelte';
+	import AdminMeals from './AdminMeals/AdminMeals.svelte';
 	import Cart from '../Cart/Cart.svelte';
+	import AdminOrders from './AdminOrders/AdminOrders.svelte';
 
 	let iAmAdmin = false;
 
@@ -38,16 +39,7 @@
 					<AdminUsers />
 				</TabItem>
 				<TabItem title="Orders">
-					<p class="text-sm text-gray-500 dark:text-gray-400">
-						<b>Dashboard:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua.
-					</p>
-				</TabItem>
-				<TabItem title="Reviews">
-					<p class="text-sm text-gray-500 dark:text-gray-400">
-						<b>Dashboard:</b> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua.
-					</p>
+					<AdminOrders/>
 				</TabItem>
 			</Tabs>
 		</div>

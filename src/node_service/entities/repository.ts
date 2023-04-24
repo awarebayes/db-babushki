@@ -2,6 +2,7 @@ import type {
   IAuthRepository,
   IDataRepository,
   IGrandmaRepository,
+  IImageRepository,
   IMealRepository,
   IOrderRepository,
   IReviewRepository,
@@ -19,4 +20,5 @@ export interface IRepositories {
   orderRepository: IOrderRepository;
   orderStatusRepository: IDataRepository<OrderStatus>;
   reviewRepository: IReviewRepository;
+  imageRepository: IImageRepository;
 }
