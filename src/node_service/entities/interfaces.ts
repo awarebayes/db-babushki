@@ -1,5 +1,7 @@
 import { OrderStatus, Prisma } from "@prisma/client";
 import {
+  ExpandedOrder,
+  ExpandedReview,
   Grandma,
   GrandmaCreateInput,
   Meal,
@@ -30,6 +32,8 @@ export interface IUserRepository extends IDataRepository<User> {
 export interface IGrandmaRepository extends IDataRepository<Grandma> {
   getWithUsername: (username: string) => Promise<Grandma | null>;
   create: (input: GrandmaCreateInput) => Promise<Grandma | null>;
+  changeVerified: (input: number, status: boolean) => Promise<void>;
+  getUnverified: () => Promise<Grandma[]>;
 }
 
 export interface IMealRepository extends IDataRepository<Meal> {
@@ -39,11 +43,12 @@ export interface IMealRepository extends IDataRepository<Meal> {
 }
 
 export interface IOrderRepository extends IDataRepository<Order> {
-  getOrdersOfUser: (userId: number) => Promise<Order[]>;
-  getOrdersOfUserForGrandma: (
+  getOrdersOfUser: (userId: number) => Promise<ExpandedOrder[]>;
+  getOrdersForGrandma: (grandmaId: number) => Promise<ExpandedOrder[]>;
+  userOrderedFromGrandma: (
     userId: number,
     grandmaId: number
-  ) => Promise<Order[]>;
+  ) => Promise<boolean>;
   create: (input: OrderCreateInput) => Promise<Order | null>;
   updateStatus: (
     orderId: number,
@@ -52,7 +57,7 @@ export interface IOrderRepository extends IDataRepository<Order> {
 }
 
 export interface IReviewRepository extends IDataRepository<Review> {
-  getForGrandma: (grandmaUsername: string) => Promise<Review[]>;
+  getForGrandma: (grandmaUsername: string) => Promise<ExpandedReview[]>;
   create: (input: ReviewCreateInput) => Promise<Review | null>;
   update: (updateRec: ReviewUpdateInput) => Promise<Review>;
 }

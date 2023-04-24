@@ -83,6 +83,14 @@ export type OrderItem = {
   count: number;
 };
 
+export type ExpandedOrderItem = {
+  id: number;
+  orderId: number;
+  mealId: number;
+  count: number;
+  meal: Meal;
+};
+
 /**
  * Model Review
  *
@@ -190,6 +198,26 @@ export type Review = {
   review: string;
 };
 
+export type ExpandedReview = {
+  id: number
+  grandmaId: number
+  userId: number
+  rating: number
+  review: string
+  user: User
+}
+
+export type ExpandedOrder = {
+  id: number;
+  statusId: number;
+  userId: number;
+  grandmaId: number;
+  items: ExpandedOrderItem[];
+  status: OrderStatus;
+  grandma: Grandma;
+  user: User;
+};
+
 export type UserCreateInput = {
   data: {
     authId: string;
@@ -260,9 +288,9 @@ export type GrandmaCreateInput = {
 
 export type MealCreateInput = {
   grandma: {
-      connect: {
-        username: string;
-      };
+    connect: {
+      username: string;
+    };
   };
   name: string;
   price: number;

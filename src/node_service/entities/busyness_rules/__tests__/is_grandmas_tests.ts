@@ -1,17 +1,17 @@
 import { getGrandmaWithUsername, getGrandmas } from "../grandmas";
 import { create_dummy_user, create_grandma_for_user } from "../is_utils";
-import {
-  repositories,
-} from "../../../data/impl_integration";
-
+import { repositories } from "../../../data/impl_integration";
 
 describe("isGetGrandmas", () => {
   test("should get grandma by username", async () => {
-    let user = await create_dummy_user()!;
-    let grandma = await create_grandma_for_user(user.username);
+    let user = await create_dummy_user(repositories)!;
+    let grandma = await create_grandma_for_user(repositories, user.username);
 
     // Call the function with the mocked repositories
-    const result = (await getGrandmaWithUsername(repositories, grandma.username))!;
+    const result = (await getGrandmaWithUsername(
+      repositories,
+      grandma.username
+    ))!;
 
     // Verify that the result is the expected array of grandmas
     expect(result).toEqual(grandma);
@@ -20,10 +20,9 @@ describe("isGetGrandmas", () => {
   });
 
   test("returns null if grandma with given username is not found", async () => {
-    let user = await create_dummy_user()!;
+    let user = await create_dummy_user(repositories)!;
     const result = await getGrandmaWithUsername(repositories, "granny2");
     expect(result).toBeNull();
     await repositories.userRepository.delete(user!.id);
   });
 });
-

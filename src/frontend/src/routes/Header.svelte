@@ -2,14 +2,29 @@
 	import Cart from './Cart/Cart.svelte';
 	import icon from '../lib/images/icon.png';
 	import { authRepository } from '../lib/misc/impl_pocketbase_browser';
+	import { onMount } from 'svelte';
+	import { trpcClient } from '$lib/trpc/client';
+	import { browser } from '$app/environment';
+	import { jwtLoaded } from '$lib/misc/singletons';
 
 	let user = authRepository.getAuthenticatedUser();
 	let logged_in: boolean = user != null;
+	let is_admin = false;
+	let is_grandma = false;
 
 	async function logOut() {
 		await authRepository.logOut();
 		logged_in = false;
 	}
+
+	async function updateAuthStatus() {
+		if ($jwtLoaded) {
+			is_admin = await trpcClient.amIAdmin.query();
+			is_grandma = await trpcClient.amIGrandma.query();
+		}
+	}
+
+	$: $jwtLoaded, updateAuthStatus();
 </script>
 
 <header>
@@ -42,7 +57,14 @@
 
 				<a class="navbar-item" href="/meals"> Блюда </a>
 
-				<a class="navbar-item" href="/new-grandma"> Готовьте с нами </a>
+				{#if is_grandma}
+					<a class="navbar-item" href="/admin-grandma"> Кабинет Бабушки </a>
+				{:else}
+					<a class="navbar-item" href="/new-grandma"> Готовьте с нами </a>
+				{/if}
+				{#if is_admin}
+					<a class="navbar-item" href="/admin"> Админка </a>
+				{/if}
 
 				<a class="navbar-item"> О нас </a>
 			</div>
@@ -69,6 +91,7 @@
 								</a>
 								<div class="navbar-dropdown">
 									<a class="navbar-item"> Настройки </a>
+									<a class="navbar-item" href="/account/orders"> Заказы </a>
 									<hr class="navbar-divider" />
 									<a class="navbar-item" on:click={logOut}> Выйти </a>
 								</div>

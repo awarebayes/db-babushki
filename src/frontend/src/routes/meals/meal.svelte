@@ -72,7 +72,7 @@
 	<div class="columns">
 		<div class="column is-two-fifths">
 			<img
-				src="{fileServerUrl}{meal.pictureUrl}"
+				src="{fileServerUrl}{meal.pictureUrl}?nocache={Math.random()}"
 				alt="Meal photo"
 				class="image rounded is-256x256 object-cover"
 			/>

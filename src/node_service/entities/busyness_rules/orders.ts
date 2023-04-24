@@ -1,4 +1,5 @@
 import type {
+  ExpandedOrder,
   Grandma,
   Meal,
   Order,
@@ -96,7 +97,9 @@ export async function updateOrderStatusAsGrandma(
   let maybeOrder = await repos.orderRepository.getSingle(orderId);
   if (!maybeOrder) throw "Order was not found";
   let order = maybeOrder!;
-  let grandma = (await repos.grandmaRepository.getSingle(order.grandmaId)!) as Grandma;
+  let grandma = (await repos.grandmaRepository.getSingle(
+    order.grandmaId
+  )!) as Grandma;
 
   if (username != grandma.username) throw "Order was created for other grandma";
 
@@ -149,4 +152,20 @@ export async function startDeliveringOrder(
       OrderStatusEnum.Completed
     );
   }, minute_in_ms);
+}
+
+export async function getOrdersForUser(
+  repos: IRepositories,
+  userClaim: UserClaim
+): Promise<ExpandedOrder[]> {
+  let user = (await repos.userRepository.getByUsername(userClaim.username))!;
+  return repos.orderRepository.getOrdersOfUser(user.id);
+}
+
+export async function getOrdersForGrandma(
+  repos: IRepositories,
+  userClaim: UserClaim
+): Promise<ExpandedOrder[]> {
+  let grandma = (await repos.userRepository.getByUsername(userClaim.username))!;
+  return repos.orderRepository.getOrdersForGrandma(grandma.id);
 }

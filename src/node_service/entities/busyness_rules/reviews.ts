@@ -22,10 +22,9 @@ export async function addReview(
   let user: User = (await repos.userRepository.getByUsername(
     userClaim.username
   )!) as User;
-  if (grandma.username == user.username) throw "Grandma cannot rate herself!";
+  // if (grandma.username == user.username) throw "Grandma cannot rate herself!";
 
-  let ordersForGrandma = await repos.orderRepository.getOrdersOfUserForGrandma(
-    user.id,
+  let ordersForGrandma = await repos.orderRepository.getOrdersForGrandma(
     grandma.id
   );
   if (ordersForGrandma.length === 0) throw "User didnt order anything!";

@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { cart, loggedInUser } from '$lib/misc/singletons';
+	import { trpcClient } from '$lib/trpc/client';
 	import Meal from '../meals/meal.svelte';
 
 	let user = $loggedInUser;
+
+	async function place_order() {
+		await trpcClient.placeOrder.query($cart);
+		$cart = [];
+	}
 </script>
 
 <div class="columns is-flex is-centered min-h-screen">
@@ -102,7 +108,9 @@
 						<div class="field-body">
 							<div class="field">
 								<div class="control">
-									<button class="button is-primary is-medium"> Заказать </button>
+									<button class="button is-primary is-medium" on:click={place_order}>
+										Заказать
+									</button>
 								</div>
 							</div>
 						</div>

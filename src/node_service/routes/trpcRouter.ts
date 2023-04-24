@@ -3,10 +3,63 @@ import * as trpcExpress from "@trpc/server/adapters/express";
 import { z } from "zod";
 import { trpcController } from "../controllers/trpcController";
 import { createContext, Context } from "../util/context";
-import { SignUpDataSchema, UserClaimSchema } from "../data/zod_schemas";
+import {
+  MealClaimSchema,
+  ReviewClaimSchema,
+  SignUpDataSchema,
+  UserClaimSchema,
+} from "../data/zod_schemas";
+import {
+  create_dummy_user,
+  create_grandma_for_user,
+  create_grandma_for_user_full,
+} from "../entities/busyness_rules/is_utils";
+import { repositories } from "../data/impl_repositories_server";
+import {
+  createGrandma,
+  createGrandmaAdmin,
+  deleteGrandma,
+  getUnverified,
+  verifyGrandma,
+} from "../entities/busyness_rules/grandmas";
+import { generateFakeMeals } from "../entities/busyness_rules/meals";
+import {
+  cancelOrder,
+  placeOrder,
+  getOrdersForUser,
+  getOrdersForGrandma,
+  updateOrderStatusAsGrandma,
+} from "../entities/busyness_rules/orders";
+import { OrderStatusEnum } from "../entities/models";
+import { addReview, getReviewsForGrandma } from "../entities/busyness_rules/reviews";
 
-// create trpc router
 const trpc = initTRPC.context<Context>().create();
+
+export const middleware = trpc.middleware;
+export const publicProcedure = trpc.procedure;
+
+const isAdmin = middleware(async ({ ctx, next }) => {
+  if (!ctx.user?.is_admin) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Should be admin to use this trpc",
+    });
+  }
+  return next({ ctx });
+});
+
+const isAuthed = middleware(async ({ ctx, next }) => {
+  if (!ctx.user) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "Should be authed to use this trpc",
+    });
+  }
+  return next({ ctx });
+});
+
+export const authedProcedure = publicProcedure.use(isAuthed);
+export const adminProcedure = publicProcedure.use(isAdmin);
 
 const router = trpc.router({
   ping: trpc.procedure.input(z.string()).query(({ input, ctx }) => {
@@ -38,6 +91,107 @@ const router = trpc.router({
     if (ctx.user) return trpcController.whoAmI(ctx.user);
     return null;
   }),
+
+  amIAdmin: authedProcedure.query(({ input, ctx }) => {
+    if (ctx.user) return ctx.user.is_admin;
+    return false;
+  }),
+
+  amIGrandma: authedProcedure.query(async ({ input, ctx }) => {
+    let grandma = await repositories.grandmaRepository.getWithUsername(
+      ctx.user!.username!
+    );
+    return !!grandma;
+  }),
+
+  createDummyGrandmaWithUser: adminProcedure.query(async ({ input, ctx }) => {
+    let user = await create_dummy_user(repositories)!;
+    let grandma = await create_grandma_for_user_full(repositories, user);
+    return grandma;
+  }),
+
+  createDummyUser: adminProcedure.query(async ({ input, ctx }) => {
+    let user = await create_dummy_user(repositories)!;
+    return user;
+  }),
+
+  deleteGrandma: adminProcedure
+    .input(z.number())
+    .query(async ({ input, ctx }) => {
+      await deleteGrandma(repositories, input);
+    }),
+
+  createGrandma: authedProcedure.query(async ({ input, ctx }) => {
+    await createGrandma(repositories, ctx.user!);
+  }),
+
+  placeOrder: authedProcedure
+    .input(z.array(MealClaimSchema))
+    .query(async ({ input, ctx }) => {
+      await placeOrder(repositories, ctx.user!, input);
+    }),
+
+  cancelOrder: authedProcedure
+    .input(z.number())
+    .query(async ({ input, ctx }) => {
+      await cancelOrder(repositories, ctx.user!, input);
+    }),  
+    
+    
+  updateOrderStatusAsGrandma: authedProcedure
+    .input(z.object({orderId: z.number(), newStatus: z.number()}))
+    .query(async ({ input, ctx }) => {
+      await updateOrderStatusAsGrandma(repositories, ctx.user!, input.orderId, input.newStatus)
+    }),
+
+  getMyOrders: authedProcedure.query(async ({ input, ctx }) => {
+    return await getOrdersForUser(repositories, ctx.user!);
+  }),
+
+  createGrandmaAdmin: adminProcedure
+    .input(z.number())
+    .query(async ({ input, ctx }) => {
+      await createGrandmaAdmin(repositories, input);
+    }),
+
+  verifyGrandma: adminProcedure
+    .input(z.object({ id: z.number(), status: z.boolean() }))
+    .query(async ({ input, ctx }) => {
+      await verifyGrandma(repositories, input.id, input.status);
+    }),
+
+  getUnverified: adminProcedure.query(async ({ input, ctx }) => {
+    return getUnverified();
+  }),
+
+  generateFakeMeals: adminProcedure
+    .input(z.object({ min: z.number(), max: z.number() }))
+    .query(async ({ input, ctx }) => {
+      return await generateFakeMeals(repositories, input.min, input.max);
+    }),
+
+  getUserByUsername: adminProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      return repositories.userRepository.getByUsername(input);
+    }),
+
+  getOrdersForGrandma: authedProcedure
+    .query(async ({ input, ctx }) => {
+      return getOrdersForGrandma(repositories, ctx.user!);
+    }),
+
+  addReview: authedProcedure
+    .input(ReviewClaimSchema)
+    .query(async ({ input, ctx }) => {
+      return addReview(repositories, ctx.user!, input)
+    }),
+
+  getReviewsForGrandma: publicProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      return getReviewsForGrandma(repositories, input)
+    }),
 
   signUp: trpc.procedure.input(SignUpDataSchema).query(({ input, ctx }) => {
     if (ctx.user)

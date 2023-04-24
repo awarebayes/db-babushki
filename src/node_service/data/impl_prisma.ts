@@ -19,6 +19,8 @@ import {
 } from "@prisma/client";
 import { OrderStatusEnum } from "../entities/models";
 import {
+  ExpandedOrder,
+  ExpandedReview,
   GrandmaCreateInput,
   MealCreateInput,
   OrderCreateInput,
@@ -81,7 +83,7 @@ export class PrismaGrandmaRepository implements IGrandmaRepository {
   }
 
   async delete(id: number) {
-    this.client.grandma.delete({ where: { id } });
+    await this.client.grandma.delete({ where: { id } });
   }
 
   create(item: GrandmaCreateInput): Promise<Grandma> {
@@ -105,11 +107,20 @@ export class PrismaGrandmaRepository implements IGrandmaRepository {
   getWithUsername(username: string): Promise<Grandma | null> {
     return this.client.grandma.findFirst({
       where: {
-        User: {
-          username: username,
-        },
+        username,
       },
     });
+  }
+
+  async changeVerified(input: number, status: boolean) {
+    await this.client.grandma.update({
+      where: { id: input },
+      data: { verified: status },
+    });
+  }
+
+  async getUnverified(): Promise<Grandma[]> {
+    return this.client.grandma.findMany({ where: { verified: false } });
   }
 }
 
@@ -133,7 +144,7 @@ export class PrismaMealRepository implements IMealRepository {
   }
 
   create(item: MealCreateInput): Promise<Meal> {
-    return this.client.meal.create({data: item});
+    return this.client.meal.create({ data: item });
   }
 
   async delete(id: number) {
@@ -231,10 +242,20 @@ export class PrismaOrderStatusRepository
 export class PrismaOrderRepository implements IOrderRepository {
   constructor(private client: PrismaClient) {}
 
-  async getSingle(id: number): Promise<Order | null> {
+  async getSingle(id: number): Promise<ExpandedOrder | null> {
     return this.client.order.findUnique({
       where: {
         id: id,
+      },
+      include: {
+        status: true,
+        items: {
+          include: {
+            meal: true,
+          },
+        },
+        grandma: true,
+        user: true,
       },
     });
   }
@@ -268,31 +289,86 @@ export class PrismaOrderRepository implements IOrderRepository {
     });
   }
 
-  getPaged(pageIndex: number, pageLimit: number): Promise<Order[] | null> {
+  getPaged(
+    pageIndex: number,
+    pageLimit: number
+  ): Promise<ExpandedOrder[] | null> {
     return this.client.order.findMany({
       skip: pageIndex * pageLimit,
       take: pageLimit,
-    });
-  }
-
-  getOrdersOfUser(userId: number): Promise<Order[]> {
-    return this.client.order.findMany({
-      where: {
-        userId,
+      include: {
+        status: true,
+        items: {
+          include: {
+            meal: true,
+          },
+        },
+        grandma: true,
+        user: true,
       },
     });
   }
 
-  getOrdersOfUserForGrandma(
-    userId: number,
-    grandmaId: number
-  ): Promise<Order[]> {
-    return this.client.order.findMany({
+  async getOrdersOfUser(userId: number): Promise<ExpandedOrder[]> {
+    let res = await this.client.order.findMany({
       where: {
         userId,
+      },
+      include: {
+        status: true,
+        items: {
+          include: {
+            meal: true,
+          },
+        },
+        grandma: true,
+        user: true,
+      },
+    });
+    return res;
+  }
+
+  getOrdersForGrandma(grandmaId: number): Promise<ExpandedOrder[]> {
+    return this.client.order.findMany({
+      where: {
         grandmaId,
       },
+      include: {
+        status: true,
+        items: {
+          include: {
+            meal: true,
+          },
+        },
+        grandma: true,
+        user: true,
+      },
+      orderBy: {
+        id: "desc"
+      }
     });
+  }
+
+  async userOrderedFromGrandma(
+    userId: number,
+    grandmaId: number
+  ): Promise<boolean> {
+    let items = await this.client.order.findMany({
+      where: {
+        grandmaId,
+        userId,
+      },
+      include: {
+        status: true,
+        items: {
+          include: {
+            meal: true,
+          },
+        },
+        grandma: true,
+      },
+    });
+    return items.length > 0;
   }
 }
 
@@ -326,13 +402,20 @@ export class PrismaReviewRepository implements IReviewRepository {
     return this.client.review.update(item);
   }
 
-  getForGrandma(grandmaUsername: string): Promise<Review[]> {
+  getForGrandma(grandmaUsername: string): Promise<ExpandedReview[]> {
     return this.client.review.findMany({
       where: {
         grandma: {
           username: grandmaUsername,
         },
       },
+      orderBy: {
+        id: "desc"
+      },
+      take: 10,
+      include: {
+        user: true,
+      }
     });
   }
 }

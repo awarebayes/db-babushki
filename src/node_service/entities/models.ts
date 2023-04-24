@@ -16,6 +16,7 @@ export interface UserClaim {
   id: string;
   username: string;
   expiration: number;
+  is_admin: boolean;
 }
 
 export interface MealClaim {
@@ -32,9 +33,7 @@ export type SignUpData = {
 };
 
 export type ReviewClaim = {
-  userId: number;
   grandmaId: number;
-  username: string;
   review: string;
   rating: number;
 };

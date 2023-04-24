@@ -45,6 +45,7 @@ describe("addReview", () => {
     username: "mock_user",
     id: "0",
     expiration: 0,
+    is_admin: false,
   };
 
   it("should throw an error if grandma is not found", async () => {
@@ -73,9 +74,7 @@ describe("addReview", () => {
       .mockResolvedValue([{ id: 1, grannyId: 1 }]);
     repos.grandmaRepository.getSingle = jest.fn().mockResolvedValue(grandma);
     repos.userRepository.getByUsername = jest.fn().mockResolvedValue(newUser);
-    repos.orderRepository.getOrdersOfUserForGrandma = jest
-      .fn()
-      .mockResolvedValue([]);
+    repos.orderRepository.getOrdersForGrandma = jest.fn().mockResolvedValue([]);
     await expect(addReview(repos, userClaim, reviewClaim)).rejects.toEqual(
       "User didnt order anything!"
     );
@@ -83,9 +82,10 @@ describe("addReview", () => {
     expect(repos.userRepository.getByUsername).toHaveBeenCalledWith(
       "mock_user"
     );
-    expect(
-      repos.orderRepository.getOrdersOfUserForGrandma
-    ).toHaveBeenCalledWith(0, 0);
+    expect(repos.orderRepository.getOrdersForGrandma).toHaveBeenCalledWith(
+      0,
+      0
+    );
   });
 
   it("should succeed if everything was right", async () => {
@@ -95,7 +95,7 @@ describe("addReview", () => {
       .mockResolvedValue([{ id: 1, grannyId: 1 }]);
     repos.grandmaRepository.getSingle = jest.fn().mockResolvedValue(grandma);
     repos.userRepository.getByUsername = jest.fn().mockResolvedValue(newUser);
-    repos.orderRepository.getOrdersOfUserForGrandma = jest
+    repos.orderRepository.getOrdersForGrandma = jest
       .fn()
       .mockResolvedValue([1]);
     repos.reviewRepository.create = jest.fn();
@@ -104,9 +104,10 @@ describe("addReview", () => {
     expect(repos.userRepository.getByUsername).toHaveBeenCalledWith(
       "mock_user"
     );
-    expect(
-      repos.orderRepository.getOrdersOfUserForGrandma
-    ).toHaveBeenCalledWith(0, 0);
+    expect(repos.orderRepository.getOrdersForGrandma).toHaveBeenCalledWith(
+      0,
+      0
+    );
     expect(repos.reviewRepository.create).toHaveBeenCalledTimes(1);
   });
 });
@@ -155,6 +156,7 @@ describe("updateReview", () => {
     username: "mock_user",
     id: "0",
     expiration: 0,
+    is_admin: false,
   };
 
   it("should throw an error if review is not found", async () => {
@@ -237,6 +239,7 @@ describe("deleteReview", () => {
     username: "mock_user",
     id: "0",
     expiration: 0,
+    is_admin: false,
   };
 
   it("should throw an error if review is not found", async () => {

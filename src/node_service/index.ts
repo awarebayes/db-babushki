@@ -5,8 +5,6 @@ import { expressRouter } from "./routes/expressRouter";
 import cors from "cors";
 import { repositories } from "./data/impl_repositories_server";
 
-console.log(process.env);
-
 (async () => {
   await repositories.authRepository.logInAdmin(
     process.env.PB_ADMIN_EMAIL!,

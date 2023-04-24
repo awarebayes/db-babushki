@@ -73,6 +73,7 @@ describe("cancelOrder", () => {
       username: "testuser",
       id: "123",
       expiration: 0,
+      is_admin: false,
     };
     const orderId = 123;
 
@@ -96,6 +97,7 @@ describe("cancelOrder", () => {
       username: "testuser",
       id: "123",
       expiration: 0,
+      is_admin: false,
     };
     const orderId = 123;
 
@@ -115,6 +117,7 @@ describe("cancelOrder", () => {
       username: "testuser",
       id: "123",
       expiration: 0,
+      is_admin: false,
     };
     mockRepositories.orderRepository.getSingle = jest
       .fn()
@@ -147,6 +150,7 @@ describe("cancelOrder", () => {
       username: "testuser",
       id: "123",
       expiration: 0,
+      is_admin: false,
     };
 
     const orderId = 456;
@@ -176,6 +180,7 @@ describe("updateOrder", () => {
       username: "mock_user",
       id: "1",
       expiration: 0,
+      is_admin: false,
     };
     await expect(
       updateOrderStatusAsGrandma(repos, userClaim, 2, OrderStatusEnum.Confirmed)
@@ -209,6 +214,7 @@ describe("updateOrder", () => {
       username: "mock_grandma",
       id: "1",
       expiration: 0,
+      is_admin: false,
     };
     await expect(
       updateOrderStatusAsGrandma(repos, userClaim, 1, OrderStatusEnum.Confirmed)
@@ -243,6 +249,7 @@ describe("updateOrder", () => {
       username: "mock_grandma",
       id: "1",
       expiration: 0,
+      is_admin: false,
     };
     await expect(
       updateOrderStatusAsGrandma(repos, userClaim, 1, OrderStatusEnum.Confirmed)
