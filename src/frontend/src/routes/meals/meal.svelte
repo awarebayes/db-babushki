@@ -79,9 +79,12 @@
 		</div>
 		<div class="column">
 			<div class="is-flex is-justify-content-space-between">
-				<span class="subtitle is-4">{meal.name}</span>
+				<div>
+					<span class="text-2xl text-gray-900">{meal.name}</span>
+				</div>
 				{#if !inCart}
 					<a class="button is-small is-success" on:click={() => addToCart(meal)}>
+						<span class="text-lg text-center">{meal.price}р</span>
 						<span class="icon">
 							<i class="fas fa-shopping-basket" />
 						</span>

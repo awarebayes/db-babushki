@@ -7,22 +7,36 @@ export enum OrderStatusEnum {
   Cancelled = 6,
 }
 
-export interface AuthUser {
+export type AuthUser = {
   id: string;
   username: string;
 }
 
-export interface UserClaim {
+export type UserClaim = {
   id: string;
   username: string;
   expiration: number;
   is_admin: boolean;
 }
 
-export interface MealClaim {
+export type MealClaim = {
   mealId: number;
   count: number;
 }
+
+export type MealUpdateClaim = {
+  mealId?: number | null;
+  pictureUrl: string;
+  description: string;
+  price: number;
+  name: string;
+}
+
+export type UpdateGrandmaClaim = {
+  name: string;
+  description: string;
+  pictureUrl: string;
+};
 
 export type SignUpData = {
   username: string;

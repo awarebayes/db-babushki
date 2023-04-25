@@ -199,13 +199,13 @@ export type Review = {
 };
 
 export type ExpandedReview = {
-  id: number
-  grandmaId: number
-  userId: number
-  rating: number
-  review: string
-  user: User
-}
+  id: number;
+  grandmaId: number;
+  userId: number;
+  rating: number;
+  review: string;
+  user: User;
+};
 
 export type ExpandedOrder = {
   id: number;

@@ -7,7 +7,6 @@
 	let min_meals = 1;
 	let max_meals = 3;
 
-
 	async function generate_meals() {
 		min_meals = Number(min_meals);
 		max_meals = Number(max_meals);
@@ -18,26 +17,27 @@
 		);
 	}
 </script>
+
 <AccordionItem>
-    <span slot="header">Generate fake meals</span>
+	<span slot="header">Generate fake meals</span>
 
-    <div class="mb-2">
-        <Label class="mb-2">Min # meals</Label>
-        <Input type="number" bind:value={min_meals} />
-    </div>
+	<div class="mb-2">
+		<Label class="mb-2">Min # meals</Label>
+		<Input type="number" bind:value={min_meals} />
+	</div>
 
-    <div class="mb-2">
-        <Label class="mb-2">Max # meals</Label>
-        <Input type="number" bind:value={max_meals} />
-    </div>
+	<div class="mb-2">
+		<Label class="mb-2">Max # meals</Label>
+		<Input type="number" bind:value={max_meals} />
+	</div>
 
-    <div class="mb-2">
-        <Button on:click={generate_meals}>Get</Button>
-    </div>
+	<div class="mb-2">
+		<Button on:click={generate_meals}>Get</Button>
+	</div>
 
-    <div class="mb-2 max">
-        <pre class="overflow-auto max-w-6xl">
+	<div class="mb-2 max">
+		<pre class="overflow-auto max-w-6xl">
 {generated_meals}
         </pre>
-    </div>
+	</div>
 </AccordionItem>

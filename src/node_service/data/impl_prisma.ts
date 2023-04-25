@@ -7,8 +7,6 @@ import {
   IUserRepository,
 } from "../entities/interfaces";
 import {
-  Grandma,
-  Meal,
   Order,
   OrderItem,
   OrderStatus,
@@ -17,11 +15,13 @@ import {
   Review,
   User,
 } from "@prisma/client";
-import { OrderStatusEnum } from "../entities/models";
+import { MealUpdateClaim, OrderStatusEnum, UpdateGrandmaClaim } from "../entities/models";
 import {
   ExpandedOrder,
   ExpandedReview,
+  Grandma,
   GrandmaCreateInput,
+  Meal,
   MealCreateInput,
   OrderCreateInput,
   ReviewCreateInput,
@@ -52,7 +52,7 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async delete(id: number) {
-    this.client.user.delete({ where: { id } });
+    await this.client.user.delete({ where: { id } });
   }
 
   async getByUsername(username: string): Promise<User | null> {
@@ -88,6 +88,16 @@ export class PrismaGrandmaRepository implements IGrandmaRepository {
 
   create(item: GrandmaCreateInput): Promise<Grandma> {
     return this.client.grandma.create(item);
+  }
+
+
+  update(username: string, input: UpdateGrandmaClaim): Promise<Grandma> {
+    return this.client.grandma.update({
+      where: {
+        username,
+      }, 
+      data: input
+    })
   }
 
   createBulk(items: Grandma[]) {
@@ -148,7 +158,7 @@ export class PrismaMealRepository implements IMealRepository {
   }
 
   async delete(id: number) {
-    this.client.meal.delete({ where: { id } });
+    await this.client.meal.delete({ where: { id } });
   }
 
   createBulk(items: Meal[]) {
@@ -172,6 +182,19 @@ export class PrismaMealRepository implements IMealRepository {
       },
     });
   }
+
+  update(input: MealUpdateClaim): Promise<Meal> {
+    let meal_id = input.mealId!;
+    input.mealId = undefined;
+    return this.client.meal.update({
+      where: {
+        id: meal_id,
+      },
+      data: {
+        ...input,
+      },
+    });
+  }
 }
 
 export class PrismaOrderItemRepository implements IDataRepository<OrderItem> {
@@ -190,7 +213,7 @@ export class PrismaOrderItemRepository implements IDataRepository<OrderItem> {
   }
 
   async delete(id: number) {
-    this.client.orderItem.delete({ where: { id } });
+    await this.client.orderItem.delete({ where: { id } });
   }
 
   createBulk(items: Array<OrderItem>) {
@@ -235,7 +258,7 @@ export class PrismaOrderStatusRepository
   }
 
   async delete(id: number) {
-    this.client.orderStatus.delete({ where: { id } });
+    await this.client.orderStatus.delete({ where: { id } });
   }
 }
 
@@ -265,7 +288,7 @@ export class PrismaOrderRepository implements IOrderRepository {
   }
 
   async delete(id: number) {
-    this.client.order.delete({ where: { id } });
+    await this.client.order.delete({ where: { id } });
   }
 
   updateStatus(
@@ -324,6 +347,9 @@ export class PrismaOrderRepository implements IOrderRepository {
         grandma: true,
         user: true,
       },
+      orderBy: {
+        id: "desc"
+      }
     });
     return res;
   }
@@ -344,8 +370,8 @@ export class PrismaOrderRepository implements IOrderRepository {
         user: true,
       },
       orderBy: {
-        id: "desc"
-      }
+        id: "desc",
+      },
     });
   }
 
@@ -395,7 +421,7 @@ export class PrismaReviewRepository implements IReviewRepository {
   }
 
   async delete(id: number) {
-    this.client.review.delete({ where: { id } });
+    await this.client.review.delete({ where: { id } });
   }
 
   update(item: ReviewUpdateInput): Promise<Review> {
@@ -410,12 +436,12 @@ export class PrismaReviewRepository implements IReviewRepository {
         },
       },
       orderBy: {
-        id: "desc"
+        id: "desc",
       },
       take: 10,
       include: {
         user: true,
-      }
+      },
     });
   }
 }

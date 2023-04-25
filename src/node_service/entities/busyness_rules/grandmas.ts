@@ -1,6 +1,6 @@
 import type { IRepositories } from "../repository";
 import type { Grandma } from "../generated_models";
-import { UserClaim } from "../models";
+import { UpdateGrandmaClaim, UserClaim } from "../models";
 import { create_grandma_for_user_full } from "./is_utils";
 import { repositories } from "../../data/impl_repositories_server";
 
@@ -57,3 +57,9 @@ export async function verifyGrandma(
 export async function getUnverified(): Promise<Grandma[]> {
   return repositories.grandmaRepository.getUnverified();
 }
+
+
+export async function UpdateGrandma(repositories: IRepositories, username: string, updateClaim: UpdateGrandmaClaim): Promise<Grandma> {
+  return repositories.grandmaRepository.update(username, updateClaim);
+}
+

@@ -12,6 +12,7 @@ import {
   IAuthRepository,
   IDataRepository,
   IGrandmaRepository,
+  IImageRepository,
   IMealRepository,
   IOrderRepository,
   IReviewRepository,
@@ -29,8 +30,20 @@ import {
   PrismaUserRepository,
 } from "./impl_prisma";
 import { PrismaClient } from "@prisma/client";
+import { MinioImageRepository } from "./impl_minio";
+import { Client } from "minio";
 
 class MockRepositories implements IRepositories {
+  // this is a public bucket
+  imageRepository: IImageRepository = new MinioImageRepository(
+    new Client({
+      endPoint: "play.min.io",
+      port: 9000,
+      useSSL: true,
+      accessKey: "Q3AM3UQ867SPQQA43P2F",
+      secretKey: "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",
+    })
+  );
   authRepository: IAuthRepository = new PocketBaseAuthRepository(undefined);
   userRepository: IUserRepository = new PrismaUserRepository(
     undefined as any as PrismaClient

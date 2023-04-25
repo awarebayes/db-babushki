@@ -12,6 +12,7 @@ services:
       - ./:/home/node/app/
     ports:
       - "4000:4000"
+
     command: >
       npm run node_service
     env_file:

@@ -4,7 +4,6 @@
 	import type { ExpandedOrder } from '../../../../node_service/entities/generated_models';
 	import { OrderStatusEnum } from '../../../../node_service/entities/models';
 
-
 	export let order: ExpandedOrder;
 	let order_status = order.status.name;
 
@@ -23,32 +22,44 @@
 	}
 
 	async function cancel() {
-		await trpcClient.updateOrderStatusAsGrandma.query({orderId: order.id, newStatus: OrderStatusEnum.Cancelled})
-		order_status = "Cancelled";
+		await trpcClient.updateOrderStatusAsGrandma.query({
+			orderId: order.id,
+			newStatus: OrderStatusEnum.Cancelled
+		});
+		order_status = 'Cancelled';
 	}
 
 	async function confirm() {
-		await trpcClient.updateOrderStatusAsGrandma.query({orderId: order.id, newStatus: OrderStatusEnum.Confirmed})
-		order_status = "Confirmed";
+		await trpcClient.updateOrderStatusAsGrandma.query({
+			orderId: order.id,
+			newStatus: OrderStatusEnum.Confirmed
+		});
+		order_status = 'Confirmed';
 	}
 
 	async function start_cooking() {
-		await trpcClient.updateOrderStatusAsGrandma.query({orderId: order.id, newStatus: OrderStatusEnum.Cooking})
-		order_status = "Cooking";
+		await trpcClient.updateOrderStatusAsGrandma.query({
+			orderId: order.id,
+			newStatus: OrderStatusEnum.Cooking
+		});
+		order_status = 'Cooking';
 	}
 
 	async function start_delivering() {
-		await trpcClient.updateOrderStatusAsGrandma.query({orderId: order.id, newStatus: OrderStatusEnum.Delivering})
-		order_status = "Delivering";
+		await trpcClient.updateOrderStatusAsGrandma.query({
+			orderId: order.id,
+			newStatus: OrderStatusEnum.Delivering
+		});
+		order_status = 'Delivering';
 	}
 
 	async function complete() {
-		await trpcClient.updateOrderStatusAsGrandma.query({orderId: order.id, newStatus: OrderStatusEnum.Completed})
-		order_status = "Completed";
+		await trpcClient.updateOrderStatusAsGrandma.query({
+			orderId: order.id,
+			newStatus: OrderStatusEnum.Completed
+		});
+		order_status = 'Completed';
 	}
-
-
-
 </script>
 
 <Card>
@@ -73,7 +84,7 @@
 		Итого: {total} руб
 	</div>
 
-	{#if order_status == "Initialized"}
+	{#if order_status == 'Initialized'}
 		<div class="text-center mt-2 mb-0">
 			<Button color="red" on:click={cancel}>Отменить</Button>
 		</div>
@@ -82,19 +93,19 @@
 		</div>
 	{/if}
 
-	{#if order_status == "Confirmed"}
+	{#if order_status == 'Confirmed'}
 		<div class="text-center mt-2 mb-0">
 			<Button color="blue" on:click={start_cooking}>Начать готовку</Button>
 		</div>
 	{/if}
 
-	{#if order_status == "Cooking"}
+	{#if order_status == 'Cooking'}
 		<div class="text-center mt-2 mb-0">
 			<Button color="blue" on:click={start_delivering}>Начать доставку</Button>
 		</div>
 	{/if}
 
-	{#if order_status == "Delivering"}
+	{#if order_status == 'Delivering'}
 		<div class="text-center mt-2 mb-0">
 			<Button color="green" on:click={complete}>Завершить</Button>
 		</div>

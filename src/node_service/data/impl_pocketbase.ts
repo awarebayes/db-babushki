@@ -53,20 +53,3 @@ export class PocketBaseAuthRepository implements IAuthRepository {
     return this.jwt_token as string;
   }
 }
-
-export class PocketBaseImageRepository implements IImageRepository {
-  pb: any;
-
-  constructor(pb: any) {
-    this.pb = pb;
-  }
-
-  async uploadImage(image: File): Promise<string> {
-    let formData = new FormData()
-    formData.append('createdBy', "unknown")
-    formData.append('documents', image)
-    const createRecord = await this.pb.collection("imageFiles").create(formData)
-    const url = this.pb.getUrl(createRecord, image.name, {'thumb': '400x400'});
-    return url
-  }
-}

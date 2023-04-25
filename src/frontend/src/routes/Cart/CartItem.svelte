@@ -70,6 +70,8 @@
 
 <p class="dropdown-item is-flex is-flex-direction-row justify-between">
 	<span>{meal.name}</span>
+
+	<span class="">{meal.price}р.</span>
 	<span>
 		<a class="button is-small border-0" on:click={() => removeFromCart(meal)}>
 			<span class="icon">

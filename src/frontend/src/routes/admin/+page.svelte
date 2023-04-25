@@ -39,10 +39,9 @@
 					<AdminUsers />
 				</TabItem>
 				<TabItem title="Orders">
-					<AdminOrders/>
+					<AdminOrders />
 				</TabItem>
 			</Tabs>
 		</div>
 	{/if}
 </section>
-

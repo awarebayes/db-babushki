@@ -6,8 +6,8 @@
 	let total = order.items
 		.map((item) => item.meal.price * item.count)
 		.reduce((acc, item) => item + acc);
-	
-	let order_status_name = order.status.name
+
+	let order_status_name = order.status.name;
 
 	function statusToRussian(status: string) {
 		if (status === 'Initialized') return 'Принят в обработку';
@@ -21,11 +21,9 @@
 
 	async function cancel() {
 		await trpcClient.cancelOrder.query(order.id);
-		order_status_name = "Cancelled"
+		order_status_name = 'Cancelled';
 		can_cancel = false;
 	}
-
-
 </script>
 
 <Card>
@@ -50,15 +48,17 @@
 		Итого: {total} руб
 	</div>
 
-	{#if order_status_name == "Initialized"}
+	{#if order_status_name == 'Initialized'}
 		<div class="text-center mt-2 mb-0">
 			<Button color="red" on:click={cancel}>Отменить</Button>
 		</div>
 	{/if}
 
-	{#if order_status_name == "Completed"}
+	{#if order_status_name == 'Completed'}
 		<div class="text-center mt-2 mb-0">
-			<Button color="yellow" href="/add-review?grandma_username={order.grandma.username}">Оставить отзыв</Button>
+			<Button color="yellow" href="/add-review?grandma_username={order.grandma.username}"
+				>Оставить отзыв</Button
+			>
 		</div>
 	{/if}
 </Card>

@@ -9,7 +9,6 @@
 	let min_meals = 1;
 	let max_meals = 3;
 
-
 	async function generate_meals() {
 		min_meals = Number(min_meals);
 		max_meals = Number(max_meals);
@@ -23,8 +22,8 @@
 
 <div class="max-w-screen">
 	<Accordion>
-		<ListMeals/>
-		<GenerateFake/>
-		<ListMealsOfGrandma/>
+		<ListMeals />
+		<GenerateFake />
+		<ListMealsOfGrandma />
 	</Accordion>
 </div>

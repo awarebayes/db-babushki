@@ -10,24 +10,21 @@
 		page = Number(page);
 		all_meals = JSON.stringify(await trpcClient.getMeals.query(page), null, 2);
 	}
-
 </script>
 
-
-
 <AccordionItem>
-    <span slot="header">List meals</span>
-    <div class="mb-2">
-        <Label class="mb-2">Page</Label>
-        <Input type="number" bind:value={page} />
-    </div>
-    <div class="mb-2">
-        <Button on:click={list_meals}>Get</Button>
-    </div>
+	<span slot="header">List meals</span>
+	<div class="mb-2">
+		<Label class="mb-2">Page</Label>
+		<Input type="number" bind:value={page} />
+	</div>
+	<div class="mb-2">
+		<Button on:click={list_meals}>Get</Button>
+	</div>
 
-    <div class="mb-2 max">
-        <pre class="overflow-auto max-w-6xl">
+	<div class="mb-2 max">
+		<pre class="overflow-auto max-w-6xl">
 {all_meals}
         </pre>
-    </div>
+	</div>
 </AccordionItem>

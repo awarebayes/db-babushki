@@ -27,35 +27,35 @@
 		address: string;
 		datetime: string;
 		text: string;
-    };
-
+	};
 
 	let comments: Comment[] = [];
 
 	async function load_comments() {
 		let reviews = await trpcClient.getReviewsForGrandma.query(username);
 
-		comments = reviews.map((review)=>{
-			let c: Comment = {
-				id: review.id.toString(),
-				user: {
-					name: review.user.name,
-					img: {
-						src: `https://i.pravatar.cc/300?random=${Math.random()}`,
-						alt: 'user pfp'
+		comments = reviews
+			.map((review) => {
+				let c: Comment = {
+					id: review.id.toString(),
+					user: {
+						name: review.user.name,
+						img: {
+							src: `https://i.pravatar.cc/300?random=${Math.random()}`,
+							alt: 'user pfp'
+						},
+						joined: 'Changeme'
 					},
-					joined: "Changeme",
-				},
-				total: 5,
-				rating: review.rating,
-				heading: "",
-				address: "",
-				datetime: "",
-				text: review.review
-			}
-			return c
-		}).slice(0, 3)
-
+					total: 5,
+					rating: review.rating,
+					heading: '',
+					address: '',
+					datetime: '',
+					text: review.review
+				};
+				return c;
+			})
+			.slice(0, 3);
 	}
 
 	const loadGrandma = async () => {
@@ -71,8 +71,7 @@
 		});
 	};
 
-
-	onMount(load_comments)
+	onMount(load_comments);
 
 	$: $jwtLoaded, loadGrandma();
 </script>
@@ -98,16 +97,16 @@
 				{#if comments.length > 0}
 					<h1 class="text-center text-2xl mb-2">Отзывы на бабушку</h1>
 					{#each comments as comment}
-					<div class="mb-4">
-					<RatingComment comment={comment}  helpfullink="/" abuselink="/">
-						<p class="mb-2 font-light text-gray-500 dark:text-gray-400">
-							{comment.text}
-						</p>
-						<svelte:fragment slot="evaluation">{Math.floor(Math.random() * 50)} people found this helpful</svelte:fragment>
-					  </RatingComment>
-
-					</div>
-						
+						<div class="mb-4">
+							<RatingComment {comment} helpfullink="/" abuselink="/">
+								<p class="mb-2 font-light text-gray-500 dark:text-gray-400">
+									{comment.text}
+								</p>
+								<svelte:fragment slot="evaluation"
+									>{Math.floor(Math.random() * 50)} people found this helpful</svelte:fragment
+								>
+							</RatingComment>
+						</div>
 					{/each}
 				{/if}
 

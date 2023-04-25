@@ -7,7 +7,7 @@
 
 	let page: number = 0;
 	let created_order_text: string = '{}';
-	let list_text: string = ''
+	let list_text: string = '';
 
 	let order_status = 0;
 	let order_to_update_status_id = 0;
@@ -18,20 +18,21 @@
 	}
 
 	async function change_status() {
-		order_status = Number(order_status)
-		order_to_update_status_id = Number(order_to_update_status_id)
-		await trpcClient.updateOrderStatusAsAdmin.query({orderId: order_to_update_status_id, newStatus: order_status})
+		order_status = Number(order_status);
+		order_to_update_status_id = Number(order_to_update_status_id);
+		await trpcClient.updateOrderStatusAsAdmin.query({
+			orderId: order_to_update_status_id,
+			newStatus: order_status
+		});
 	}
-
 </script>
 
 <div class="max-w-screen">
 	<Accordion>
-		<CreateDummy/>
+		<CreateDummy />
 
-		<ListOrders/>
+		<ListOrders />
 
-		<UpdateStatus/>
+		<UpdateStatus />
 	</Accordion>
 </div>
-

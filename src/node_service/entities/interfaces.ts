@@ -14,7 +14,14 @@ import {
   User,
   UserCreateInput,
 } from "./generated_models";
-import type { AuthUser, OrderStatusEnum, SignUpData, UserClaim } from "./models";
+import type {
+  AuthUser,
+  MealUpdateClaim,
+  OrderStatusEnum,
+  SignUpData,
+  UpdateGrandmaClaim,
+  UserClaim,
+} from "./models";
 
 export interface IDataRepository<T> {
   getPaged: (pageIndex: number, pageLimit: number) => Promise<Array<T> | null>;
@@ -32,6 +39,7 @@ export interface IUserRepository extends IDataRepository<User> {
 export interface IGrandmaRepository extends IDataRepository<Grandma> {
   getWithUsername: (username: string) => Promise<Grandma | null>;
   create: (input: GrandmaCreateInput) => Promise<Grandma | null>;
+  update: (username: string, input: UpdateGrandmaClaim) => Promise<Grandma>;
   changeVerified: (input: number, status: boolean) => Promise<void>;
   getUnverified: () => Promise<Grandma[]>;
 }
@@ -40,6 +48,7 @@ export interface IMealRepository extends IDataRepository<Meal> {
   getMealsOfGrandma: (grandmaId: number) => Promise<Meal[]>;
   getMany: (ids: Array<number>) => Promise<Meal[] | null>;
   create: (input: MealCreateInput) => Promise<Meal | null>;
+  update: (input: MealUpdateClaim) => Promise<Meal>;
 }
 
 export interface IOrderRepository extends IDataRepository<Order> {
@@ -72,5 +81,8 @@ export interface IAuthRepository {
 }
 
 export interface IImageRepository {
-  uploadImage: (image: File) => Promise<string>;
+  getUploadLink: (
+    userClaim: UserClaim,
+    image_name: string
+  ) => Promise<{ url: string; name: string }>;
 }

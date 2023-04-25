@@ -8,12 +8,13 @@
 	async function place_order() {
 		await trpcClient.placeOrder.query($cart);
 		$cart = [];
+		window.location = "/account/orders"
 	}
 </script>
 
 <div class="columns is-flex is-centered min-h-screen">
 	<div class="column is-half-desktop mt-7">
-		<h1 class="title has-text-centered">Заказ еды!</h1>
+		<h1 class="title has-text-centered">Моя корзина</h1>
 		<h1 class="subtitle has-text-centered">Мы быстро до вас доставим!</h1>
 		{#if $cart.length > 0}
 			<section>

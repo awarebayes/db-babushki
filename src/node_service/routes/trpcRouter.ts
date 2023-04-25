@@ -4,15 +4,15 @@ import { z } from "zod";
 import { trpcController } from "../controllers/trpcController";
 import { createContext, Context } from "../util/context";
 import {
+  GrandmaUpdateClaimSchema,
   MealClaimSchema,
+  MealUpdateClaimSchema,
   ReviewClaimSchema,
   SignUpDataSchema,
-  UserClaimSchema,
 } from "../data/zod_schemas";
 import {
   create_dummy_order_for_admin,
   create_dummy_user,
-  create_grandma_for_user,
   create_grandma_for_user_full,
 } from "../entities/busyness_rules/is_utils";
 import { repositories } from "../data/impl_repositories_server";
@@ -21,9 +21,16 @@ import {
   createGrandmaAdmin,
   deleteGrandma,
   getUnverified,
+  UpdateGrandma,
   verifyGrandma,
 } from "../entities/busyness_rules/grandmas";
-import { generateFakeMeals, getSingleMealForGrandma } from "../entities/busyness_rules/meals";
+import {
+  CreateMeal,
+  DeleteMeal,
+  generateFakeMeals,
+  getSingleMealForGrandma,
+  UpdateMeal,
+} from "../entities/busyness_rules/meals";
 import {
   cancelOrder,
   placeOrder,
@@ -32,7 +39,10 @@ import {
   updateOrderStatusAsGrandma,
 } from "../entities/busyness_rules/orders";
 import { OrderStatusEnum } from "../entities/models";
-import { addReview, getReviewsForGrandma } from "../entities/busyness_rules/reviews";
+import {
+  addReview,
+  getReviewsForGrandma,
+} from "../entities/busyness_rules/reviews";
 
 const trpc = initTRPC.context<Context>().create();
 
@@ -85,10 +95,8 @@ const router = trpc.router({
   getSingleMealOfGrandma: authedProcedure
     .input(z.number())
     .query(({ input, ctx }) => {
-      return getSingleMealForGrandma(repositories, ctx.user!, input)
+      return getSingleMealForGrandma(repositories, ctx.user!, input);
     }),
-
-
 
   getGrandmaWithUsername: trpc.procedure
     .input(z.string())
@@ -144,18 +152,26 @@ const router = trpc.router({
     .input(z.number())
     .query(async ({ input, ctx }) => {
       await cancelOrder(repositories, ctx.user!, input);
-    }),  
-    
+    }),
+
   updateOrderStatusAsGrandma: authedProcedure
-    .input(z.object({orderId: z.number(), newStatus: z.number()}))
+    .input(z.object({ orderId: z.number(), newStatus: z.number() }))
     .query(async ({ input, ctx }) => {
-      await updateOrderStatusAsGrandma(repositories, ctx.user!, input.orderId, input.newStatus)
+      await updateOrderStatusAsGrandma(
+        repositories,
+        ctx.user!,
+        input.orderId,
+        input.newStatus
+      );
     }),
 
   updateOrderStatusAsAdmin: authedProcedure
-    .input(z.object({orderId: z.number(), newStatus: z.number()}))
+    .input(z.object({ orderId: z.number(), newStatus: z.number() }))
     .query(async ({ input, ctx }) => {
-      await repositories.orderRepository.updateStatus(input.orderId, input.newStatus);
+      await repositories.orderRepository.updateStatus(
+        input.orderId,
+        input.newStatus
+      );
     }),
 
   getMyOrders: authedProcedure.query(async ({ input, ctx }) => {
@@ -190,34 +206,32 @@ const router = trpc.router({
       return repositories.userRepository.getByUsername(input);
     }),
 
-  getOrdersForGrandma: authedProcedure
-    .query(async ({ input, ctx }) => {
-      return getOrdersForGrandma(repositories, ctx.user!);
-    }),
+  getOrdersForGrandma: authedProcedure.query(async ({ input, ctx }) => {
+    return getOrdersForGrandma(repositories, ctx.user!);
+  }),
 
   addReview: authedProcedure
     .input(ReviewClaimSchema)
     .query(async ({ input, ctx }) => {
-      return addReview(repositories, ctx.user!, input)
+      return addReview(repositories, ctx.user!, input);
     }),
 
   getReviewsForGrandma: publicProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
-      return getReviewsForGrandma(repositories, input)
-    }),  
+      return getReviewsForGrandma(repositories, input);
+    }),
 
-  createDummyOrderForAdmin: adminProcedure
-    .query(async ({ input, ctx }) => {
-      return create_dummy_order_for_admin(repositories, ctx.user!)
-    }),  
+  createDummyOrderForAdmin: adminProcedure.query(async ({ input, ctx }) => {
+    return create_dummy_order_for_admin(repositories, ctx.user!);
+  }),
 
   getOrdersAdmin: adminProcedure
     .input(z.number())
     .query(async ({ input, ctx }) => {
-      return repositories.orderRepository.getPaged(input, 25)
-    }),  
-    
+      return repositories.orderRepository.getPaged(input, 25);
+    }),
+
   signUp: trpc.procedure.input(SignUpDataSchema).query(({ input, ctx }) => {
     if (ctx.user)
       new TRPCError({
@@ -226,6 +240,40 @@ const router = trpc.router({
       });
     return trpcController.signUp(input);
   }),
+
+  getUploadImageUrl: authedProcedure
+    .input(z.string())
+    .query(async ({ input, ctx }) => {
+      return (await repositories.imageRepository.getUploadLink(
+        ctx?.user!,
+        input
+      ))!;
+    }),
+
+  updateMeal: authedProcedure
+    .input(MealUpdateClaimSchema)
+    .query(async ({ input, ctx }) => {
+      return await UpdateMeal(repositories, input, ctx.user!);
+    }),
+
+  createMeal: authedProcedure
+    .input(MealUpdateClaimSchema)
+    .query(async ({ input, ctx }) => {
+      return await CreateMeal(repositories, input, ctx.user!);
+    }),
+
+
+  deleteMeal: authedProcedure
+    .input(z.number())
+    .query(async ({ input, ctx }) => {
+      return await DeleteMeal(repositories, input, ctx.user!);
+    }),
+  
+  updateGrandma: authedProcedure
+    .input(GrandmaUpdateClaimSchema)
+    .query(async ({ input, ctx }) => {
+      return await UpdateGrandma(repositories, ctx.user!.username, input);
+    }),
 });
 
 // export types and express router
