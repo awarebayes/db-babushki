@@ -16,7 +16,7 @@
 
 		iAmAdmin = await trpcClient.amIAdmin.query();
 		if (!iAmAdmin) {
-			window.location = '/admin/authFail';
+			window.location.href = '/admin/authFail';
 		}
 	}
 

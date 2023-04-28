@@ -11,7 +11,7 @@
 
 	async function become_grandma() {
 		await trpcClient.createGrandma.query();
-		window.location = '/admin-grandma';
+		window.location.href = '/admin-grandma';
 	}
 </script>
 

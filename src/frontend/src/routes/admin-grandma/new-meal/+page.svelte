@@ -38,7 +38,7 @@
 		};
 		await trpcClient.createMeal.query(updateClaim);
 		show_success_alert = true;
-		window.location = '/admin-grandma';
+		window.location.href = '/admin-grandma';
 	}
 
 	let uploaded_meal: FileList;

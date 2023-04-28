@@ -8,7 +8,7 @@
 	async function place_order() {
 		await trpcClient.placeOrder.query($cart);
 		$cart = [];
-		window.location = "/account/orders"
+		window.location.href = '/account/orders';
 	}
 </script>
 

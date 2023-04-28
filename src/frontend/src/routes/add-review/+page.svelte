@@ -12,13 +12,13 @@
 		grandma = await trpcClient.getGrandmaWithUsername.query(grandma_username!);
 	}
 
-	let rating = '';
+	let rating = 0;
 	let review = '';
 
 	async function submit_review() {
 		rating = Number(rating);
 		await trpcClient.addReview.query({ grandmaId: grandma!.id!, review, rating });
-		window.location = '/account/orders';
+		window.location.href = '/account/orders';
 	}
 
 	onMount(get_grandma);
