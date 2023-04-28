@@ -19,6 +19,7 @@ export async function signUp(
     if (!maybeAuthId) throw new Error("Could not create user in pocketbase");
     createdAuthId = maybeAuthId!;
   } catch (e: any) {
+    
     throw e;
   }
 

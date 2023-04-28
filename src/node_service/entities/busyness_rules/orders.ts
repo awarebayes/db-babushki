@@ -7,6 +7,7 @@ import type {
 } from "../generated_models";
 import type { IRepositories } from "../repository";
 import { MealClaim, OrderStatusEnum, UserClaim } from "../models";
+import { logger } from "../../util/logger";
 
 export async function placeOrder(
   repos: IRepositories,
@@ -58,6 +59,7 @@ export async function placeOrder(
   };
 
   let created_order = await repos.orderRepository.create(orderToCreate);
+  logger.info(`${userClaim.username} placed an order for grandma with id ${grandmaId} containing ${mealClaims.length} items`)
   return created_order;
 }
 
@@ -77,6 +79,7 @@ export async function cancelOrder(
   let user = maybeUser!;
 
   if (orderToDelete.userId != user.id) {
+    logger.error(`Deleting meal different user initiated by ${userClaim.username} tried to cancel ${user.username}'s order!`)
     throw "Trying to cancel order of different user";
   }
 
@@ -102,6 +105,8 @@ export async function updateOrderStatusAsGrandma(
   )!) as Grandma;
 
   if (username != grandma.username) throw "Order was created for other grandma";
+
+  logger.info(`Grandma ${grandma.username} updated order ${orderId} to have a status ${newStatus}`)
 
   await repos.orderRepository.updateStatus(order.id, newStatus);
 }

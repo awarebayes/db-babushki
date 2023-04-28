@@ -4,6 +4,7 @@ import { repositories } from "../data/impl_repositories_server";
 import { MealClaimSchema, MealUpdateClaimSchema, SignUpDataSchema } from "../data/zod_schemas";
 import { authedProcedure, trpc } from "./trpcCommon";
 import { z } from "zod";
+import { logger } from "../util/logger";
 
 
 
@@ -36,12 +37,15 @@ export const userAuthRouter = trpc.router({
         message: "User is logged in, log out before signing up!",
         code: "BAD_REQUEST",
       });
+
+    logger.info(`sign up request from ${input.username}`)
     return trpcController.signUp(input);
   }),
 
   getUploadImageUrl: authedProcedure
     .input(z.string())
     .query(async ({ input, ctx }) => {
+      logger.info(`${ctx.user?.username} requests upload url for an image`)
       return (await repositories.imageRepository.getUploadLink(
         ctx?.user!,
         input

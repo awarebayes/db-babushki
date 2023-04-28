@@ -13,7 +13,6 @@ import { ordersRouter } from "./ordersRouter";
 
 const router = trpc.mergeRouters(adminRouter, grandmasRouter, mealsRouter, reviewRouter, userAuthRouter, ordersRouter)
 
-
 // export types and express router
 type NodeServiceAppRouter = typeof router;
 const trpcRouter = trpcExpress.createExpressMiddleware({

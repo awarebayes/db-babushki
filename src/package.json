@@ -34,7 +34,6 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "minio": "^7.0.33",
-    "next-auth": "^4.22.1",
     "pocketbase": "^0.12.1",
     "prettier-plugin-svelte": "^2.10.0",
     "winston": "^3.8.2",

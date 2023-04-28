@@ -28,4 +28,3 @@ const isAuthed = middleware(async ({ ctx, next }) => {
 
 export const authedProcedure = publicProcedure.use(isAuthed);
 export const adminProcedure = publicProcedure.use(isAdmin);
-

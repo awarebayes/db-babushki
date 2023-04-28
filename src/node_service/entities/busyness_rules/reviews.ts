@@ -7,6 +7,7 @@ import type {
   ReviewUpdateInput,
   User,
 } from "../generated_models";
+import { logger } from "../../util/logger";
 
 export async function addReview(
   repos: IRepositories,
@@ -27,7 +28,10 @@ export async function addReview(
   let ordersForGrandma = await repos.orderRepository.getOrdersForGrandma(
     grandma.id
   );
-  if (ordersForGrandma.length === 0) throw "User didnt order anything!";
+  if (ordersForGrandma.length === 0) {
+    logger.error(`${user.username} tried to review ${maybeGrandma!.username} but didnt actually order anything!`)
+    throw "User didnt order anything!";
+  }
 
   let reviewToCreate: ReviewCreateInput = {
     data: {
@@ -46,6 +50,7 @@ export async function addReview(
     },
   };
 
+  logger.info(`${user.username} revieved ${grandma.username}`)
   await repos.reviewRepository.create(reviewToCreate);
 }
 
@@ -63,7 +68,10 @@ export async function removeReview(
 
   let review: Review = maybeReview!;
   if (review.userId != user.id)
+  {
+    logger.error(`${user.username} tried to delete review ${review!.id} but it was not theirs!`)
     throw "Trying to delete a review of different user!";
+  }
 
   await repos.reviewRepository.delete(reviewId);
 }
@@ -82,7 +90,10 @@ export async function updateReview(
   )!) as User;
   let review: Review = maybeReview!;
   if (review.userId != user.id)
+  {
+    logger.error(`${user.username} tried to update review ${review!.id} but it was not theirs!`)
     throw "Trying to update a review of different user!";
+  }
 
   let reviewToUpdate: ReviewUpdateInput = {
     data: {
