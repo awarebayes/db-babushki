@@ -2,8 +2,8 @@
 	import MealComponent from './meal.svelte';
 
 	import { trpcClient } from '../../lib/trpc/client';
-	import { jwtLoaded } from '$lib/misc/singletons';
 	import type { FrontEndMealClaim } from '$lib/misc/types';
+	import { onMount } from 'svelte';
 
 	let records: FrontEndMealClaim[] = [];
 	async function loadMeals() {
@@ -15,7 +15,8 @@
 		});
 	}
 
-	$: $jwtLoaded, loadMeals();
+	onMount(loadMeals);
+
 </script>
 
 <section>

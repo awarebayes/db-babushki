@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import MealComponent from '../../meals/meal.svelte';
-	import type { Meal, Grandma, Review } from '@prisma/client';
+	import type { Meal, Grandma } from '@prisma/client';
 	import { trpcClient } from '$lib/trpc/client';
-	import { fileServerUrl, jwtLoaded } from '$lib/misc/singletons';
+	import { fileServerUrl } from '$lib/misc/singletons';
 	import type { FrontEndMealClaim } from '$lib/misc/types';
 	import { RatingComment, Review } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
@@ -59,7 +59,6 @@
 	}
 
 	const loadGrandma = async () => {
-		if (!$jwtLoaded) return;
 		grandma = await trpcClient.getGrandmaWithUsername.query(username);
 		if (!grandma) throw 'Grandma not found';
 
@@ -71,9 +70,8 @@
 		});
 	};
 
-	onMount(load_comments);
+	onMount(async ()=> { load_comments(), loadGrandma()});
 
-	$: $jwtLoaded, loadGrandma();
 </script>
 
 <section>

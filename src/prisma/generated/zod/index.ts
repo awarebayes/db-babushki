@@ -30,7 +30,7 @@ export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','authId','username','name','passwordHash','passwordSalt','grannyId']);
+export const UserScalarFieldEnumSchema = z.enum(['id','username','name','passwordHash','passwordSalt','isAdmin','grannyId']);
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -41,11 +41,11 @@ export const UserScalarFieldEnumSchema = z.enum(['id','authId','username','name'
 
 export const UserSchema = z.object({
   id: z.number().int(),
-  authId: z.string(),
   username: z.string(),
   name: z.string(),
   passwordHash: z.string(),
   passwordSalt: z.string(),
+  isAdmin: z.boolean(),
   grannyId: z.number().int().nullable(),
 })
 

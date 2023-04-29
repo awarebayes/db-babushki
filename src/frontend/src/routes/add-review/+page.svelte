@@ -4,6 +4,7 @@
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 	import { Button, Card, Label, Radio, Textarea } from 'flowbite-svelte';
+	import { goto } from '$app/navigation';
 
 	let grandma_username: string | null = $page.url?.searchParams.get('grandma_username');
 	let grandma: Grandma | null = null;
@@ -18,7 +19,7 @@
 	async function submit_review() {
 		rating = Number(rating);
 		await trpcClient.addReview.query({ grandmaId: grandma!.id!, review, rating });
-		window.location.href = '/account/orders';
+		goto("/account/orders")
 	}
 
 	onMount(get_grandma);

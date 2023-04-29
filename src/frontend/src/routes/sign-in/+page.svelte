@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { authRepository } from '../../lib/misc/impl_pocketbase_browser';
+	import { trpcClient } from "$lib/trpc/client";
 
 	let auth_failed = false;
-	let email = '';
+	let username = '';
 	let password = '';
 
 	async function signIn() {
 		try {
-			await authRepository.logIn(email, password);
+			let token = await trpcClient.signIn.query({password, username})
 			auth_failed = false;
 			console.log('Auth successful!');
+			localStorage.setItem("jwt", token)
 			window.location.href = '/';
 		} catch (e) {
 			auth_failed = true;
@@ -22,13 +23,12 @@
 		<div class="column is-half-desktop is-offset-one-quarter mt-7">
 			<form class="box">
 				<div class="field">
-					<label class="label">Email</label>
+					<label class="label">Имя пользователя</label>
 					<div class="control">
 						<input
 							class="input"
-							type="email"
-							bind:value={email}
-							placeholder="e.g. alex@example.com"
+							bind:value={username}
+							placeholder="e.g. misha"
 						/>
 					</div>
 				</div>

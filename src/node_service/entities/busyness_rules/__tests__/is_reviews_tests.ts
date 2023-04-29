@@ -29,9 +29,7 @@ describe("isGetReviews", () => {
     let meal = await create_meal_for_grandma(repositories, grandma.username);
 
     let user_claim: UserClaim = {
-      id: user.authId,
       username: user.username,
-      expiration: 199999,
       is_admin: false,
     };
 
@@ -49,7 +47,6 @@ describe("isGetReviews", () => {
     );
 
     let review: ReviewClaim = {
-      userId: user.id,
       grandmaId: grandma.id,
       review: "Test test test",
       rating: 5,
@@ -67,7 +64,6 @@ describe("isGetReviews", () => {
     expect(reviewFirst.review).toBe(review.review);
 
     let updated_review: ReviewClaim = {
-      userId: user.id,
       grandmaId: grandma.id,
       review: "Something else",
       rating: 2,

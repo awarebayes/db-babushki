@@ -1,5 +1,4 @@
 import type {
-  IAuthRepository,
   IDataRepository,
   IGrandmaRepository,
   IImageRepository,
@@ -12,7 +11,6 @@ import type {
 import type { OrderItem, OrderStatus } from "../entities/generated_models";
 
 export interface IRepositories {
-  authRepository: IAuthRepository;
   userRepository: IUserRepository;
   mealRepository: IMealRepository;
   grandmaRepository: IGrandmaRepository;

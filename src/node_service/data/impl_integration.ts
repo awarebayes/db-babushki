@@ -12,13 +12,9 @@ let client = new PrismaClient({
   },
 });
 
-jest.mock("./impl_pocketbase");
-import { PocketBaseAuthRepository } from "./impl_pocketbase";
-
 import { Order, OrderItem, OrderStatus } from "../entities/generated_models";
 
 import {
-  IAuthRepository,
   IDataRepository,
   IGrandmaRepository,
   IMealRepository,
@@ -39,7 +35,6 @@ import {
 
 export class IntegrationRepositories implements IRepositories {
   constructor(public client: PrismaClient) {
-    this.authRepository = new PocketBaseAuthRepository(undefined);
     this.userRepository = new PrismaUserRepository(client);
     this.mealRepository = new PrismaMealRepository(client);
     this.grandmaRepository = new PrismaGrandmaRepository(client);
@@ -49,7 +44,6 @@ export class IntegrationRepositories implements IRepositories {
     this.reviewRepository = new PrismaReviewRepository(client);
   }
 
-  authRepository: IAuthRepository;
   userRepository: IUserRepository;
   mealRepository: IMealRepository;
   grandmaRepository: IGrandmaRepository;

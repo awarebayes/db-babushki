@@ -15,9 +15,7 @@ describe("addReview", () => {
     jest.resetAllMocks();
   });
   const reviewClaim: ReviewClaim = {
-    userId: 0,
     grandmaId: 0,
-    username: "mock_user",
     review: "good",
     rating: 5,
   };
@@ -35,16 +33,16 @@ describe("addReview", () => {
 
   const user: User = {
     id: 0,
-    authId: "test",
     name: "a",
     username: "aboba",
     grannyId: 0,
+    isAdmin: false,
+    passwordHash: "",
+    passwordSalt: "",
   };
 
   const userClaim: UserClaim = {
     username: "mock_user",
-    id: "0",
-    expiration: 0,
     is_admin: false,
   };
 
@@ -118,9 +116,7 @@ describe("updateReview", () => {
   });
 
   const reviewClaim: ReviewClaim = {
-    userId: 0,
     grandmaId: 0,
-    username: "mock_user",
     review: "good",
     rating: 5,
   };
@@ -146,16 +142,16 @@ describe("updateReview", () => {
 
   const user: User = {
     id: 0,
-    authId: "test",
     name: "a",
     username: "aboba",
     grannyId: 0,
+    passwordHash: "",
+    passwordSalt: "",
+    isAdmin: false,
   };
 
   const userClaim: UserClaim = {
     username: "mock_user",
-    id: "0",
-    expiration: 0,
     is_admin: false,
   };
 
@@ -201,9 +197,7 @@ describe("deleteReview", () => {
   });
 
   const reviewClaim: ReviewClaim = {
-    userId: 0,
     grandmaId: 0,
-    username: "mock_user",
     review: "good",
     rating: 5,
   };
@@ -229,16 +223,16 @@ describe("deleteReview", () => {
 
   const user: User = {
     id: 0,
-    authId: "test",
     name: "a",
     username: "aboba",
     grannyId: 0,
+    passwordHash: "",
+    passwordSalt: "",
+    isAdmin: false,
   };
 
   const userClaim: UserClaim = {
     username: "mock_user",
-    id: "0",
-    expiration: 0,
     is_admin: false,
   };
 

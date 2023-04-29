@@ -1,30 +1,35 @@
 <script lang="ts">
 	import Cart from './Cart/Cart.svelte';
 	import icon from '../lib/images/icon.png';
-	import { authRepository } from '../lib/misc/impl_pocketbase_browser';
 	import { onMount } from 'svelte';
-	import { trpcClient } from '$lib/trpc/client';
+	import { setTRPCToken, trpcClient } from '$lib/trpc/client';
 	import { browser } from '$app/environment';
-	import { jwtLoaded } from '$lib/misc/singletons';
+	import type { User } from '../../../node_service/entities/generated_models';
 
-	let user = authRepository.getAuthenticatedUser();
-	let logged_in: boolean = user != null;
+	let logged_in: boolean = false;
 	let is_admin = false;
 	let is_grandma = false;
 
+	let user: User;
+
 	async function logOut() {
-		await authRepository.logOut();
+		localStorage.setItem("jwt", "null");
+		setTRPCToken("null");
 		logged_in = false;
 	}
 
 	async function updateAuthStatus() {
-		if ($jwtLoaded) {
-			is_admin = await trpcClient.amIAdmin.query();
-			is_grandma = await trpcClient.amIGrandma.query();
+		let maybeUser = await trpcClient.whoAmI.query();
+		if (maybeUser)
+		{
+			logged_in = true;
+			user = maybeUser!;
 		}
+		is_admin = await trpcClient.amIAdmin.query();
+		is_grandma = await trpcClient.amIGrandma.query();
 	}
 
-	$: $jwtLoaded, updateAuthStatus();
+	onMount(updateAuthStatus);
 </script>
 
 <header>

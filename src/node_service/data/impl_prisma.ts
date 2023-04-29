@@ -266,7 +266,7 @@ export class PrismaOrderRepository implements IOrderRepository {
   constructor(private client: PrismaClient) {}
 
   async getSingle(id: number): Promise<ExpandedOrder | null> {
-    return this.client.order.findUnique({
+    let res = await this.client.order.findUnique({
       where: {
         id: id,
       },
@@ -281,6 +281,13 @@ export class PrismaOrderRepository implements IOrderRepository {
         user: true,
       },
     });
+
+    if (res){
+      res.user.passwordHash = ""
+      res.user.passwordSalt = ""
+    }
+
+    return res;
   }
 
   create(item: OrderCreateInput): Promise<Order | null> {
@@ -312,11 +319,11 @@ export class PrismaOrderRepository implements IOrderRepository {
     });
   }
 
-  getPaged(
+  async getPaged(
     pageIndex: number,
     pageLimit: number
-  ): Promise<ExpandedOrder[] | null> {
-    return this.client.order.findMany({
+   ): Promise<ExpandedOrder[] | null> {
+    let results = await this.client.order.findMany({
       skip: pageIndex * pageLimit,
       take: pageLimit,
       include: {
@@ -330,6 +337,13 @@ export class PrismaOrderRepository implements IOrderRepository {
         user: true,
       },
     });
+
+    for (let res of results){
+      res.user.passwordHash = "hidden";
+      res.user.passwordSalt = "hidden";
+    }
+
+    return results;
   }
 
   async getOrdersOfUser(userId: number): Promise<ExpandedOrder[]> {
@@ -351,11 +365,18 @@ export class PrismaOrderRepository implements IOrderRepository {
         id: "desc"
       }
     });
+
+
+    for (let r of res){
+      r.user.passwordHash = "hidden";
+      r.user.passwordSalt = "hidden";
+    }
+
     return res;
   }
 
-  getOrdersForGrandma(grandmaId: number): Promise<ExpandedOrder[]> {
-    return this.client.order.findMany({
+  async getOrdersForGrandma(grandmaId: number): Promise<ExpandedOrder[]> {
+    let res = await this.client.order.findMany({
       where: {
         grandmaId,
       },
@@ -373,6 +394,12 @@ export class PrismaOrderRepository implements IOrderRepository {
         id: "desc",
       },
     });
+
+    for (let r of res){
+      r.user.passwordHash = "hidden";
+      r.user.passwordSalt = "hidden";
+    }
+    return res;
   }
 
   async userOrderedFromGrandma(
@@ -428,8 +455,8 @@ export class PrismaReviewRepository implements IReviewRepository {
     return this.client.review.update(item);
   }
 
-  getForGrandma(grandmaUsername: string): Promise<ExpandedReview[]> {
-    return this.client.review.findMany({
+  async getForGrandma(grandmaUsername: string): Promise<ExpandedReview[]> {
+    let res = await this.client.review.findMany({
       where: {
         grandma: {
           username: grandmaUsername,
@@ -443,5 +470,11 @@ export class PrismaReviewRepository implements IReviewRepository {
         user: true,
       },
     });
+
+    for (let r of res){
+      r.user.passwordHash = "hidden";
+      r.user.passwordSalt = "hidden";
+    }
+    return res;
   }
 }

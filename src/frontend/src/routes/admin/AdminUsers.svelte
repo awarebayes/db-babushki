@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { authRepository } from '$lib/misc/impl_pocketbase_browser';
-	import { jwtLoaded } from '$lib/misc/singletons';
 	import { trpcClient } from '$lib/trpc/client';
 	import type { Grandma } from '@prisma/client';
 	import { AccordionItem, Accordion, Button, Label, Input } from 'flowbite-svelte';
@@ -21,7 +19,7 @@
 	}
 
 	async function get_token() {
-		token = await authRepository.getToken();
+		token = localStorage.getItem("jwt") || ""
 	}
 </script>
 

@@ -3,15 +3,6 @@ import { trpcRouter } from "./routes/trpcRouter";
 import { expressRouter } from "./routes/expressRouter";
 
 import cors from "cors";
-import { repositories } from "./data/impl_repositories_server";
-
-(async () => {
-  await repositories.authRepository.logInAdmin(
-    process.env.PB_ADMIN_EMAIL!,
-    process.env.PB_ADMIN_PASSWORD!
-  );
-  console.log("Logged in as", process.env.PB_ADMIN_EMAIL!);
-})();
 
 const app = express();
 app.use(cors<Request>());

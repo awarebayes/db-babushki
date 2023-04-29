@@ -6,10 +6,12 @@ import { OrderStatusEnum } from "./models";
  */
 export type User = {
   id: number;
-  authId: string;
   username: string;
   name: string;
+  isAdmin: boolean;
   grannyId: number | null;
+  passwordHash: string;
+  passwordSalt: string;
 };
 
 /**
@@ -109,10 +111,12 @@ export type Review = {
  */
 export type User = {
   id: number;
-  authId: string;
+  isAdmin: boolean;
   username: string;
   name: string;
   grannyId: number | null;
+  passwordHash: string;
+  passwordSalt: string;
 };
 
 /**
@@ -220,9 +224,11 @@ export type ExpandedOrder = {
 
 export type UserCreateInput = {
   data: {
-    authId: string;
     username: string;
     name: string;
+    isAdmin: boolean;
+    passwordHash: string;
+    passwordSalt: string;
   };
 };
 

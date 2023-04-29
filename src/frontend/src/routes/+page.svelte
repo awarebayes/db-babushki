@@ -3,18 +3,14 @@
 	import icon from '../lib/images/icon.png';
 	import { trpcClient, setTRPCToken } from '../lib/trpc/client';
 
-	import { jwtLoaded } from '../lib/misc/singletons';
-	import { authRepository } from '../lib/misc/impl_pocketbase_browser';
-	let user = authRepository.getAuthenticatedUser();
 
 	let greeting = 'TRPC not retrieved yet...';
 
 	const loadData = async () => {
-		if (!$jwtLoaded) return;
 		greeting = await trpcClient.ping.query('misha');
 	};
 
-	$: $jwtLoaded, loadData();
+	$: loadData();
 </script>
 
 <section class="hero is-fullheight-with-navbar">

@@ -6,17 +6,17 @@ import { whoAmI } from "../users";
 describe("whoAmI", () => {
   it("should return user if valid claim is provided", async () => {
     const claim: UserClaim = {
-      id: "11",
       username: "testuser",
-      expiration: 1,
       is_admin: false,
     };
     const user: User = {
       id: 1,
-      authId: "11",
       grannyId: null,
       name: "aboba",
       username: "testuser",
+      passwordHash: "",
+      passwordSalt: "",
+      isAdmin: false
     };
 
     mockRepositories.userRepository.getByUsername = jest
@@ -34,9 +34,7 @@ describe("whoAmI", () => {
   it("should return null if invalid claim is provided", async () => {
     const username = "testuser";
     const claim: UserClaim = {
-      id: "11",
       username,
-      expiration: 1,
       is_admin: false,
     };
     mockRepositories.userRepository.getByUsername = jest

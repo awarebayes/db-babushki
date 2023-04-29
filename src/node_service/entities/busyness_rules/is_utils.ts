@@ -15,12 +15,13 @@ export async function create_dummy_user(
   repositories: IRepositories
 ): Promise<User> {
   let unique_uname = faker.internet.userName();
-  let unique_authId = Date.now().toString(36) + Math.random().toString(36);
   return (await repositories.userRepository.create({
     data: {
-      authId: unique_authId,
+      isAdmin: false,
       username: unique_uname,
       name: faker.name.fullName({ sex: "female" }),
+      passwordHash: "nohash",
+      passwordSalt: "nosalt"
     },
   }))!;
 }

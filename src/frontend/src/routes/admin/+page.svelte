@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { jwtLoaded } from '$lib/misc/singletons';
 	import { trpcClient } from '$lib/trpc/client';
 	import { Card, Spinner } from 'flowbite-svelte';
 	import { Tabs, TabItem } from 'flowbite-svelte';
@@ -12,15 +11,13 @@
 	let iAmAdmin = false;
 
 	async function checkIfAdmin() {
-		if (!$jwtLoaded) return;
-
 		iAmAdmin = await trpcClient.amIAdmin.query();
 		if (!iAmAdmin) {
 			window.location.href = '/admin/authFail';
 		}
 	}
 
-	$: $jwtLoaded, checkIfAdmin();
+	$: checkIfAdmin();
 </script>
 
 <section class="min-h-screen grid justify-center mt-2">

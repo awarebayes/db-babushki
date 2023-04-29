@@ -3,13 +3,10 @@
 
 import { IRepositories } from "../entities/repository";
 
-jest.mock("./impl_pocketbase");
-import { PocketBaseAuthRepository } from "./impl_pocketbase";
 
 import { Order, OrderItem, OrderStatus } from "../entities/generated_models";
 
 import {
-  IAuthRepository,
   IDataRepository,
   IGrandmaRepository,
   IImageRepository,
@@ -44,7 +41,6 @@ class MockRepositories implements IRepositories {
       secretKey: "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG",
     })
   );
-  authRepository: IAuthRepository = new PocketBaseAuthRepository(undefined);
   userRepository: IUserRepository = new PrismaUserRepository(
     undefined as any as PrismaClient
   );

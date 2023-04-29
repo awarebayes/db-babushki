@@ -27,9 +27,7 @@ describe("isOrder", () => {
     let meal = await create_meal_for_grandma(repositories, grandma.username);
 
     let user_claim: UserClaim = {
-      id: user.authId,
       username: user.username,
-      expiration: 199999,
       is_admin: false,
     };
 
@@ -67,9 +65,7 @@ describe("isOrder", () => {
     let meal = await create_meal_for_grandma(repositories, grandma.username);
 
     let user_claim: UserClaim = {
-      id: user.authId,
       username: user.username,
-      expiration: 199999,
       is_admin: false,
     };
 
@@ -82,9 +78,7 @@ describe("isOrder", () => {
     expect(order).toBeTruthy();
 
     let other_claim: UserClaim = {
-      id: other_user.authId,
       username: other_user.username,
-      expiration: 199999,
       is_admin: false,
     };
 
@@ -124,9 +118,7 @@ describe("isOrder", () => {
     let meal = await create_meal_for_grandma(repositories, grandma.username);
 
     let user_claim: UserClaim = {
-      id: user.authId,
       username: user.username,
-      expiration: 199999,
       is_admin: false,
     };
 
@@ -139,9 +131,7 @@ describe("isOrder", () => {
     expect(order).toBeTruthy();
 
     let granma_claim: UserClaim = {
-      id: grandma_user.authId,
       username: grandma_user.username,
-      expiration: 213124,
       is_admin: false,
     };
 

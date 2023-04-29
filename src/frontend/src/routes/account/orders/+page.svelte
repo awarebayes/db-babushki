@@ -1,18 +1,16 @@
 <script lang="ts">
 	import { trpcClient } from '$lib/trpc/client';
 	import type { ExpandedOrder } from '../../../../../node_service/entities/generated_models';
-	import { jwtLoaded } from '$lib/misc/singletons';
 	import OrderComponent from './Order.svelte';
 
 	let orders: ExpandedOrder[] = [];
 
 	async function updateOrders() {
-		if (!$jwtLoaded) return;
 		orders = await trpcClient.getMyOrders.query();
 		console.log('orders!', orders);
 	}
 
-	$: $jwtLoaded, updateOrders();
+	$: updateOrders();
 </script>
 
 <section class="min-h-screen grid justify-center">

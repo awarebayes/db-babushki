@@ -1,12 +1,11 @@
 import { TRPCError } from "@trpc/server";
 import { trpcController } from "../controllers/trpcController";
 import { repositories } from "../data/impl_repositories_server";
-import { MealClaimSchema, MealUpdateClaimSchema, SignUpDataSchema } from "../data/zod_schemas";
+import { MealClaimSchema, MealUpdateClaimSchema, SignInDataSchema, SignUpDataSchema } from "../data/zod_schemas";
 import { authedProcedure, trpc } from "./trpcCommon";
 import { z } from "zod";
 import { logger } from "../util/logger";
-
-
+import { SignIn } from "../entities/busyness_rules/users"
 
 export const userAuthRouter = trpc.router({
   ping: trpc.procedure.input(z.string()).query(({ input, ctx }) => {
@@ -40,6 +39,17 @@ export const userAuthRouter = trpc.router({
 
     logger.info(`sign up request from ${input.username}`)
     return trpcController.signUp(input);
+  }),
+
+  signIn: trpc.procedure.input(SignInDataSchema).query(({ input, ctx }) => {
+    if (ctx.user)
+      new TRPCError({
+        message: "User is logged in, log out before signing up!",
+        code: "BAD_REQUEST",
+      });
+
+    logger.info(`sign in request from ${input.username}`)
+    return SignIn(repositories, input);
   }),
 
   getUploadImageUrl: authedProcedure

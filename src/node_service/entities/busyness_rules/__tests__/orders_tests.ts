@@ -71,8 +71,6 @@ describe("cancelOrder", () => {
 
     const userClaim: UserClaim = {
       username: "testuser",
-      id: "123",
-      expiration: 0,
       is_admin: false,
     };
     const orderId = 123;
@@ -95,8 +93,6 @@ describe("cancelOrder", () => {
 
     const userClaim: UserClaim = {
       username: "testuser",
-      id: "123",
-      expiration: 0,
       is_admin: false,
     };
     const orderId = 123;
@@ -115,8 +111,6 @@ describe("cancelOrder", () => {
   it("should throw an error if user tries to cancel an order belonging to a different user", async () => {
     const userClaim: UserClaim = {
       username: "testuser",
-      id: "123",
-      expiration: 0,
       is_admin: false,
     };
     mockRepositories.orderRepository.getSingle = jest
@@ -148,8 +142,6 @@ describe("cancelOrder", () => {
       .mockResolvedValue({ id: 123 });
     const userClaim: UserClaim = {
       username: "testuser",
-      id: "123",
-      expiration: 0,
       is_admin: false,
     };
 
@@ -178,8 +170,6 @@ describe("updateOrder", () => {
     repos.orderRepository.getSingle = jest.fn().mockResolvedValue(null);
     const userClaim: UserClaim = {
       username: "mock_user",
-      id: "1",
-      expiration: 0,
       is_admin: false,
     };
     await expect(
@@ -212,8 +202,6 @@ describe("updateOrder", () => {
       .mockResolvedValue(mock_grandma);
     const userClaim: UserClaim = {
       username: "mock_grandma",
-      id: "1",
-      expiration: 0,
       is_admin: false,
     };
     await expect(
@@ -247,8 +235,6 @@ describe("updateOrder", () => {
       .mockResolvedValue(mock_grandma);
     const userClaim: UserClaim = {
       username: "mock_grandma",
-      id: "1",
-      expiration: 0,
       is_admin: false,
     };
     await expect(

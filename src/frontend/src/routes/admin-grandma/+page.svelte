@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { jwtLoaded } from '$lib/misc/singletons';
 	import { trpcClient } from '$lib/trpc/client';
+	import { onMount } from 'svelte';
 	import type { ExpandedOrder } from '../../../../node_service/entities/generated_models';
 	import AccountUpdate from './AccountUpdate.svelte';
 	import MealsAdmin from './MealsAdmin.svelte';
@@ -10,10 +10,9 @@
 	let orders: ExpandedOrder[] = [];
 
 	async function get_orders() {
-		if (!$jwtLoaded) return;
 		orders = await trpcClient.getOrdersForGrandma.query();
 	}
-	$: $jwtLoaded, get_orders();
+	onMount(get_orders);
 </script>
 
 <section class="grid justify-center">

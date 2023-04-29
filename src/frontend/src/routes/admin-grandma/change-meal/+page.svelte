@@ -3,8 +3,8 @@
 	import { trpcClient } from '$lib/trpc/client';
 	import type { Meal } from '../../../../../node_service/entities/generated_models';
 	import { Button, Alert, Fileupload, Input, Label, Textarea } from 'flowbite-svelte';
-	import { jwtLoaded } from '$lib/misc/singletons';
 	import type { MealUpdateClaim } from '../../../../../node_service/entities/models';
+	import { onMount } from 'svelte';
 	let meal_id_str: string | null = $page.url?.searchParams.get('meal_id');
 	let meal_id = Number(meal_id_str);
 	let meal: Meal | null = null;
@@ -17,7 +17,6 @@
 	let show_success_alert = false;
 
 	async function get_meal() {
-		if (!$jwtLoaded) return;
 		meal = (await trpcClient.getSingleMealOfGrandma.query(meal_id!))!;
 		meal_name = meal.name;
 		meal_description = meal.description;
@@ -54,7 +53,7 @@
 		show_success_alert = true;
 	}
 
-	$: $jwtLoaded, get_meal();
+	onMount(get_meal);
 
 	let uploaded_meal: FileList;
 </script>

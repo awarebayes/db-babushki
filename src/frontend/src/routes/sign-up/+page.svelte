@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { jwtLoaded } from '$lib/misc/singletons';
 	import { trpcClient } from '$lib/trpc/client';
-	import type { TRPCError } from '@trpc/server';
 
 	let name = '';
 	let username = '';

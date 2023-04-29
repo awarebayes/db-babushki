@@ -13,9 +13,7 @@ export type AuthUser = {
 }
 
 export type UserClaim = {
-  id: string;
   username: string;
-  expiration: number;
   is_admin: boolean;
 }
 
@@ -45,6 +43,13 @@ export type SignUpData = {
   password: string;
   password_verification: string;
 };
+
+export type LogInData = {
+  username: string;
+  password: string;
+};
+
+
 
 export type ReviewClaim = {
   grandmaId: number;

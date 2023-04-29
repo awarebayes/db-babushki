@@ -2,9 +2,6 @@ version: "3.7"
 
 services:
   node_service:
-    depends_on:
-      pocketbase_service:
-        condition: service_healthy
     build:
       context: .
       dockerfile: NodeService.Dockerfile
@@ -21,9 +18,6 @@ services:
     networks:
       - some-net
   tests:
-    depends_on:
-      pocketbase_service:
-        condition: service_healthy
     build:
       context: .
       dockerfile: NodeService.Dockerfile
@@ -37,27 +31,6 @@ services:
       - some-net
     profiles:
       - test
-
-  pocketbase_service:
-    volumes:
-      - ./:/home/node/app/
-    build:
-      context: .
-      dockerfile: PocketbaseService.Dockerfile
-    ports:
-      - "8090:8090"
-    working_dir: /home/node/app/pocketbase_service
-    command: go run ppo serve --http=0.0.0.0:8090
-
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://0.0.0.0:8090/_"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-    networks:
-      - some-net
-
   db:
     image: postgres:15-alpine
     restart: always

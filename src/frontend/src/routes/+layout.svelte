@@ -6,16 +6,15 @@
 
 	import { setTRPCToken, trpcClient } from '../lib/trpc/client';
 	import { onMount } from 'svelte';
-	import { jwtLoaded, loggedInUser } from '../lib/misc/singletons';
-	import { authRepository } from '../lib/misc/impl_pocketbase_browser';
+	import { loggedInUser } from '../lib/misc/singletons';
 	import type { User } from '@prisma/client';
 
-	let user = authRepository.getAuthenticatedUser();
 
 	const getJwtToken = async () => {
-		let token = await authRepository.getToken();
+		let token =  localStorage.getItem("jwt");
+		if (!token)
+			return;
 		setTRPCToken(token);
-		$jwtLoaded = true;
 		await fetchUser();
 	};
 

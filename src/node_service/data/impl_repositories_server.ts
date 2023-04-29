@@ -1,6 +1,4 @@
-import { PocketBaseAuthRepository } from "../data/impl_pocketbase";
 import {
-  IAuthRepository,
   IDataRepository,
   IGrandmaRepository,
   IImageRepository,
@@ -24,8 +22,6 @@ import { PrismaClient } from "@prisma/client";
 import { MinioImageRepository } from "./impl_minio";
 import { Client } from "minio";
 
-const PocketBase = require("pocketbase/cjs");
-const pb = new PocketBase("http://pocketbase_service:8090");
 export let prismaClient = new PrismaClient();
 
 const minioClient = new Client({
@@ -37,7 +33,6 @@ const minioClient = new Client({
 });
 
 class BackendRepositories implements IRepositories {
-  authRepository: IAuthRepository = new PocketBaseAuthRepository(pb);
   imageRepository: IImageRepository = new MinioImageRepository(minioClient);
   userRepository: IUserRepository = new PrismaUserRepository(prismaClient);
   mealRepository: IMealRepository = new PrismaMealRepository(prismaClient);
@@ -55,6 +50,3 @@ class BackendRepositories implements IRepositories {
 }
 
 export const repositories: IRepositories = new BackendRepositories();
-export const authRepository: IAuthRepository = repositories.authRepository;
-
-export default { pb };

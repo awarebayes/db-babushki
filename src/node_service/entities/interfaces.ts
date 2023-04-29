@@ -1,4 +1,3 @@
-import { OrderStatus, Prisma } from "@prisma/client";
 import {
   ExpandedOrder,
   ExpandedReview,
@@ -69,15 +68,6 @@ export interface IReviewRepository extends IDataRepository<Review> {
   getForGrandma: (grandmaUsername: string) => Promise<ExpandedReview[]>;
   create: (input: ReviewCreateInput) => Promise<Review | null>;
   update: (updateRec: ReviewUpdateInput) => Promise<Review>;
-}
-
-export interface IAuthRepository {
-  logIn: (email: string, password: string) => Promise<void>;
-  logInAdmin: (email: string, password: string) => Promise<void>;
-  logOut: () => void;
-  getAuthenticatedUser: () => AuthUser | null;
-  signUp: (user: SignUpData) => Promise<string | null>;
-  getToken: () => Promise<string>;
 }
 
 export interface IImageRepository {

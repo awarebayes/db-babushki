@@ -17,11 +17,11 @@ datasource db {
 
 model User {
   id       Int    @id @default(autoincrement())
-  authId   String @unique
   username String @unique
   name     String 
   passwordHash String 
   passwordSalt String 
+  isAdmin Boolean
 
   grannyId Int?     @unique
   grandma  Grandma? @relation(fields: grannyId, references: [id])
