@@ -171,6 +171,7 @@ export async function getOrdersForGrandma(
   repos: IRepositories,
   userClaim: UserClaim
 ): Promise<ExpandedOrder[]> {
-  let grandma = (await repos.userRepository.getByUsername(userClaim.username))!;
+
+  let grandma = (await repos.grandmaRepository.getWithUsername(userClaim.username))!;
   return repos.orderRepository.getOrdersForGrandma(grandma.id);
 }
