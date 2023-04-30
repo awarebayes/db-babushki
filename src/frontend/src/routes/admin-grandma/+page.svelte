@@ -1,18 +1,20 @@
 <script lang="ts">
 	import { trpcClient } from '$lib/trpc/client';
-	import { onMount } from 'svelte';
 	import type { ExpandedOrder } from '../../../../node_service/entities/generated_models';
 	import AccountUpdate from './AccountUpdate.svelte';
 	import MealsAdmin from './MealsAdmin.svelte';
 	import OrderGrandma from './OrderGrandma.svelte';
 	import { Tabs, TabItem } from 'flowbite-svelte';
+	import { jwtLoaded } from '$lib/misc/singletons';
 
 	let orders: ExpandedOrder[] = [];
 
 	async function get_orders() {
 		orders = await trpcClient.getOrdersForGrandma.query();
 	}
-	onMount(get_orders);
+
+	$: if($jwtLoaded) get_orders()
+
 </script>
 
 <section class="grid justify-center">

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { jwtLoaded } from '$lib/misc/singletons';
 	import { trpcClient } from '$lib/trpc/client';
 	import type { ExpandedOrder } from '../../../../../node_service/entities/generated_models';
 	import OrderComponent from './Order.svelte';
@@ -7,10 +8,9 @@
 
 	async function updateOrders() {
 		orders = await trpcClient.getMyOrders.query();
-		console.log('orders!', orders);
 	}
 
-	$: updateOrders();
+	$: if($jwtLoaded) updateOrders();
 </script>
 
 <section class="min-h-screen grid justify-center">

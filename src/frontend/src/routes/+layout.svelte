@@ -6,7 +6,7 @@
 
 	import { setTRPCToken, trpcClient } from '../lib/trpc/client';
 	import { onMount } from 'svelte';
-	import { loggedInUser } from '../lib/misc/singletons';
+	import { jwtLoaded, loggedInUser } from '../lib/misc/singletons';
 	import type { User } from '@prisma/client';
 
 
@@ -15,6 +15,13 @@
 		if (!token)
 			return;
 		setTRPCToken(token);
+		$jwtLoaded = true;
+
+		try {
+			// todo add expired session handling here
+		} catch (e) {
+
+		}
 		await fetchUser();
 	};
 

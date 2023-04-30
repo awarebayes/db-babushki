@@ -5,6 +5,7 @@
 	import { Button, Alert, Fileupload, Input, Label, Textarea } from 'flowbite-svelte';
 	import type { MealUpdateClaim } from '../../../../../node_service/entities/models';
 	import { onMount } from 'svelte';
+	import { jwtLoaded } from '$lib/misc/singletons';
 	let meal_id_str: string | null = $page.url?.searchParams.get('meal_id');
 	let meal_id = Number(meal_id_str);
 	let meal: Meal | null = null;
@@ -53,7 +54,7 @@
 		show_success_alert = true;
 	}
 
-	onMount(get_meal);
+	$: if($jwtLoaded) get_meal()
 
 	let uploaded_meal: FileList;
 </script>

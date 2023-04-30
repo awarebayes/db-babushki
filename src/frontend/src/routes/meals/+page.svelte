@@ -7,7 +7,7 @@
 
 	let records: FrontEndMealClaim[] = [];
 	async function loadMeals() {
-		let maybeMeals = await trpcClient.getMeals.query(0);
+		let maybeMeals = await trpcClient.getMeals.query(0); // todo, pagination
 		if (!maybeMeals) throw 'No meals retrieved!';
 
 		records = maybeMeals.map((el) => {
