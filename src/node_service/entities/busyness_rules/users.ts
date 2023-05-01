@@ -33,8 +33,13 @@ export async function signUp(
       username: signUpData.username,
       name: signUpData.name,
       isAdmin: false,
-      passwordHash,
-      passwordSalt,
+      AuthRecord: {
+        create: {
+          username: signUpData.username,
+          passwordHash,
+          passwordSalt,
+        }
+      }
     },
   };
 
@@ -48,17 +53,22 @@ export async function SignIn(
   logInData: LogInData
 ): Promise<string> {
 
-  let user = await repos.userRepository.getByUsername(logInData.username)
-  if (!user)
-    throw "User not found"
+  let authRecord = await repos.authRecordRepository.getByUsername(logInData.username);
+  if (!authRecord)
+    throw "Could not find auth data for user!"
 
   const calculatedHash = createHash("sha256")
     .update(logInData.password)
-    .update(createHash("sha256").update(user.passwordSalt, "utf8").digest("hex"))
+    .update(createHash("sha256").update(authRecord.passwordSalt, "utf8").digest("hex"))
     .digest("hex")
 
-  if (calculatedHash != user.passwordHash)
+  if (calculatedHash != authRecord.passwordHash)
     throw "bad user access"
+
+
+  let user = await repos.userRepository.getByUsername(logInData.username);
+  if (!user)
+    throw "User was not found, wtf?"
 
   let claim: UserClaim = {
     is_admin: user.isAdmin,

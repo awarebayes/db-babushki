@@ -12,11 +12,13 @@ let client = new PrismaClient({
   },
 });
 
-import { Order, OrderItem, OrderStatus } from "../entities/generated_models";
+import { AuthRecord, Order, OrderItem, OrderStatus } from "../entities/generated_models";
 
 import {
+  IAuthRecordRepository,
   IDataRepository,
   IGrandmaRepository,
+  IImageRepository,
   IMealRepository,
   IOrderRepository,
   IReviewRepository,
@@ -24,6 +26,7 @@ import {
 } from "../entities/interfaces";
 
 import {
+  PrismaAuthRecordRepository,
   PrismaGrandmaRepository,
   PrismaMealRepository,
   PrismaOrderItemRepository,
@@ -32,6 +35,8 @@ import {
   PrismaReviewRepository,
   PrismaUserRepository,
 } from "./impl_prisma";
+import { MinioImageRepository } from "./impl_minio";
+import { Client } from "minio";
 
 export class IntegrationRepositories implements IRepositories {
   constructor(public client: PrismaClient) {
@@ -42,8 +47,10 @@ export class IntegrationRepositories implements IRepositories {
     this.orderRepository = new PrismaOrderRepository(client);
     this.orderStatusRepository = new PrismaOrderStatusRepository(client);
     this.reviewRepository = new PrismaReviewRepository(client);
+    this.authRecordRepository = new PrismaAuthRecordRepository(client);
+    this.imageRepository = new MinioImageRepository(undefined as any as Client)
   }
-
+  imageRepository: IImageRepository;
   userRepository: IUserRepository;
   mealRepository: IMealRepository;
   grandmaRepository: IGrandmaRepository;
@@ -51,6 +58,7 @@ export class IntegrationRepositories implements IRepositories {
   orderRepository: IOrderRepository;
   orderStatusRepository: IDataRepository<OrderStatus>;
   reviewRepository: IReviewRepository;
+  authRecordRepository: IAuthRecordRepository;
 }
 
 export const repositories: IRepositories = new IntegrationRepositories(client);

@@ -10,6 +10,8 @@ import type { Prisma } from '@prisma/client';
 // ENUMS
 /////////////////////////////////////////
 
+export const AuthRecordScalarFieldEnumSchema = z.enum(['id','username','passwordHash','passwordSalt','userId']);
+
 export const GrandmaScalarFieldEnumSchema = z.enum(['id','username','name','description','pictureUrl','timeReply','rating','verified']);
 
 export const MealCategoriesScalarFieldEnumSchema = z.enum(['id','name']);
@@ -30,7 +32,7 @@ export const SortOrderSchema = z.enum(['asc','desc']);
 
 export const TransactionIsolationLevelSchema = z.enum(['ReadUncommitted','ReadCommitted','RepeatableRead','Serializable']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','username','name','passwordHash','passwordSalt','isAdmin','grannyId']);
+export const UserScalarFieldEnumSchema = z.enum(['id','username','name','isAdmin','grannyId']);
 /////////////////////////////////////////
 // MODELS
 /////////////////////////////////////////
@@ -43,13 +45,25 @@ export const UserSchema = z.object({
   id: z.number().int(),
   username: z.string(),
   name: z.string(),
-  passwordHash: z.string(),
-  passwordSalt: z.string(),
   isAdmin: z.boolean(),
   grannyId: z.number().int().nullable(),
 })
 
 export type User = z.infer<typeof UserSchema>
+
+/////////////////////////////////////////
+// AUTH RECORD SCHEMA
+/////////////////////////////////////////
+
+export const AuthRecordSchema = z.object({
+  id: z.number().int(),
+  username: z.string(),
+  passwordHash: z.string(),
+  passwordSalt: z.string(),
+  userId: z.number().int(),
+})
+
+export type AuthRecord = z.infer<typeof AuthRecordSchema>
 
 /////////////////////////////////////////
 // GRANDMA SCHEMA

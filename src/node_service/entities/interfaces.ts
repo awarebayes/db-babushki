@@ -1,4 +1,5 @@
 import {
+  AuthRecord,
   ExpandedOrder,
   ExpandedReview,
   Grandma,
@@ -28,6 +29,10 @@ export interface IDataRepository<T> {
   getSingle: (id: number) => Promise<T | null>;
 
   delete: (id: number) => Promise<void>;
+}
+
+export interface IAuthRecordRepository extends IDataRepository<AuthRecord> {
+  getByUsername: (username: string) => Promise<AuthRecord | null>;
 }
 
 export interface IUserRepository extends IDataRepository<User> {

@@ -16,22 +16,31 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  username String @unique
-  name     String 
-  passwordHash String 
-  passwordSalt String 
-  isAdmin Boolean
+  id       Int     @id @default(autoincrement())
+  username String  @unique
+  name     String
+  isAdmin  Boolean
 
-  grannyId Int?     @unique
-  grandma  Grandma? @relation(fields: grannyId, references: [id])
-  Order    Order[]
-  Review   Review[]
+  grannyId   Int?        @unique
+  grandma    Grandma?    @relation(fields: grannyId, references: [id])
+  Order      Order[]
+  Review     Review[]
+  AuthRecord AuthRecord?
+}
+
+model AuthRecord {
+  id           Int    @id @default(autoincrement())
+  username     String @unique
+  passwordHash String
+  passwordSalt String
+
+  userId Int  @unique
+  user   User @relation(fields: userId, references: [id])
 }
 
 model Grandma {
   id          Int     @id @default(autoincrement())
-  username    String @unique
+  username    String  @unique
   name        String
   description String
   pictureUrl  String

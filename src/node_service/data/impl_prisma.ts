@@ -1,4 +1,5 @@
 import {
+  IAuthRecordRepository,
   IDataRepository,
   IGrandmaRepository,
   IMealRepository,
@@ -17,6 +18,7 @@ import {
 } from "@prisma/client";
 import { MealUpdateClaim, OrderStatusEnum, UpdateGrandmaClaim } from "../entities/models";
 import {
+  AuthRecord,
   ExpandedOrder,
   ExpandedReview,
   Grandma,
@@ -266,7 +268,7 @@ export class PrismaOrderRepository implements IOrderRepository {
   constructor(private client: PrismaClient) {}
 
   async getSingle(id: number): Promise<ExpandedOrder | null> {
-    let res = await this.client.order.findUnique({
+    return this.client.order.findUnique({
       where: {
         id: id,
       },
@@ -281,13 +283,6 @@ export class PrismaOrderRepository implements IOrderRepository {
         user: true,
       },
     });
-
-    if (res){
-      res.user.passwordHash = ""
-      res.user.passwordSalt = ""
-    }
-
-    return res;
   }
 
   create(item: OrderCreateInput): Promise<Order | null> {
@@ -323,7 +318,7 @@ export class PrismaOrderRepository implements IOrderRepository {
     pageIndex: number,
     pageLimit: number
    ): Promise<ExpandedOrder[] | null> {
-    let results = await this.client.order.findMany({
+    return await this.client.order.findMany({
       skip: pageIndex * pageLimit,
       take: pageLimit,
       include: {
@@ -337,17 +332,10 @@ export class PrismaOrderRepository implements IOrderRepository {
         user: true,
       },
     });
-
-    for (let res of results){
-      res.user.passwordHash = "hidden";
-      res.user.passwordSalt = "hidden";
-    }
-
-    return results;
   }
 
   async getOrdersOfUser(userId: number): Promise<ExpandedOrder[]> {
-    let res = await this.client.order.findMany({
+    return this.client.order.findMany({
       where: {
         userId,
       },
@@ -365,18 +353,10 @@ export class PrismaOrderRepository implements IOrderRepository {
         id: "desc"
       }
     });
-
-
-    for (let r of res){
-      r.user.passwordHash = "hidden";
-      r.user.passwordSalt = "hidden";
-    }
-
-    return res;
   }
 
   async getOrdersForGrandma(grandmaId: number): Promise<ExpandedOrder[]> {
-    let res = await this.client.order.findMany({
+    return await this.client.order.findMany({
       where: {
         grandmaId,
       },
@@ -394,12 +374,6 @@ export class PrismaOrderRepository implements IOrderRepository {
         id: "desc",
       },
     });
-
-    for (let r of res){
-      r.user.passwordHash = "hidden";
-      r.user.passwordSalt = "hidden";
-    }
-    return res;
   }
 
   async userOrderedFromGrandma(
@@ -456,7 +430,7 @@ export class PrismaReviewRepository implements IReviewRepository {
   }
 
   async getForGrandma(grandmaUsername: string): Promise<ExpandedReview[]> {
-    let res = await this.client.review.findMany({
+    return await this.client.review.findMany({
       where: {
         grandma: {
           username: grandmaUsername,
@@ -470,11 +444,42 @@ export class PrismaReviewRepository implements IReviewRepository {
         user: true,
       },
     });
+  }
+}
 
-    for (let r of res){
-      r.user.passwordHash = "hidden";
-      r.user.passwordSalt = "hidden";
-    }
-    return res;
+
+export class PrismaAuthRecordRepository
+  implements IAuthRecordRepository
+{
+  constructor(private client: PrismaClient) {}
+
+  async getByUsername(username: string): Promise<AuthRecord | null> {
+    return this.client.authRecord.findUnique({
+      where: {
+        username
+      }
+    })
+  }
+
+  async getSingle(id: number): Promise<AuthRecord | null> {
+    return this.client.authRecord.findUnique({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  getPaged(
+    pageIndex: number,
+    pageLimit: number
+  ): Promise<Array<AuthRecord> | null> {
+    return this.client.authRecord.findMany({
+      skip: pageIndex * pageLimit,
+      take: pageLimit,
+    });
+  }
+
+  async delete(id: number) {
+    await this.client.authRecord.delete({ where: { id } });
   }
 }

@@ -4,9 +4,10 @@
 import { IRepositories } from "../entities/repository";
 
 
-import { Order, OrderItem, OrderStatus } from "../entities/generated_models";
+import { AuthRecord, Order, OrderItem, OrderStatus } from "../entities/generated_models";
 
 import {
+  IAuthRecordRepository,
   IDataRepository,
   IGrandmaRepository,
   IImageRepository,
@@ -18,6 +19,7 @@ import {
 
 jest.mock("./impl_prisma");
 import {
+  PrismaAuthRecordRepository,
   PrismaGrandmaRepository,
   PrismaMealRepository,
   PrismaOrderItemRepository,
@@ -60,6 +62,9 @@ class MockRepositories implements IRepositories {
   reviewRepository: IReviewRepository = new PrismaReviewRepository(
     undefined as any as PrismaClient
   );
+  authRecordRepository: IAuthRecordRepository = new PrismaAuthRecordRepository(
+    undefined as any as PrismaClient
+  )
 }
 
 export const mockRepositories: IRepositories = new MockRepositories();

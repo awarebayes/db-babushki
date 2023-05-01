@@ -1,5 +1,5 @@
 import { repositories } from "../../../data/impl_integration";
-import { MealCreateInput } from "../../generated_models";
+import { ExpandedOrder, MealCreateInput } from "../../generated_models";
 import {
   MealClaim,
   OrderStatusEnum,
@@ -11,7 +11,6 @@ import {
   create_grandma_for_user,
   create_meal_for_grandma,
 } from "../is_utils";
-import { createNewMealForGrandma, getMealsForGrandma } from "../meals";
 import { cancelOrder, placeOrder } from "../orders";
 import { addReview, getReviewsForGrandma, updateReview } from "../reviews";
 
@@ -78,7 +77,7 @@ describe("isGetReviews", () => {
 
     reviewFirst = (await repositories.reviewRepository.getSingle(
       reviewFirst.id
-    ))!;
+    ));
     expect(reviewFirst.review).toBe(updated_review.review);
 
     await repositories.reviewRepository.delete(reviewFirst.id);

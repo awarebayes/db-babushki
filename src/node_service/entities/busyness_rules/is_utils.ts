@@ -20,8 +20,13 @@ export async function create_dummy_user(
       isAdmin: false,
       username: unique_uname,
       name: faker.name.fullName({ sex: "female" }),
-      passwordHash: "nohash",
-      passwordSalt: "nosalt"
+      AuthRecord: {
+        create: {
+          passwordHash: "nohash",
+          passwordSalt: "nosalt",
+          username: unique_uname
+        }
+      },
     },
   }))!;
 }

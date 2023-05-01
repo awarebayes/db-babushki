@@ -1,5 +1,13 @@
 import { OrderStatusEnum } from "./models";
 
+export type AuthRecord = {
+  id: number;
+  username: string;
+  passwordHash: string;
+  passwordSalt: string;
+  userId: number;
+}
+
 /**
  * Model User
  *
@@ -10,8 +18,7 @@ export type User = {
   name: string;
   isAdmin: boolean;
   grannyId: number | null;
-  passwordHash: string;
-  passwordSalt: string;
+  AuthRecord?: AuthRecord;
 };
 
 /**
@@ -72,9 +79,9 @@ export type Order = {
 export type OrderStatus = {
   id: number;
   name: string;
-};
-
+}
 /**
+ * 
  * Model OrderItem
  *
  */
@@ -91,103 +98,6 @@ export type ExpandedOrderItem = {
   mealId: number;
   count: number;
   meal: Meal;
-};
-
-/**
- * Model Review
- *
- */
-export type Review = {
-  id: number;
-  grandmaId: number;
-  userId: number;
-  rating: number;
-  review: string;
-};
-
-/**
- * Model User
- *
- */
-export type User = {
-  id: number;
-  isAdmin: boolean;
-  username: string;
-  name: string;
-  grannyId: number | null;
-  passwordHash: string;
-  passwordSalt: string;
-};
-
-/**
- * Model Grandma
- *
- */
-export type Grandma = {
-  id: number;
-  username: string;
-  name: string;
-  description: string;
-  pictureUrl: string;
-  timeReply: number;
-  rating: number;
-  verified: boolean;
-};
-
-/**
- * Model Meal
- *
- */
-export type Meal = {
-  id: number;
-  name: string;
-  price: number;
-  rating: number;
-  pictureUrl: string;
-  description: string;
-  grannyId: number;
-  cookedBy: string;
-  cookedByName: string;
-};
-
-/**
- * Model MealCategories
- *
- */
-export type MealCategories = {
-  id: number;
-  name: string;
-};
-
-/**
- * Model Order
- *
- */
-export type Order = {
-  id: number;
-  statusId: number;
-  userId: number;
-  grandmaId: number;
-};
-
-/**
- * Model OrderStatus
- *
- */
-export type OrderStatus = {
-  id: number;
-  name: string;
-};
-
-/**
- * Model OrderItem
- *
- */
-export type OrderItem = {
-  id: number;
-  orderId: number;
-  mealId: number;
-  count: number;
 };
 
 /**
@@ -227,8 +137,13 @@ export type UserCreateInput = {
     username: string;
     name: string;
     isAdmin: boolean;
-    passwordHash: string;
-    passwordSalt: string;
+    AuthRecord: {
+      create: {
+        username: string,
+        passwordHash: string,
+        passwordSalt: string,
+      }
+    }
   };
 };
 

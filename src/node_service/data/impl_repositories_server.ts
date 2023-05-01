@@ -1,4 +1,5 @@
 import {
+  IAuthRecordRepository,
   IDataRepository,
   IGrandmaRepository,
   IImageRepository,
@@ -9,6 +10,7 @@ import {
 } from "../entities/interfaces";
 import { IRepositories } from "../entities/repository";
 import {
+  PrismaAuthRecordRepository,
   PrismaGrandmaRepository,
   PrismaMealRepository,
   PrismaOrderItemRepository,
@@ -17,7 +19,7 @@ import {
   PrismaReviewRepository,
   PrismaUserRepository,
 } from "./impl_prisma";
-import { OrderItem, OrderStatus } from "../entities/generated_models";
+import { AuthRecord, OrderItem, OrderStatus } from "../entities/generated_models";
 import { PrismaClient } from "@prisma/client";
 import { MinioImageRepository } from "./impl_minio";
 import { Client } from "minio";
@@ -47,6 +49,7 @@ class BackendRepositories implements IRepositories {
   reviewRepository: IReviewRepository = new PrismaReviewRepository(
     prismaClient
   );
+  authRecordRepository: IAuthRecordRepository = new PrismaAuthRecordRepository(prismaClient);
 }
 
 export const repositories: IRepositories = new BackendRepositories();
