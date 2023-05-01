@@ -6,10 +6,15 @@
 	let user = $loggedInUser;
 
 	async function place_order() {
-		await trpcClient.placeOrder.query($cart);
-		$cart = [];
-		window.location.href = '/account/orders';
+		try {
+			await trpcClient.placeOrder.query($cart);
+			$cart = [];
+			window.location.href = '/account/orders';
+		} catch (e) {
+			alert(e)
+		}
 	}
+
 </script>
 
 <div class="columns is-flex is-centered min-h-screen">
@@ -19,7 +24,7 @@
 		{#if $cart.length > 0}
 			<section>
 				{#each $cart as item}
-					<Meal mealClaim={item} />
+					<Meal meal={item.meal} />
 				{/each}
 			</section>
 			<br />

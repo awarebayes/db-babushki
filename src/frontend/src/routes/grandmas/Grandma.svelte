@@ -26,7 +26,7 @@
 				<span class="icon">
 					<i class="fas fa-star text-yellow-400" />
 				</span>
-				<span>{grandma.rating}/5</span>
+				<span>{grandma.rating.toFixed(2)}/5</span>
 
 				<span class="sep" />
 

@@ -5,7 +5,7 @@
 	import { trpcClient } from '$lib/trpc/client';
 	import { fileServerUrl } from '$lib/misc/singletons';
 	import type { FrontEndMealClaim } from '$lib/misc/types';
-	import { RatingComment, Review } from 'flowbite-svelte';
+	import { RatingComment, Rating } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 	let username = $page.params.slug;
 	let grandma: Grandma | null = null;
@@ -83,8 +83,14 @@
 						class="image is-128x128 avatar"
 						style="background-image: url('{fileServerUrl}{grandma.pictureUrl}')"
 					/>
-					<div class="title pt-2 is-3">{grandma.name}</div>
-					<div class="subtitle is-5">@{grandma.username}</div>
+					<div class="pt-2 text-2xl text-gray-700 pb-2">{grandma.name}</div>
+					<div class="text-xl text-gray-600 text-center pb-2">@{grandma.username}</div>
+					<div class="pb-2 flex">
+						<Rating total={5} rating={grandma.rating}/> 
+						<span class="text-lg">
+ 							/ {grandma.rating.toFixed(2)}
+						</span>
+					</div>
 					<div
 						class="box has-text-centered is-shadowless border-t-2 border-t-gray-200 rounded-t-none"
 					>
@@ -112,7 +118,7 @@
 
 				{#each meals as meal}
 					<div>
-						<MealComponent mealClaim={meal} />
+						<MealComponent meal={meal.meal} />
 					</div>
 					<br />
 				{/each}

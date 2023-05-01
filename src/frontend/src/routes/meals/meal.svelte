@@ -3,9 +3,8 @@
 	import type { Meal } from '@prisma/client';
 	import { cart, fileServerUrl } from '$lib/misc/singletons.js';
 
-	export let mealClaim: FrontEndMealClaim;
 
-	let meal: Meal = mealClaim.meal;
+	export let meal: Meal;
 	let inCart: boolean;
 	let quantity = 0;
 
@@ -31,40 +30,38 @@
 
 	function addToCart(meal: Meal) {
 		let quantity = getItemCount(meal);
-		let updatedCart;
 		let claim: FrontEndMealClaim = { count: 1, mealId: meal.id, meal: meal };
 		if (quantity === 0) {
-			updatedCart = [...$cart, claim];
+			$cart = [...$cart, claim];
 		} else {
-			updatedCart = $cart;
-			for (let item of $cart) {
-				if (item.mealId === meal.id) {
+			$cart = $cart.map((item)=>{
+				if (item.mealId === meal.id)
 					item.count++;
-				}
-			}
+				return item;
+			})
 		}
-		cart.set(updatedCart);
+		$cart = $cart
+		console.log("Cart is now on add", $cart)
 	}
 
 	function removeFromCart(meal: Meal) {
-		let updatedCart;
 		let quantity = getItemCount(meal);
 		if (quantity <= 0) {
 			return;
 		}
 		if (quantity === 1) {
-			updatedCart = $cart.filter((el) => {
+			$cart = $cart.filter((el) => {
 				return el.mealId !== meal.id;
 			});
 		} else {
-			updatedCart = $cart;
-			for (let item of $cart) {
-				if (item.mealId === meal.id) {
+			$cart = $cart.map((item)=> {
+				if (item.mealId == meal.id)
 					item.count--;
-				}
-			}
+				return item;
+			})
 		}
-		cart.set(updatedCart);
+		$cart = $cart;
+		console.log("Cart is now on delete", $cart)
 	}
 </script>
 

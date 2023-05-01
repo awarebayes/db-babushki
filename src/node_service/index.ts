@@ -10,4 +10,6 @@ app.use(cors<Request>());
 app.use("/express", expressRouter);
 app.use("/trpc", trpcRouter);
 
+console.log("Node is listening");
+
 app.listen(4000);
