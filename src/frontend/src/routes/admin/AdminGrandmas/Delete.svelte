@@ -6,7 +6,7 @@
 
 	async function delete_grandma() {
 		delete_grandma_id = Number(delete_grandma_id);
-		await trpcClient.deleteGrandma.query(delete_grandma_id);
+		await trpcClient.deleteGrandma.query({id: delete_grandma_id});
 	}
 </script>
 

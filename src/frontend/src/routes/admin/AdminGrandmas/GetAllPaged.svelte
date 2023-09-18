@@ -7,7 +7,7 @@
 
 	async function get_grandmas() {
 		get_page = Number(get_page);
-		let grandmas = (await trpcClient.getGrandmas.query(get_page))!;
+		let grandmas = (await trpcClient.getGrandmas.query({page: get_page}))!;
 		grandmas_fetched_text = JSON.stringify(grandmas, null, 2);
 	}
 </script>

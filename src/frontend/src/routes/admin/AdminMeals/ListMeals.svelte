@@ -8,7 +8,7 @@
 
 	async function list_meals() {
 		page = Number(page);
-		all_meals = JSON.stringify(await trpcClient.getMeals.query(page), null, 2);
+		all_meals = JSON.stringify(await trpcClient.getMeals.query({page}), null, 2);
 	}
 </script>
 

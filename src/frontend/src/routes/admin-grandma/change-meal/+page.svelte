@@ -18,7 +18,7 @@
 	let show_success_alert = false;
 
 	async function get_meal() {
-		meal = (await trpcClient.getSingleMealOfGrandma.query(meal_id!))!;
+		meal = (await trpcClient.getSingleMealOfGrandma.query({mealId: meal_id!}))!;
 		meal_name = meal.name;
 		meal_description = meal.description;
 		meal_image_url = meal.pictureUrl;
@@ -34,7 +34,7 @@
 				return;
 			}
 
-			let post_image_data = await trpcClient.getUploadImageUrl.query(uploaded_meal[0].name);
+			let post_image_data = await trpcClient.getUploadImageUrl.query({image_name: uploaded_meal[0].name});
 
 			await fetch(post_image_data.url, {
 				method: 'PUT',

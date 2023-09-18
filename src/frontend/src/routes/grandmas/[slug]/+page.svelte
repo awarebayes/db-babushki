@@ -32,9 +32,9 @@
 	let comments: Comment[] = [];
 
 	async function load_comments() {
-		let reviews = await trpcClient.getReviewsForGrandma.query(username);
+		let reviews = await trpcClient.getReviewsForGrandma.query({grandmaUsername: username});
 
-		comments = reviews
+		comments = reviews!
 			.map((review) => {
 				let c: Comment = {
 					id: review.id.toString(),
@@ -59,10 +59,10 @@
 	}
 
 	const loadGrandma = async () => {
-		grandma = await trpcClient.getGrandmaWithUsername.query(username);
+		grandma = await trpcClient.getGrandmaWithUsername.query({username});
 		if (!grandma) throw 'Grandma not found';
 
-		let maybeMeals = await trpcClient.getMealsOfGrandma.query(grandma.id);
+		let maybeMeals = await trpcClient.getMealsOfGrandma.query({grandmaId: grandma.id});
 		if (!maybeMeals) throw 'Meals not found';
 
 		meals = maybeMeals.map((el) => {

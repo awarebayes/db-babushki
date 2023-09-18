@@ -7,7 +7,7 @@
 	let get_by_username_text: string = '{}';
 
 	async function get_grandma_with_username() {
-		let grandma = await trpcClient.getGrandmaWithUsername.query(grandma_username);
+		let grandma = await trpcClient.getGrandmaWithUsername.query({username: grandma_username});
 		get_by_username_text = JSON.stringify(grandma, null, 2);
 	}
 </script>

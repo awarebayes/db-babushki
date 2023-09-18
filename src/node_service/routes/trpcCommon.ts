@@ -1,7 +1,11 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { createContext, Context } from "../util/context";
+import { OpenApiMeta } from 'trpc-openapi';
 
-export const trpc = initTRPC.context<Context>().create();
+export const trpc = initTRPC
+	.meta<OpenApiMeta>()
+	.context<Context>()
+	.create();
 
 export const middleware = trpc.middleware;
 export const publicProcedure = trpc.procedure;

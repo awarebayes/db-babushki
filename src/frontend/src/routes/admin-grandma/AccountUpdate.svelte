@@ -13,7 +13,7 @@
 
 	async function load_profile() {
 		let user = await trpcClient.whoAmI.query();
-		current_profile = (await trpcClient.getGrandmaWithUsername.query(user?.username!))!;
+		current_profile = (await trpcClient.getGrandmaWithUsername.query({username: user?.username!}))!;
 		name = current_profile.name;
 		description = current_profile.description;
 		profile_pic_url = current_profile.pictureUrl;
@@ -29,7 +29,7 @@
 				return;
 			}
 
-			let post_image_data = await trpcClient.getUploadImageUrl.query(uploaded_pfp[0].name);
+			let post_image_data = await trpcClient.getUploadImageUrl.query({image_name: uploaded_pfp[0].name});
 
 			await fetch(post_image_data.url, {
 				method: 'PUT',

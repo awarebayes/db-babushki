@@ -20,9 +20,8 @@
 	}
 
 	async function cancel() {
-		await trpcClient.cancelOrder.query(order.id);
+		await trpcClient.cancelOrder.query({orderId: order.id});
 		order_status_name = 'Cancelled';
-		can_cancel = false;
 	}
 </script>
 

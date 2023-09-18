@@ -21,7 +21,7 @@
 			return;
 		}
 
-		let post_image_data = await trpcClient.getUploadImageUrl.query(uploaded_meal[0].name);
+		let post_image_data = await trpcClient.getUploadImageUrl.query({image_name: uploaded_meal[0].name});
 
 		await fetch(post_image_data.url, {
 			method: 'PUT',

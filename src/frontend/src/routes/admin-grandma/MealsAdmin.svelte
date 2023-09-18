@@ -9,8 +9,8 @@
 
 	async function get_meals() {
 		let user = await trpcClient.whoAmI.query();
-		let grandma = await trpcClient.getGrandmaWithUsername.query(user?.username!);
-		meals = (await trpcClient.getMealsOfGrandma.query(grandma?.id!))!;
+		let grandma = await trpcClient.getGrandmaWithUsername.query({username: user?.username!});
+		meals = (await trpcClient.getMealsOfGrandma.query({grandmaId: grandma?.id!}))!;
 	}
 
 	function deleteMeal(mealId: number) {

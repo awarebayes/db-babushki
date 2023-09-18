@@ -14,7 +14,7 @@
 
 	async function list() {
 		page = Number(page);
-		list_text = JSON.stringify(await trpcClient.getOrdersAdmin.query(page), null, 2);
+		list_text = JSON.stringify(await trpcClient.getOrdersAdmin.query({page}), null, 2);
 	}
 
 	async function change_status() {

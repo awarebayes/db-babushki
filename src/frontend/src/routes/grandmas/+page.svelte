@@ -16,7 +16,7 @@
 			page_num = Number(page_str);
 		else
 			page_num = newPage
-		records = (await trpcClient.getGrandmas.query(page_num)!) as Grandma[];
+		records = (await trpcClient.getGrandmas.query({page: page_num})!) as Grandma[];
 	}
 
 	let pages: {name: number, href: string}[] = [];

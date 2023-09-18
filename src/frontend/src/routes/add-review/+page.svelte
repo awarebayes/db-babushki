@@ -10,7 +10,7 @@
 	let grandma: Grandma | null = null;
 
 	async function get_grandma() {
-		grandma = await trpcClient.getGrandmaWithUsername.query(grandma_username!);
+		grandma = await trpcClient.getGrandmaWithUsername.query({username: grandma_username!});
 	}
 
 	let rating = 0;

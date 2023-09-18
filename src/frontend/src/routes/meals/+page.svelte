@@ -16,7 +16,7 @@
 			page_num = Number(page_str);
 		else
 			page_num = newPage
-		let maybeMeals = await trpcClient.getMeals.query(page_num); // todo, pagination
+		let maybeMeals = await trpcClient.getMeals.query({page: page_num}); // todo, pagination
 		if (!maybeMeals) throw 'No meals retrieved!';
 
 		records = maybeMeals.map((el) => {

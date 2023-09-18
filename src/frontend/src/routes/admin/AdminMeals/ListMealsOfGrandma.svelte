@@ -8,7 +8,7 @@
 
 	async function list_meals() {
 		grandma_id = Number(grandma_id);
-		all_meals = JSON.stringify(await trpcClient.getMealsOfGrandma.query(grandma_id), null, 2);
+		all_meals = JSON.stringify(await trpcClient.getMealsOfGrandma.query({grandmaId: grandma_id}), null, 2);
 	}
 </script>
 

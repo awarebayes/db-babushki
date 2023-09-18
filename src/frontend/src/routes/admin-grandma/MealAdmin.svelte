@@ -6,7 +6,7 @@
 	export let deleteCb: (id: number) => void;
 
 	async function deleteMeal() {
-		await trpcClient.deleteMeal.query(meal.id);
+		await trpcClient.deleteMeal.query({mealId: meal.id});
 		deleteCb(meal.id)
 	}
 </script>

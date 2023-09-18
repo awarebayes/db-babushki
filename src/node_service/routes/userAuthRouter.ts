@@ -6,31 +6,52 @@ import { authedProcedure, trpc } from "./trpcCommon";
 import { z } from "zod";
 import { logger } from "../util/logger";
 import { SignIn } from "../entities/busyness_rules/users"
+import {UserSchema} from "../data/zod_generated";
 
 export const userAuthRouter = trpc.router({
-  ping: trpc.procedure.input(z.string()).query(({ input, ctx }) => {
+  ping: trpc.procedure
+  .input(z.void())
+  .output(z.string())
+  .meta({openapi: { method: 'GET', path: '/auth/ping' } })
+  .query(({ input, ctx }) => {
     let uname = ctx.user?.username;
     return trpcController.ping(uname as string);
   }),
 
-  whoAmI: trpc.procedure.query(({ input, ctx }) => {
+  whoAmI: trpc.procedure
+  .input(z.void())
+  .output(UserSchema.nullish())
+  .meta({openapi: { method: 'GET', path: '/auth/whoAmI' } })
+  .query(({ input, ctx }) => {
     if (ctx.user) return trpcController.whoAmI(ctx.user);
     return null;
   }),
 
-  amIAdmin: authedProcedure.query(({ input, ctx }) => {
+  amIAdmin: authedProcedure
+  .input(z.void())
+  .output(z.boolean())
+  .meta({openapi: { method: 'GET', path: '/auth/amIAdmin' } })
+  .query(({ input, ctx }) => {
     if (ctx.user) return ctx.user.is_admin;
     return false;
   }),
 
-  amIGrandma: authedProcedure.query(async ({ input, ctx }) => {
+  amIGrandma: authedProcedure
+  .input(z.void())
+  .output(z.boolean())
+  .meta({openapi: { method: 'GET', path: '/auth/amIGrandma' } })
+  .query(async ({ input, ctx }) => {
     let grandma = await repositories.grandmaRepository.getWithUsername(
       ctx.user!.username!
     );
     return !!grandma;
   }),
 
-  signUp: trpc.procedure.input(SignUpDataSchema).query(({ input, ctx }) => {
+  signUp: trpc.procedure
+  .input(SignUpDataSchema)
+  .output(UserSchema.nullish())
+  .meta({openapi: { method: 'POST', path: '/auth/signUp' } })
+  .query(({ input, ctx }) => {
     if (ctx.user)
       new TRPCError({
         message: "User is logged in, log out before signing up!",
@@ -41,7 +62,11 @@ export const userAuthRouter = trpc.router({
     return trpcController.signUp(input);
   }),
 
-  signIn: trpc.procedure.input(SignInDataSchema).query(({ input, ctx }) => {
+  signIn: trpc.procedure
+  .input(SignInDataSchema)
+  .output(z.string().nullish())
+  .meta({openapi: { method: 'POST', path: '/auth/signIn' } })
+  .query(({ input, ctx }) => {
     if (ctx.user)
       new TRPCError({
         message: "User is logged in, log out before signing up!",
@@ -53,12 +78,14 @@ export const userAuthRouter = trpc.router({
   }),
 
   getUploadImageUrl: authedProcedure
-    .input(z.string())
+    .input(z.object({image_name: z.string()}))
+	.output(z.object({url: z.string(), name: z.string()}))
+	.meta({openapi: { method: 'GET', path: '/auth/getUploadImageUrl' } })
     .query(async ({ input, ctx }) => {
       logger.info(`${ctx.user?.username} requests upload url for an image`)
       return (await repositories.imageRepository.getUploadLink(
         ctx?.user!,
-        input
+        input.image_name
       ))!;
     }),
 });

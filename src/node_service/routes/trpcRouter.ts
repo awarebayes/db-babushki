@@ -21,4 +21,4 @@ const trpcRouter = trpcExpress.createExpressMiddleware({
 });
 
 
-export { NodeServiceAppRouter, trpcRouter };
+export { NodeServiceAppRouter, trpcRouter, router };
