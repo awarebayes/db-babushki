@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { GrandmaSchema, MealSchema, OrderStatusSchema, UserSchema } from "./zod_generated";
 
 export const UserClaimSchema = z.object({
   username: z.string(),
@@ -41,4 +42,26 @@ export const GrandmaUpdateClaimSchema = z.object({
   name: z.string(),
   description: z.string(),
   pictureUrl: z.string(),
+});
+
+
+// Define a Zod schema for ExpandedOrderItem
+export const ExpandedOrderItemSchema = z.object({
+  id: z.number(),
+  orderId: z.number(),
+  mealId: z.number(),
+  count: z.number(),
+  meal: MealSchema, // Assuming Meal is the Zod schema for the Meal type
+});
+
+// Define a Zod schema for ExpandedOrder
+export const ExpandedOrderSchema = z.object({
+  id: z.number(),
+  statusId: z.number(),
+  userId: z.number(),
+  grandmaId: z.number(),
+  items: z.array(ExpandedOrderItemSchema), // Assuming ExpandedOrderItemSchema is the schema for ExpandedOrderItem
+  status: OrderStatusSchema, // Assuming OrderStatus is the Zod schema for the OrderStatus type
+  grandma: GrandmaSchema, // Assuming Grandma is the Zod schema for the Grandma type
+  user: UserSchema, // Assuming User is the Zod schema for the User type
 });

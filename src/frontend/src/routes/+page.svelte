@@ -7,7 +7,7 @@
 	let greeting = 'TRPC not retrieved yet...';
 
 	const loadData = async () => {
-		greeting = await trpcClient.ping.query('misha');
+		greeting = await trpcClient.ping.query();
 	};
 
 	$: loadData();

@@ -20,6 +20,8 @@ export const openApiDocument = generateOpenApiDocument(router, {
   docsUrl: '/api_docs'
 });
 
+console.log(openApiDocument);
+
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(openApiDocument));
 console.log("Node is listening");
 app.listen(4000);

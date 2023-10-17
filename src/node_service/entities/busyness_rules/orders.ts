@@ -8,6 +8,7 @@ import type {
 import type { IRepositories } from "../repository";
 import { MealClaim, OrderStatusEnum, UserClaim } from "../models";
 import { logger } from "../../util/logger";
+import { TRPCError } from "@trpc/server";
 
 export async function placeOrder(
   repos: IRepositories,
@@ -20,7 +21,10 @@ export async function placeOrder(
   });
 
   let maybeMeals = await repos.mealRepository.getMany(itemIds);
-  if (!maybeMeals) throw "Cannot find meals specified!";
+  if (!maybeMeals) throw new TRPCError({
+        message: "Meals not found for grandma",
+        code: "NOT_FOUND",
+      });
 
   let meals: Meal[] = maybeMeals!;
   let grandmaId: number = meals[0].grannyId;
@@ -31,7 +35,10 @@ export async function placeOrder(
   ).size;
 
   if (uniqueIds > 1)
-    throw "Meals from different grandmas cannot be placed in a single order";
+    throw new TRPCError({
+        message: "Meals from different grandmas should be ordered separately!",
+        code: "BAD_REQUEST",
+      });
 
   let orderToCreate: OrderCreateInput = {
     data: {
@@ -71,16 +78,25 @@ export async function cancelOrder(
   let username = userClaim.username;
 
   let maybeOrderToCancel = await repos.orderRepository.getSingle(orderId);
-  if (!maybeOrderToCancel) throw "Order was not found";
+  if (!maybeOrderToCancel) throw new TRPCError({
+        message: "Order to cancel was not found",
+        code: "NOT_FOUND",
+      });
   let orderToDelete: Order = maybeOrderToCancel!;
 
   let maybeUser = await repos.userRepository.getByUsername(username);
-  if (!maybeUser) throw "User was not found";
+  if (!maybeUser) throw new TRPCError({
+        message: "User was not found",
+        code: "NOT_FOUND",
+      });
   let user = maybeUser!;
 
   if (orderToDelete.userId != user.id) {
     logger.error(`Deleting meal different user initiated by ${userClaim.username} tried to cancel ${user.username}'s order!`)
-    throw "Trying to cancel order of different user";
+    throw new TRPCError({
+        message: "User is diffrerent than one trying to cancel",
+        code: "FORBIDDEN",
+      });
   }
 
   await repos.orderRepository.updateStatus(
@@ -98,13 +114,19 @@ export async function updateOrderStatusAsGrandma(
   let username = userClaim.username;
 
   let maybeOrder = await repos.orderRepository.getSingle(orderId);
-  if (!maybeOrder) throw "Order was not found";
+  if (!maybeOrder) throw new TRPCError({
+        message: "User was not found",
+        code: "NOT_FOUND",
+      });
   let order = maybeOrder!;
   let grandma = (await repos.grandmaRepository.getSingle(
     order.grandmaId
   )!) as Grandma;
 
-  if (username != grandma.username) throw "Order was created for other grandma";
+  if (username != grandma.username) throw new TRPCError({
+        message: "Grandma is different user",
+        code: "FORBIDDEN",
+      });
 
   logger.info(`Grandma ${grandma.username} updated order ${orderId} to have a status ${newStatus}`)
 

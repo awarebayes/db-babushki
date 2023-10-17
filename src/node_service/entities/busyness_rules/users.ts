@@ -3,6 +3,7 @@ import { UserClaim, SignUpData, LogInData } from "../models";
 import { User, UserCreateInput } from "../generated_models";
 import { createHash, randomBytes } from "crypto"
 import { signJwt } from "../../util/jwt_utils";
+import { TRPCError } from "@trpc/server";
 
 
 export async function whoAmI(
@@ -17,7 +18,10 @@ export async function signUp(
   signUpData: SignUpData
 ): Promise<User | null> {
   if (signUpData.password != signUpData.password_verification)
-    throw "Passwords do not match"
+    throw new TRPCError({
+        message: "Bad passwords dont match!",
+        code: "BAD_REQUEST",
+      });
 
   let passwordSalt = randomBytes(16).toString()
   let password = signUpData.password;
@@ -55,7 +59,10 @@ export async function SignIn(
 
   let authRecord = await repos.authRecordRepository.getByUsername(logInData.username);
   if (!authRecord)
-    throw "Could not find auth data for user!"
+    throw new TRPCError({
+        message: "Credentials not found in database",
+        code: "NOT_FOUND",
+      });
 
   const calculatedHash = createHash("sha256")
     .update(logInData.password)
@@ -63,12 +70,18 @@ export async function SignIn(
     .digest("hex")
 
   if (calculatedHash != authRecord.passwordHash)
-    throw "bad user access"
+    throw new TRPCError({
+        message: "Password is wrong!",
+        code: "BAD_REQUEST",
+      });
 
 
   let user = await repos.userRepository.getByUsername(logInData.username);
   if (!user)
-    throw "User was not found, wtf?"
+    throw new TRPCError({
+        message: "User was not found!",
+        code: "NOT_FOUND",
+      });
 
   let claim: UserClaim = {
     is_admin: user.isAdmin,

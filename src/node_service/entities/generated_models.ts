@@ -92,13 +92,7 @@ export type OrderItem = {
   count: number;
 };
 
-export type ExpandedOrderItem = {
-  id: number;
-  orderId: number;
-  mealId: number;
-  count: number;
-  meal: Meal;
-};
+
 
 /**
  * Model Review
@@ -119,6 +113,14 @@ export type ExpandedReview = {
   rating: number;
   review: string;
   user: User;
+};
+
+export type ExpandedOrderItem = {
+  id: number;
+  orderId: number;
+  mealId: number;
+  count: number;
+  meal: Meal;
 };
 
 export type ExpandedOrder = {
@@ -221,3 +223,4 @@ export type MealCreateInput = {
   cookedBy: string;
   cookedByName: string;
 };
+

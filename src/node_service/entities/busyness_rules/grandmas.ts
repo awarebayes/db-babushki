@@ -3,6 +3,7 @@ import type { Grandma } from "../generated_models";
 import { UpdateGrandmaClaim, UserClaim } from "../models";
 import { create_grandma_for_user_full } from "./is_utils";
 import { repositories } from "../../data/impl_repositories_server";
+import { TRPCError } from "@trpc/server";
 
 export async function getGrandmas(
   repos: IRepositories,
@@ -30,9 +31,15 @@ export async function createGrandma(
   claim: UserClaim
 ): Promise<Grandma> {
   let user = await repos.userRepository.getByUsername(claim.username);
-  if (!user) throw "Username for claim was not found";
+  if (!user) throw new TRPCError({
+        message: "User was not found",
+        code: "NOT_FOUND",
+      });
   if (claim.username != user.username)
-    throw "Cannot create permissions, user is different";
+    throw new TRPCError({
+        message: "User is different",
+        code: "FORBIDDEN",
+      });
   return create_grandma_for_user_full(repositories, user);
 }
 
@@ -41,7 +48,10 @@ export async function createGrandmaAdmin(
   userId: number
 ): Promise<Grandma> {
   let user = await repos.userRepository.getSingle(userId);
-  if (!user) throw "Username for claim was not found";
+  if (!user) throw  new TRPCError({
+        message: "User was not found",
+        code: "NOT_FOUND",
+      });;
 
   return create_grandma_for_user_full(repositories, user);
 }

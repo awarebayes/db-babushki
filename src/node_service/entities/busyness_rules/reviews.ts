@@ -8,6 +8,7 @@ import type {
   User,
 } from "../generated_models";
 import { logger } from "../../util/logger";
+import { TRPCError } from "@trpc/server";
 
 export async function addReview(
   repos: IRepositories,
@@ -17,7 +18,10 @@ export async function addReview(
   let maybeGrandma = await repos.grandmaRepository.getSingle(
     reviewClaim.grandmaId
   );
-  if (!maybeGrandma) throw "Respected grandma not found!";
+  if (!maybeGrandma) throw new TRPCError({
+        message: "Grandma was not found!",
+        code: "NOT_FOUND",
+      });
   let grandma: Grandma = maybeGrandma!;
 
   let user: User = (await repos.userRepository.getByUsername(
@@ -30,7 +34,10 @@ export async function addReview(
   );
   if (ordersForGrandma.length === 0) {
     logger.error(`${user.username} tried to review ${maybeGrandma!.username} but didnt actually order anything!`)
-    throw "User didnt order anything!";
+    throw new TRPCError({
+        message: "User didnt order from this grandma!",
+        code: "FORBIDDEN",
+      });
   }
 
   let reviewToCreate: ReviewCreateInput = {
@@ -64,13 +71,19 @@ export async function removeReview(
   )!) as User;
 
   let maybeReview = await repos.reviewRepository.getSingle(reviewId);
-  if (!maybeReview) throw "Review was not found";
+  if (!maybeReview) throw new TRPCError({
+        message: "Review was not posted!",
+        code: "NOT_FOUND",
+      });
 
   let review: Review = maybeReview!;
   if (review.userId != user.id)
   {
     logger.error(`${user.username} tried to delete review ${review!.id} but it was not theirs!`)
-    throw "Trying to delete a review of different user!";
+    throw new TRPCError({
+        message: "Review was for different user!",
+        code: "FORBIDDEN",
+      });;
   }
 
   await repos.reviewRepository.delete(reviewId);
@@ -83,7 +96,10 @@ export async function updateReview(
   reviewClaim: ReviewClaim
 ) {
   let maybeReview = await repos.reviewRepository.getSingle(reviewId);
-  if (!maybeReview) throw "Review was not found";
+  if (!maybeReview) throw new TRPCError({
+        message: "Review was not posted!",
+        code: "NOT_FOUND",
+      });
 
   let user: User = (await repos.userRepository.getByUsername(
     userClaim.username
