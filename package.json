@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "trpc-openapi": "^1.2.0"
+  }
+}

@@ -16,7 +16,7 @@ export const reviewRouter = trpc.router({
 
   getReviewsForGrandma: trpc.procedure
     .input(z.object({ grandmaUsername: z.string() }))
-    .output(ReviewSchema.array().nullish())
+    .output(ReviewSchema.array().nullable())
     .meta({ openapi: { method: 'GET', path: '/grandma/{grandmaUsername}/reviews' } })
     .query(async ({ input, ctx }) => {
       return getReviewsForGrandma(repositories, input.grandmaUsername);

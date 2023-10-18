@@ -10,7 +10,7 @@ import { z } from "zod";
 export const mealsRouter = trpc.router({
   getMeals: trpc.procedure
     .input(z.object({ page: z.number() }))
-    .output(MealSchema.array().nullish())
+    .output(MealSchema.array().nullable())
     .meta({ openapi: { method: 'GET', path: '/meals' } })
     .query(({ input, ctx }) => {
       return trpcController.getMeals(input.page);
@@ -18,7 +18,7 @@ export const mealsRouter = trpc.router({
 
   getMealsOfGrandma: trpc.procedure
     .input(z.object({ grandmaId: z.number() }))
-    .output(MealSchema.array().nullish())
+    .output(MealSchema.array().nullable())
     .meta({ openapi: { method: 'GET', path: '/grandma/{grandmaId}/meals' } })
     .query(({ input, ctx }) => {
       return trpcController.getMealsOfGrandma(input.grandmaId);
@@ -26,8 +26,8 @@ export const mealsRouter = trpc.router({
 
   getSingleMealOfGrandma: authedProcedure
     .input(z.object({ mealId: z.number() }))
-    .output(MealSchema.nullish())
-    .meta({ openapi: { method: 'GET', path: '/meals/{mealId}' } })
+    .output(MealSchema.nullable())
+    // .meta({ openapi: { method: 'GET', path: '/meals/{mealId}' } })
     .query(({ input, ctx }) => {
       return getSingleMealForGrandma(repositories, ctx.user!, input.mealId);
     }),

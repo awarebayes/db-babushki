@@ -31,7 +31,7 @@ export const SignInDataSchema = z.object({
 });
 
 export const MealUpdateClaimSchema = z.object({
-  mealId: z.number().nullish(),
+  mealId: z.number().nullable(),
   pictureUrl: z.string().url(),
   description: z.string().nonempty(),
   price: z.number().positive(),

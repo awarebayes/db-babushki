@@ -10,7 +10,7 @@ import { z } from "zod";
 export const gransmasRouter = trpc.router({
   getGrandmas: trpc.procedure
     .input(z.object({ page: z.number() }))
-    .output(GrandmaSchema.array().nullish())
+    .output(GrandmaSchema.array().nullable())
     .meta({ openapi: { method: 'GET', path: '/grandmas' } })
     .query(({ input, ctx }) => {
       return trpcController.getGrandmas(input.page);
@@ -18,7 +18,7 @@ export const gransmasRouter = trpc.router({
 
   getGrandmaWithUsername: trpc.procedure
     .input(z.object({ username: z.string() }))
-    .output(GrandmaSchema.nullish())
+    .output(GrandmaSchema.nullable())
     .meta({ openapi: { method: 'GET', path: '/grandmas/{username}' } })
     .query(({ input, ctx }) => {
       return trpcController.getGrandmaWithUsername(input.username);
@@ -42,7 +42,7 @@ export const gransmasRouter = trpc.router({
 
   updateGrandma: authedProcedure
     .input(GrandmaUpdateClaimSchema)
-    .output(GrandmaSchema.nullish())
+    .output(GrandmaSchema.nullable())
     .meta({ openapi: { method: 'PATCH', path: '/grandmas' } })
     .query(async ({ input, ctx }) => {
       return await UpdateGrandma(repositories, ctx.user!.username, input);

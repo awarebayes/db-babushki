@@ -12,7 +12,7 @@ export const userAuthRouter = trpc.router({
   ping: trpc.procedure
     .input(z.void())
     .output(z.string())
-    .meta({ openapi: { method: 'GET', path: '/auth/ping' } })
+    // .meta({ openapi: { method: 'GET', path: '/auth/ping' } })
     .query(({ input, ctx }) => {
       let uname = ctx.user?.username;
       return trpcController.ping(uname as string);
@@ -20,7 +20,7 @@ export const userAuthRouter = trpc.router({
 
   whoAmI: trpc.procedure
     .input(z.void())
-    .output(UserSchema.nullish())
+    .output(UserSchema.nullable())
     .meta({ openapi: { method: 'GET', path: '/auth/whoAmI' } })
     .query(({ input, ctx }) => {
       if (ctx.user) return trpcController.whoAmI(ctx.user);
@@ -30,7 +30,7 @@ export const userAuthRouter = trpc.router({
   amIAdmin: authedProcedure
     .input(z.void())
     .output(z.boolean())
-    .meta({ openapi: { method: 'GET', path: '/auth/amIAdmin' } })
+    // .meta({ openapi: { method: 'GET', path: '/auth/amIAdmin' } })
     .query(({ input, ctx }) => {
       if (ctx.user) return ctx.user.is_admin;
       return false;
@@ -39,7 +39,7 @@ export const userAuthRouter = trpc.router({
   amIGrandma: authedProcedure
     .input(z.void())
     .output(z.boolean())
-    .meta({ openapi: { method: 'GET', path: '/auth/amIGrandma' } })
+    // .meta({ openapi: { method: 'GET', path: '/auth/amIGrandma' } })
     .query(async ({ input, ctx }) => {
       let grandma = await repositories.grandmaRepository.getWithUsername(
         ctx.user!.username!
@@ -49,7 +49,7 @@ export const userAuthRouter = trpc.router({
 
   signUp: trpc.procedure
     .input(SignUpDataSchema)
-    .output(UserSchema.nullish())
+    .output(UserSchema.nullable())
     .meta({ openapi: { method: 'POST', path: '/auth/signIn' } })
     .query(({ input, ctx }) => {
       if (ctx.user)
@@ -64,7 +64,7 @@ export const userAuthRouter = trpc.router({
 
   signIn: trpc.procedure
     .input(SignInDataSchema)
-    .output(z.string().nullish())
+    .output(z.string().nullable())
     .meta({ openapi: { method: 'POST', path: '/auth/signUp' } })
     .query(({ input, ctx }) => {
       if (ctx.user)
@@ -80,7 +80,7 @@ export const userAuthRouter = trpc.router({
   getUploadImageUrl: authedProcedure
     .input(z.object({ image_name: z.string() }))
     .output(z.object({ url: z.string(), name: z.string() }))
-    .meta({ openapi: { method: 'POST', path: '/storage/newUrl' } })
+    .meta({ openapi: { method: 'POST', path: '/storage/newUploadUrl' } })
     .query(async ({ input, ctx }) => {
       logger.info(`${ctx.user?.username} requests upload url for an image`)
       return (await repositories.imageRepository.getUploadLink(
