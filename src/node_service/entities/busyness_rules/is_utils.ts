@@ -1,10 +1,4 @@
-import {
-  Grandma,
-  Meal,
-  User,
-  MealCreateInput,
-  OrderCreateInput,
-} from "../generated_models";
+import { Grandma, Meal, User, MealCreateInput } from "../generated_models";
 import { faker } from "@faker-js/faker";
 import { IRepositories } from "../repository";
 import { MealClaim, UserClaim } from "../models";
@@ -24,8 +18,8 @@ export async function create_dummy_user(
         create: {
           passwordHash: "nohash",
           passwordSalt: "nosalt",
-          username: unique_uname
-        }
+          username: unique_uname,
+        },
       },
     },
   }))!;

@@ -21,10 +21,11 @@ export async function placeOrder(
   });
 
   let maybeMeals = await repos.mealRepository.getMany(itemIds);
-  if (!maybeMeals) throw new TRPCError({
-        message: "Meals not found for grandma",
-        code: "NOT_FOUND",
-      });
+  if (!maybeMeals)
+    throw new TRPCError({
+      message: "Meals not found for grandma",
+      code: "NOT_FOUND",
+    });
 
   let meals: Meal[] = maybeMeals!;
   let grandmaId: number = meals[0].grannyId;
@@ -36,9 +37,9 @@ export async function placeOrder(
 
   if (uniqueIds > 1)
     throw new TRPCError({
-        message: "Meals from different grandmas should be ordered separately!",
-        code: "BAD_REQUEST",
-      });
+      message: "Meals from different grandmas should be ordered separately!",
+      code: "BAD_REQUEST",
+    });
 
   let orderToCreate: OrderCreateInput = {
     data: {
@@ -66,7 +67,9 @@ export async function placeOrder(
   };
 
   let created_order = await repos.orderRepository.create(orderToCreate);
-  logger.info(`${userClaim.username} placed an order for grandma with id ${grandmaId} containing ${mealClaims.length} items`)
+  logger.info(
+    `${userClaim.username} placed an order for grandma with id ${grandmaId} containing ${mealClaims.length} items`
+  );
   return created_order;
 }
 
@@ -78,25 +81,29 @@ export async function cancelOrder(
   let username = userClaim.username;
 
   let maybeOrderToCancel = await repos.orderRepository.getSingle(orderId);
-  if (!maybeOrderToCancel) throw new TRPCError({
-        message: "Order to cancel was not found",
-        code: "NOT_FOUND",
-      });
+  if (!maybeOrderToCancel)
+    throw new TRPCError({
+      message: "Order to cancel was not found",
+      code: "NOT_FOUND",
+    });
   let orderToDelete: Order = maybeOrderToCancel!;
 
   let maybeUser = await repos.userRepository.getByUsername(username);
-  if (!maybeUser) throw new TRPCError({
-        message: "User was not found",
-        code: "NOT_FOUND",
-      });
+  if (!maybeUser)
+    throw new TRPCError({
+      message: "User was not found",
+      code: "NOT_FOUND",
+    });
   let user = maybeUser!;
 
   if (orderToDelete.userId != user.id) {
-    logger.error(`Deleting meal different user initiated by ${userClaim.username} tried to cancel ${user.username}'s order!`)
+    logger.error(
+      `Deleting meal different user initiated by ${userClaim.username} tried to cancel ${user.username}'s order!`
+    );
     throw new TRPCError({
-        message: "User is diffrerent than one trying to cancel",
-        code: "FORBIDDEN",
-      });
+      message: "User is diffrerent than one trying to cancel",
+      code: "FORBIDDEN",
+    });
   }
 
   await repos.orderRepository.updateStatus(
@@ -114,21 +121,25 @@ export async function updateOrderStatusAsGrandma(
   let username = userClaim.username;
 
   let maybeOrder = await repos.orderRepository.getSingle(orderId);
-  if (!maybeOrder) throw new TRPCError({
-        message: "User was not found",
-        code: "NOT_FOUND",
-      });
+  if (!maybeOrder)
+    throw new TRPCError({
+      message: "Order was not found",
+      code: "NOT_FOUND",
+    });
   let order = maybeOrder!;
   let grandma = (await repos.grandmaRepository.getSingle(
     order.grandmaId
   )!) as Grandma;
 
-  if (username != grandma.username) throw new TRPCError({
-        message: "Grandma is different user",
-        code: "FORBIDDEN",
-      });
+  if (username != grandma.username)
+    throw new TRPCError({
+      message: "Grandma is different user",
+      code: "FORBIDDEN",
+    });
 
-  logger.info(`Grandma ${grandma.username} updated order ${orderId} to have a status ${newStatus}`)
+  logger.info(
+    `Grandma ${grandma.username} updated order ${orderId} to have a status ${newStatus}`
+  );
 
   await repos.orderRepository.updateStatus(order.id, newStatus);
 }
@@ -193,7 +204,8 @@ export async function getOrdersForGrandma(
   repos: IRepositories,
   userClaim: UserClaim
 ): Promise<ExpandedOrder[]> {
-
-  let grandma = (await repos.grandmaRepository.getWithUsername(userClaim.username))!;
+  let grandma = (await repos.grandmaRepository.getWithUsername(
+    userClaim.username
+  ))!;
   return repos.orderRepository.getOrdersForGrandma(grandma.id);
 }

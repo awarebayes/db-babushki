@@ -11,12 +11,15 @@ import {
   Order,
   OrderItem,
   OrderStatus,
-  Prisma,
   PrismaClient,
   Review,
   User,
 } from "@prisma/client";
-import { MealUpdateClaim, OrderStatusEnum, UpdateGrandmaClaim } from "../entities/models";
+import {
+  MealUpdateClaim,
+  OrderStatusEnum,
+  UpdateGrandmaClaim,
+} from "../entities/models";
 import {
   AuthRecord,
   ExpandedOrder,
@@ -54,6 +57,7 @@ export class PrismaUserRepository implements IUserRepository {
   }
 
   async delete(id: number) {
+    await this.client.authRecord.delete({ where: { userId: id } });
     await this.client.user.delete({ where: { id } });
   }
 
@@ -92,14 +96,13 @@ export class PrismaGrandmaRepository implements IGrandmaRepository {
     return this.client.grandma.create(item);
   }
 
-
   update(username: string, input: UpdateGrandmaClaim): Promise<Grandma> {
     return this.client.grandma.update({
       where: {
         username,
-      }, 
-      data: input
-    })
+      },
+      data: input,
+    });
   }
 
   createBulk(items: Grandma[]) {
@@ -317,7 +320,7 @@ export class PrismaOrderRepository implements IOrderRepository {
   async getPaged(
     pageIndex: number,
     pageLimit: number
-   ): Promise<ExpandedOrder[] | null> {
+  ): Promise<ExpandedOrder[] | null> {
     return await this.client.order.findMany({
       skip: pageIndex * pageLimit,
       take: pageLimit,
@@ -350,8 +353,8 @@ export class PrismaOrderRepository implements IOrderRepository {
         user: true,
       },
       orderBy: {
-        id: "desc"
-      }
+        id: "desc",
+      },
     });
   }
 
@@ -447,18 +450,15 @@ export class PrismaReviewRepository implements IReviewRepository {
   }
 }
 
-
-export class PrismaAuthRecordRepository
-  implements IAuthRecordRepository
-{
+export class PrismaAuthRecordRepository implements IAuthRecordRepository {
   constructor(private client: PrismaClient) {}
 
   async getByUsername(username: string): Promise<AuthRecord | null> {
     return this.client.authRecord.findUnique({
       where: {
-        username
-      }
-    })
+        username,
+      },
+    });
   }
 
   async getSingle(id: number): Promise<AuthRecord | null> {

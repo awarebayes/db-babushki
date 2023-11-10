@@ -16,7 +16,7 @@ app.use('/api', createOpenApiExpressMiddleware({ router: router, createContext }
 export const openApiDocument = generateOpenApiDocument(router, {
   title: 'Babki tRPC OpenAPI',
   version: '1.0.0',
-  baseUrl: 'http://localhost:4000/api',
+  baseUrl: 'http://localhost:4000/api/',
   docsUrl: '/api_docs'
 });
 

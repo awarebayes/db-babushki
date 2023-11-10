@@ -31,15 +31,16 @@ export async function createGrandma(
   claim: UserClaim
 ): Promise<Grandma> {
   let user = await repos.userRepository.getByUsername(claim.username);
-  if (!user) throw new TRPCError({
-        message: "User was not found",
-        code: "NOT_FOUND",
-      });
+  if (!user)
+    throw new TRPCError({
+      message: "User was not found",
+      code: "NOT_FOUND",
+    });
   if (claim.username != user.username)
     throw new TRPCError({
-        message: "User is different",
-        code: "FORBIDDEN",
-      });
+      message: "User is different",
+      code: "FORBIDDEN",
+    });
   return create_grandma_for_user_full(repositories, user);
 }
 
@@ -48,10 +49,11 @@ export async function createGrandmaAdmin(
   userId: number
 ): Promise<Grandma> {
   let user = await repos.userRepository.getSingle(userId);
-  if (!user) throw  new TRPCError({
-        message: "User was not found",
-        code: "NOT_FOUND",
-      });;
+  if (!user)
+    throw new TRPCError({
+      message: "User was not found",
+      code: "NOT_FOUND",
+    });
 
   return create_grandma_for_user_full(repositories, user);
 }
@@ -68,8 +70,10 @@ export async function getUnverified(): Promise<Grandma[]> {
   return repositories.grandmaRepository.getUnverified();
 }
 
-
-export async function UpdateGrandma(repositories: IRepositories, username: string, updateClaim: UpdateGrandmaClaim): Promise<Grandma> {
+export async function UpdateGrandma(
+  repositories: IRepositories,
+  username: string,
+  updateClaim: UpdateGrandmaClaim
+): Promise<Grandma> {
   return repositories.grandmaRepository.update(username, updateClaim);
 }
-

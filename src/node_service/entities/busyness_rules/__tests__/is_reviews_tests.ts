@@ -1,5 +1,4 @@
 import { repositories } from "../../../data/impl_integration";
-import { ExpandedOrder, MealCreateInput } from "../../generated_models";
 import {
   MealClaim,
   OrderStatusEnum,
@@ -75,12 +74,21 @@ describe("isGetReviews", () => {
       updated_review
     );
 
-    reviewFirst = (await repositories.reviewRepository.getSingle(
+    let rev_first = (await repositories.reviewRepository.getSingle(
       reviewFirst.id
-    ));
-    expect(reviewFirst.review).toBe(updated_review.review);
+    ))!;
+    expect(rev_first.review).toBe(updated_review.review);
 
-    await repositories.reviewRepository.delete(reviewFirst.id);
+    let orders_expanded = await repositories.orderRepository.getOrdersOfUser(
+      order!.userId
+    )!;
+    for (let order of orders_expanded) {
+      for (let item of order.items) {
+        await repositories.orderItemsRepository.delete(item.id);
+      }
+    }
+
+    await repositories.reviewRepository.delete(rev_first.id);
     await repositories.orderRepository.delete(order!.id);
     await repositories.mealRepository.delete(meal.id);
     await repositories.grandmaRepository.delete(grandma.id);

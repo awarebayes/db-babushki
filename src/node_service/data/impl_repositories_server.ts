@@ -19,12 +19,12 @@ import {
   PrismaReviewRepository,
   PrismaUserRepository,
 } from "./impl_prisma";
-import { AuthRecord, OrderItem, OrderStatus } from "../entities/generated_models";
-import { PrismaClient } from "@prisma/client";
+import { OrderItem, OrderStatus } from "../entities/generated_models";
 import { MinioImageRepository } from "./impl_minio";
 import { Client } from "minio";
+import { get_prisma } from "./impl_prisma_client";
 
-export let prismaClient = new PrismaClient();
+export let prismaClient = get_prisma();
 
 const minioClient = new Client({
   endPoint: "minio1",

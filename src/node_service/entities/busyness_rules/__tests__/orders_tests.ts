@@ -1,4 +1,5 @@
 import { Grandma, Order } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { mockRepositories } from "../../../data/impl_mock";
 import { MealClaim, OrderStatusEnum, UserClaim } from "../../models";
 import { cancelOrder, placeOrder, updateOrderStatusAsGrandma } from "../orders";
@@ -15,7 +16,10 @@ describe("placeOrder", () => {
     const userClaim = { username: "mock_user" } as UserClaim;
     const mealClaims: MealClaim[] = [{ mealId: 1, count: 2 }];
     await expect(placeOrder(repos, userClaim, mealClaims)).rejects.toEqual(
-      "Cannot find meals specified!"
+      new TRPCError({
+        message: "Meals not found for grandma",
+        code: "NOT_FOUND",
+      })
     );
     expect(repos.mealRepository.getMany).toHaveBeenCalledWith([1]);
   });
@@ -31,7 +35,10 @@ describe("placeOrder", () => {
       { mealId: 2, count: 1 },
     ];
     await expect(placeOrder(repos, userClaim, mealClaims)).rejects.toEqual(
-      "Meals from different grandmas cannot be placed in a single order"
+      new TRPCError({
+        message: "Meals from different grandmas should be ordered separately!",
+        code: "BAD_REQUEST",
+      })
     );
     expect(repos.mealRepository.getMany).toHaveBeenCalledWith([1, 2]);
   });
@@ -77,7 +84,12 @@ describe("cancelOrder", () => {
 
     await expect(
       cancelOrder(mockRepositories, userClaim, orderId)
-    ).rejects.toEqual("Order was not found");
+    ).rejects.toEqual(
+      new TRPCError({
+        message: "Order to cancel was not found",
+        code: "NOT_FOUND",
+      })
+    );
     expect(mockRepositories.orderRepository.getSingle).toHaveBeenCalledWith(
       orderId
     );
@@ -99,7 +111,9 @@ describe("cancelOrder", () => {
 
     await expect(
       cancelOrder(mockRepositories, userClaim, orderId)
-    ).rejects.toEqual("User was not found");
+    ).rejects.toEqual(
+      new TRPCError({ message: "User was not found", code: "NOT_FOUND" })
+    );
     expect(mockRepositories.orderRepository.getSingle).toHaveBeenCalledWith(
       orderId
     );
@@ -124,7 +138,12 @@ describe("cancelOrder", () => {
 
     await expect(
       cancelOrder(mockRepositories, userClaim, orderId)
-    ).rejects.toEqual("Trying to cancel order of different user");
+    ).rejects.toEqual(
+      new TRPCError({
+        message: "User is diffrerent than one trying to cancel",
+        code: "FORBIDDEN",
+      })
+    );
     expect(mockRepositories.orderRepository.getSingle).toHaveBeenCalledWith(
       orderId
     );
@@ -174,7 +193,9 @@ describe("updateOrder", () => {
     };
     await expect(
       updateOrderStatusAsGrandma(repos, userClaim, 2, OrderStatusEnum.Confirmed)
-    ).rejects.toEqual("Order was not found");
+    ).rejects.toEqual(
+      new TRPCError({ message: "Order was not found", code: "NOT_FOUND" })
+    );
     expect(repos.orderRepository.getSingle).toHaveBeenCalledWith(2);
   });
 
@@ -206,7 +227,12 @@ describe("updateOrder", () => {
     };
     await expect(
       updateOrderStatusAsGrandma(repos, userClaim, 1, OrderStatusEnum.Confirmed)
-    ).rejects.toEqual("Order was created for other grandma");
+    ).rejects.toEqual(
+      new TRPCError({
+        message: "Grandma is different user",
+        code: "FORBIDDEN",
+      })
+    );
     expect(repos.orderRepository.getSingle).toHaveBeenCalledWith(1);
     expect(repos.grandmaRepository.getSingle).toHaveBeenCalledWith(10);
   });

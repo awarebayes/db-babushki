@@ -1,4 +1,5 @@
 import { Grandma, Order, Review, User } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { mockRepositories } from "../../../data/impl_mock";
 import {
   MealClaim,
@@ -37,8 +38,6 @@ describe("addReview", () => {
     username: "aboba",
     grannyId: 0,
     isAdmin: false,
-    passwordHash: "",
-    passwordSalt: "",
   };
 
   const userClaim: UserClaim = {
@@ -49,7 +48,10 @@ describe("addReview", () => {
   it("should throw an error if grandma is not found", async () => {
     repos.grandmaRepository.getSingle = jest.fn().mockResolvedValue(null);
     await expect(addReview(repos, userClaim, reviewClaim)).rejects.toEqual(
-      "Respected grandma not found!"
+      new TRPCError({
+        message: "Grandma was not found!",
+        code: "NOT_FOUND",
+      })
     );
     expect(repos.grandmaRepository.getSingle).toHaveBeenCalledWith(0);
   });
@@ -59,7 +61,10 @@ describe("addReview", () => {
     repos.userRepository.getByUsername = jest.fn().mockResolvedValue(user);
     const newClaim = { ...userClaim, username: "aboba" };
     await expect(addReview(repos, newClaim, reviewClaim)).rejects.toEqual(
-      "Grandma cannot rate herself!"
+      new TRPCError({
+        message: "Grandma cannot rate herself!",
+        code: "NOT_FOUND",
+      })
     );
     expect(repos.grandmaRepository.getSingle).toHaveBeenCalledWith(0);
     expect(repos.userRepository.getByUsername).toHaveBeenCalledWith("aboba");
@@ -74,16 +79,16 @@ describe("addReview", () => {
     repos.userRepository.getByUsername = jest.fn().mockResolvedValue(newUser);
     repos.orderRepository.getOrdersForGrandma = jest.fn().mockResolvedValue([]);
     await expect(addReview(repos, userClaim, reviewClaim)).rejects.toEqual(
-      "User didnt order anything!"
+      new TRPCError({
+        message: "User didnt order from this grandma!",
+        code: "FORBIDDEN",
+      })
     );
     expect(repos.grandmaRepository.getSingle).toHaveBeenCalledWith(0);
     expect(repos.userRepository.getByUsername).toHaveBeenCalledWith(
       "mock_user"
     );
-    expect(repos.orderRepository.getOrdersForGrandma).toHaveBeenCalledWith(
-      0,
-      0
-    );
+    expect(repos.orderRepository.getOrdersForGrandma).toHaveBeenCalledWith(0);
   });
 
   it("should succeed if everything was right", async () => {
@@ -102,10 +107,7 @@ describe("addReview", () => {
     expect(repos.userRepository.getByUsername).toHaveBeenCalledWith(
       "mock_user"
     );
-    expect(repos.orderRepository.getOrdersForGrandma).toHaveBeenCalledWith(
-      0,
-      0
-    );
+    expect(repos.orderRepository.getOrdersForGrandma).toHaveBeenCalledWith(0);
     expect(repos.reviewRepository.create).toHaveBeenCalledTimes(1);
   });
 });
@@ -145,8 +147,6 @@ describe("updateReview", () => {
     name: "a",
     username: "aboba",
     grannyId: 0,
-    passwordHash: "",
-    passwordSalt: "",
     isAdmin: false,
   };
 
@@ -159,7 +159,9 @@ describe("updateReview", () => {
     repos.reviewRepository.getSingle = jest.fn().mockResolvedValue(null);
     await expect(
       updateReview(repos, userClaim, 0, reviewClaim)
-    ).rejects.toEqual("Review was not found");
+    ).rejects.toEqual(
+      new TRPCError({ message: "Review was not posted!", code: "NOT_FOUND" })
+    );
     expect(repos.reviewRepository.getSingle).toHaveBeenCalledWith(0);
   });
 
@@ -171,7 +173,12 @@ describe("updateReview", () => {
     repos.userRepository.getByUsername = jest.fn().mockResolvedValue(userClaim);
     await expect(
       updateReview(repos, userClaim, 0, reviewClaim)
-    ).rejects.toEqual("Trying to update a review of different user!");
+    ).rejects.toEqual(
+      new TRPCError({
+        message: "Trying to update a review of different user!",
+        code: "FORBIDDEN",
+      })
+    );
     expect(repos.reviewRepository.getSingle).toHaveBeenCalledWith(0);
     expect(repos.userRepository.getByUsername).toHaveBeenCalledWith(
       "mock_user"
@@ -180,7 +187,7 @@ describe("updateReview", () => {
 
   it("should succeed if everything was right", async () => {
     repos.reviewRepository.getSingle = jest.fn().mockResolvedValue(review);
-    repos.userRepository.getByUsername = jest.fn().mockResolvedValue(userClaim);
+    repos.userRepository.getByUsername = jest.fn().mockResolvedValue(user);
     repos.reviewRepository.update = jest.fn();
     await updateReview(repos, userClaim, 0, reviewClaim);
     expect(repos.reviewRepository.getSingle).toHaveBeenCalledWith(0);
@@ -226,8 +233,6 @@ describe("deleteReview", () => {
     name: "a",
     username: "aboba",
     grannyId: 0,
-    passwordHash: "",
-    passwordSalt: "",
     isAdmin: false,
   };
 
@@ -239,7 +244,7 @@ describe("deleteReview", () => {
   it("should throw an error if review is not found", async () => {
     repos.reviewRepository.getSingle = jest.fn().mockResolvedValue(null);
     await expect(removeReview(repos, userClaim, 0)).rejects.toEqual(
-      "Review was not found"
+      new TRPCError({ message: "Review was not posted!", code: "NOT_FOUND" })
     );
     expect(repos.reviewRepository.getSingle).toHaveBeenCalledWith(0);
   });
@@ -249,9 +254,12 @@ describe("deleteReview", () => {
     repos.reviewRepository.getSingle = jest
       .fn()
       .mockResolvedValue(otherUsersReview);
-    repos.userRepository.getByUsername = jest.fn().mockResolvedValue(userClaim);
+    repos.userRepository.getByUsername = jest.fn().mockResolvedValue(user);
     await expect(removeReview(repos, userClaim, 0)).rejects.toEqual(
-      "Trying to delete a review of different user!"
+      new TRPCError({
+        message: "Review was for different user!",
+        code: "FORBIDDEN",
+      })
     );
     expect(repos.reviewRepository.getSingle).toHaveBeenCalledWith(0);
     expect(repos.userRepository.getByUsername).toHaveBeenCalledWith(
@@ -261,7 +269,7 @@ describe("deleteReview", () => {
 
   it("should succeed if everything was right", async () => {
     repos.reviewRepository.getSingle = jest.fn().mockResolvedValue(review);
-    repos.userRepository.getByUsername = jest.fn().mockResolvedValue(userClaim);
+    repos.userRepository.getByUsername = jest.fn().mockResolvedValue(user);
     repos.reviewRepository.delete = jest.fn();
     await removeReview(repos, userClaim, 0);
     expect(repos.reviewRepository.getSingle).toHaveBeenCalledWith(0);

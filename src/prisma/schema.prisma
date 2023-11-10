@@ -35,7 +35,7 @@ model AuthRecord {
   passwordSalt String
 
   userId Int  @unique
-  user   User @relation(fields: userId, references: [id])
+  user   User @relation(fields: userId, references: [id], onDelete: Cascade)
 }
 
 model Grandma {
@@ -78,13 +78,13 @@ model Order {
   id Int @id @default(autoincrement())
 
   statusId Int
-  status   OrderStatus @relation(fields: [statusId], references: [id])
+  status   OrderStatus @relation(fields: [statusId], references: [id], onDelete: Cascade)
 
   userId Int
-  user   User @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   grandmaId Int
-  grandma   Grandma @relation(fields: [grandmaId], references: [id])
+  grandma   Grandma @relation(fields: [grandmaId], references: [id], onDelete: Cascade)
 
   items OrderItem[]
 }
@@ -99,10 +99,10 @@ model OrderItem {
   id Int @id @default(autoincrement())
 
   orderId Int
-  order   Order @relation(fields: [orderId], references: [id])
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   mealId Int
-  meal   Meal @relation(fields: [mealId], references: [id])
+  meal   Meal @relation(fields: [mealId], references: [id], onDelete: Cascade)
 
   count Int
 }

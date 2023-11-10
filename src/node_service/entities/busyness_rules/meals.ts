@@ -28,14 +28,16 @@ export async function getSingleMealForGrandma(
     userClaim.username
   ))!;
   let meal = await repos.mealRepository.getSingle(mealId);
-  if (!meal) throw new TRPCError({
-        message: "Meal was not found",
-        code: "NOT_FOUND",
-      });
-  if (meal.grannyId !== grandma.id) throw  new TRPCError({
-        message: "Meal belongs to different grandma",
-        code: "FORBIDDEN",
-      });
+  if (!meal)
+    throw new TRPCError({
+      message: "Meal was not found",
+      code: "NOT_FOUND",
+    });
+  if (meal.grannyId !== grandma.id)
+    throw new TRPCError({
+      message: "Meal belongs to different grandma",
+      code: "FORBIDDEN",
+    });
   return meal;
 }
 
@@ -81,12 +83,14 @@ export async function UpdateMeal(
   let meal = (await repos.mealRepository.getSingle(mealClaim.mealId!))!;
 
   if (grandma.id != meal.grannyId) {
-    logger.error(`Changing meal different user initiated by ${userClaim.username} tried to change ${grandma.username}'s meal to be ${mealClaim}`)
-    throw  new TRPCError({
-        message: "Meal belongs to different grandma",
-        code: "FORBIDDEN",
-      });
-  };
+    logger.error(
+      `Changing meal different user initiated by ${userClaim.username} tried to change ${grandma.username}'s meal to be ${mealClaim}`
+    );
+    throw new TRPCError({
+      message: "Meal belongs to different grandma",
+      code: "FORBIDDEN",
+    });
+  }
   await repos.mealRepository.update(mealClaim);
 }
 
@@ -115,24 +119,39 @@ export async function CreateMeal(
   await repos.mealRepository.create(createInput);
 }
 
-
 export async function DeleteMeal(
   repos: IRepositories,
   mealId: number,
   userClaim: UserClaim
 ) {
-  
   let grandma = (await repos.grandmaRepository.getWithUsername(
     userClaim.username
   ))!;
+
+  if (!grandma) {
+    throw new TRPCError({
+      message: "Grandma not found",
+      code: "NOT_FOUND",
+    });
+  }
+
   let meal = (await repos.mealRepository.getSingle(mealId!))!;
+  if (!meal) {
+    throw new TRPCError({
+      message: "Meal not found",
+      code: "NOT_FOUND",
+    });
+  }
+
   if (grandma.id != meal.grannyId) {
-    logger.error(`Deleting meal different user initiated by ${userClaim.username} tried to delete ${grandma.username}'s meal`)
-    throw  new TRPCError({
-        message: "Meal belongs to different grandma",
-        code: "FORBIDDEN",
-      });
-};
+    logger.error(
+      `Deleting meal different user initiated by ${userClaim.username} tried to delete ${grandma.username}'s meal`
+    );
+    throw new TRPCError({
+      message: "Meal belongs to different grandma",
+      code: "FORBIDDEN",
+    });
+  }
 
   await repos.mealRepository.delete(mealId);
 }

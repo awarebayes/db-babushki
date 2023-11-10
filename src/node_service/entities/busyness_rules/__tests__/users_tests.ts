@@ -14,9 +14,7 @@ describe("whoAmI", () => {
       grannyId: null,
       name: "aboba",
       username: "testuser",
-      passwordHash: "",
-      passwordSalt: "",
-      isAdmin: false
+      isAdmin: false,
     };
 
     mockRepositories.userRepository.getByUsername = jest

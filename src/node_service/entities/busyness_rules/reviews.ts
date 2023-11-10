@@ -18,26 +18,37 @@ export async function addReview(
   let maybeGrandma = await repos.grandmaRepository.getSingle(
     reviewClaim.grandmaId
   );
-  if (!maybeGrandma) throw new TRPCError({
-        message: "Grandma was not found!",
-        code: "NOT_FOUND",
-      });
+  if (!maybeGrandma)
+    throw new TRPCError({
+      message: "Grandma was not found!",
+      code: "NOT_FOUND",
+    });
   let grandma: Grandma = maybeGrandma!;
 
   let user: User = (await repos.userRepository.getByUsername(
     userClaim.username
   )!) as User;
-  // if (grandma.username == user.username) throw "Grandma cannot rate herself!";
+  if (grandma.username == user.username) {
+    throw new TRPCError({
+      message: "Grandma cannot rate herself!",
+      code: "FORBIDDEN",
+    });
+  }
 
   let ordersForGrandma = await repos.orderRepository.getOrdersForGrandma(
     grandma.id
   );
-  if (ordersForGrandma.length === 0) {
-    logger.error(`${user.username} tried to review ${maybeGrandma!.username} but didnt actually order anything!`)
+
+  if (!ordersForGrandma || ordersForGrandma.length === 0) {
+    logger.error(
+      `${user.username} tried to review ${
+        maybeGrandma!.username
+      } but didnt actually order anything!`
+    );
     throw new TRPCError({
-        message: "User didnt order from this grandma!",
-        code: "FORBIDDEN",
-      });
+      message: "User didnt order from this grandma!",
+      code: "FORBIDDEN",
+    });
   }
 
   let reviewToCreate: ReviewCreateInput = {
@@ -57,7 +68,7 @@ export async function addReview(
     },
   };
 
-  logger.info(`${user.username} revieved ${grandma.username}`)
+  logger.info(`${user.username} revieved ${grandma.username}`);
   await repos.reviewRepository.create(reviewToCreate);
 }
 
@@ -71,19 +82,23 @@ export async function removeReview(
   )!) as User;
 
   let maybeReview = await repos.reviewRepository.getSingle(reviewId);
-  if (!maybeReview) throw new TRPCError({
-        message: "Review was not posted!",
-        code: "NOT_FOUND",
-      });
+  if (!maybeReview)
+    throw new TRPCError({
+      message: "Review was not posted!",
+      code: "NOT_FOUND",
+    });
 
   let review: Review = maybeReview!;
-  if (review.userId != user.id)
-  {
-    logger.error(`${user.username} tried to delete review ${review!.id} but it was not theirs!`)
+  if (review.userId != user.id) {
+    logger.error(
+      `${user.username} tried to delete review ${
+        review!.id
+      } but it was not theirs!`
+    );
     throw new TRPCError({
-        message: "Review was for different user!",
-        code: "FORBIDDEN",
-      });;
+      message: "Review was for different user!",
+      code: "FORBIDDEN",
+    });
   }
 
   await repos.reviewRepository.delete(reviewId);
@@ -96,19 +111,27 @@ export async function updateReview(
   reviewClaim: ReviewClaim
 ) {
   let maybeReview = await repos.reviewRepository.getSingle(reviewId);
-  if (!maybeReview) throw new TRPCError({
-        message: "Review was not posted!",
-        code: "NOT_FOUND",
-      });
+  if (!maybeReview)
+    throw new TRPCError({
+      message: "Review was not posted!",
+      code: "NOT_FOUND",
+    });
 
   let user: User = (await repos.userRepository.getByUsername(
     userClaim.username
   )!) as User;
   let review: Review = maybeReview!;
-  if (review.userId != user.id)
-  {
-    logger.error(`${user.username} tried to update review ${review!.id} but it was not theirs!`)
-    throw "Trying to update a review of different user!";
+  if (review.userId != user.id) {
+    logger.error(
+      `${user.username} tried to update review ${
+        review!.id
+      } but it was not theirs!`
+    );
+
+    throw new TRPCError({
+      message: "Trying to update a review of different user!",
+      code: "FORBIDDEN",
+    });
   }
 
   let reviewToUpdate: ReviewUpdateInput = {

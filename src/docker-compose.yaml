@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   node_service:
+    hostname: node_service
     build:
       context: .
       dockerfile: NodeService.Dockerfile
@@ -17,6 +18,39 @@ services:
 
     networks:
       - some-net
+
+  node_service_2:
+    hostname: node_service_2
+    build:
+      context: .
+      dockerfile: NodeService.Dockerfile
+    volumes:
+      - ./:/home/node/app/
+    command: >
+      npm run node_service
+    env_file:
+      - .env
+    environment:
+      - DB_READONLY=1
+    networks:
+      - some-net
+
+  node_service_3:
+    hostname: node_service_3
+    build:
+      context: .
+      dockerfile: NodeService.Dockerfile
+    volumes:
+      - ./:/home/node/app/
+    command: >
+      npm run node_service
+    env_file:
+      - .env
+    environment:
+      - DB_READONLY=1
+    networks:
+      - some-net
+
   tests:
     build:
       context: .
@@ -31,6 +65,9 @@ services:
       - some-net
     profiles:
       - test
+    depends_on:
+      db-test:
+        condition: service_healthy
   db:
     image: postgres:15-alpine
     restart: always
@@ -44,17 +81,38 @@ services:
     volumes:
       - ../db/postgres-data:/var/lib/postgresql/data
 
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    hostname: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - ../db/pgadmin:/var/lib/pgadmin
+    networks:
+      - some-net
+    restart: unless-stopped
+
   db-test:
     image: postgres:15-alpine
     restart: always
-    ports:
-      - "5434:5432"
     profiles:
       - test
     networks:
       - some-net
-    volumes:
-      - ../db/postgres-test-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGUSER=postgres
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "public", "-u", "postgres"]
+      interval: 3s
+      timeout: 60s
+      retries: 5
+      start_period: 5s
 
   minio1:
     image: quay.io/minio/minio:RELEASE.2023-04-20T17-56-55Z
@@ -70,6 +128,18 @@ services:
     hostname: minio1
     volumes:
       - ../db/minio_storage:/data/minio
+    networks:
+      - some-net
+
+  nginx:
+    image: byjg/nginx-extras
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/static:/usr/share/nginx/html/static
+      - ./nginx.conf:/etc/nginx/nginx.conf
+
     networks:
       - some-net
 

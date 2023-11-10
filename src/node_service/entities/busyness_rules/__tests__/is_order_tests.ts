@@ -1,5 +1,4 @@
 import { repositories } from "../../../data/impl_integration";
-import { MealCreateInput } from "../../generated_models";
 import { MealClaim, OrderStatusEnum, UserClaim } from "../../models";
 import {
   create_dummy_user,
@@ -43,6 +42,15 @@ describe("isOrder", () => {
 
     let orderUpdated = await repositories.orderRepository.getSingle(order!.id);
     expect(orderUpdated?.statusId == OrderStatusEnum.Cancelled);
+
+    let orders_expanded = await repositories.orderRepository.getOrdersOfUser(
+      order!.userId
+    )!;
+    for (let order of orders_expanded) {
+      for (let item of order.items) {
+        await repositories.orderItemsRepository.delete(item.id);
+      }
+    }
 
     await repositories.orderRepository.delete(order!.id);
     await repositories.mealRepository.delete(meal.id);
@@ -98,6 +106,15 @@ describe("isOrder", () => {
     let orderUpdated = await repositories.orderRepository.getSingle(order!.id);
     expect(orderUpdated?.statusId == OrderStatusEnum.Initialized);
 
+    let orders_expanded = await repositories.orderRepository.getOrdersOfUser(
+      order!.userId
+    )!;
+    for (let order of orders_expanded) {
+      for (let item of order.items) {
+        await repositories.orderItemsRepository.delete(item.id);
+      }
+    }
+
     await repositories.orderRepository.delete(order!.id);
     await repositories.mealRepository.delete(meal.id);
     await repositories.grandmaRepository.delete(grandma.id);
@@ -144,6 +161,15 @@ describe("isOrder", () => {
 
     orderUpdated = await repositories.orderRepository.getSingle(order!.id);
     expect(orderUpdated?.statusId).toBe(OrderStatusEnum.Cooking);
+
+    let orders_expanded = await repositories.orderRepository.getOrdersOfUser(
+      order!.userId
+    )!;
+    for (let order of orders_expanded) {
+      for (let item of order.items) {
+        await repositories.orderItemsRepository.delete(item.id);
+      }
+    }
 
     await repositories.orderRepository.delete(order!.id);
     await repositories.mealRepository.delete(meal.id);
