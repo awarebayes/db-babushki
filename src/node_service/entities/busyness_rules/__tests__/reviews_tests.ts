@@ -1,12 +1,7 @@
 import { Grandma, Order, Review, User } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { mockRepositories } from "../../../data/impl_mock";
-import {
-  MealClaim,
-  OrderStatusEnum,
-  ReviewClaim,
-  UserClaim,
-} from "../../models";
+import { ReviewClaim, UserClaim } from "../../models";
 import { addReview, removeReview, updateReview } from "../reviews";
 
 const repos = mockRepositories;

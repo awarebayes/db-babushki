@@ -10,11 +10,11 @@ import {
   create_grandma_for_user,
   create_meal_for_grandma,
 } from "../is_utils";
-import { cancelOrder, placeOrder } from "../orders";
+import { placeOrder } from "../orders";
 import { addReview, getReviewsForGrandma, updateReview } from "../reviews";
 
 describe("isGetReviews", () => {
-  it("should return an array of meals when page is valid", async () => {
+  it("should add and update a review", async () => {
     let user = await create_dummy_user(repositories)!;
     expect(user).toBeTruthy();
 

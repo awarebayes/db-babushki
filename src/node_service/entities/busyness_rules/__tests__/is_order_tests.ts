@@ -58,7 +58,7 @@ describe("isOrder", () => {
     await repositories.userRepository.delete(user.id);
   });
 
-  it("should create and cancel successfully", async () => {
+  it("should reject cancelling other users order", async () => {
     let user = await create_dummy_user(repositories)!;
     let other_user = await create_dummy_user(repositories)!;
     expect(user).toBeTruthy();
@@ -101,7 +101,7 @@ describe("isOrder", () => {
 
     try {
       await cancelOrder(repositories, other_claim, order.id);
-    } catch {}
+    } catch { }
 
     let orderUpdated = await repositories.orderRepository.getSingle(order!.id);
     expect(orderUpdated?.statusId == OrderStatusEnum.Initialized);
@@ -122,7 +122,7 @@ describe("isOrder", () => {
     await repositories.userRepository.delete(other_user.id);
   });
 
-  it("grandma should update successfully", async () => {
+  it("grandma should update user's order", async () => {
     let user = await create_dummy_user(repositories)!;
     expect(user).toBeTruthy();
 
