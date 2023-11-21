@@ -4,7 +4,7 @@
   "scripts": {
     "node_service": "nodemon node_service/index.ts",
     "my_tests": "prisma migrate deploy && jest -i --randomize --seed 1830",
-    "test": "jest"
+    "test": "jest --testPathIgnorePatterns='/is_.*'"
   },
   "author": "Misha",
   "license": "MIT",
