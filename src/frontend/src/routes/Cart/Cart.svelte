@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { cart } from '$lib/misc/singletons';
 	import CartItem from './CartItem.svelte';
 	let active = false;

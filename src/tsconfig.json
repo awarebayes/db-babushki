@@ -11,6 +11,7 @@
     "strict": true,
     "noImplicitAny": true,
     "skipLibCheck": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "maxNodeModuleJsDepth": 1
   }
 }
