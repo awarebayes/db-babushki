@@ -17,6 +17,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
-          tags: v1, latest
+          tags: grandmas_node:latest
           file: NodeService.Dockerfile
           context: "{{defaultContext}}:src"
