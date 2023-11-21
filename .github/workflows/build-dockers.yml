@@ -1,12 +1,20 @@
-steps:
-  - uses: actions/checkout@v3
-    name: Check out code
+name: ci
+run-name: ${{ github.actor }} is Building Docker 🐋
+on: [push]
 
-  - uses: mr-smithers-excellent/docker-build-push@v6
-    name: Build & push Docker image
-    with:
-      image: grandmas/node_service
-      tags: v1, latest
-      registry: https://ghcr.io
-      dockerfile: NodeService.Dockerfile
-      directory: src
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          image: grandmas/node_service
+          tags: v1, latest
+          registry: https://ghcr.io
+          dockerfile: NodeService.Dockerfile
+          directory: src
