@@ -4,7 +4,7 @@
   "scripts": {
     "node_service": "nodemon node_service/index.ts",
     "my_tests": "prisma migrate deploy && jest -i --randomize --seed 1830",
-    "test": "prisma migrate dev && prisma db push && jest -i --randomize --seed 1830"
+    "test": "prisma migrate deploy && prisma db push && jest -i --randomize --seed 1830"
   },
   "author": "Misha",
   "license": "MIT",
