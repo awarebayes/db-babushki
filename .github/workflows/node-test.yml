@@ -21,3 +21,4 @@ jobs:
         working-directory: src
         env:
           DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
+          ACCESS_PRIVATE_KEY: TESTKEY
