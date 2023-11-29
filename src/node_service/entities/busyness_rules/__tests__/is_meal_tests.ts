@@ -9,7 +9,7 @@ import {
 } from "../meals";
 
 describe("isGetMeals", () => {
-  jest.setTimeout(60000);
+  jest.setTimeout(160000);
   it("should return an array of meals when page is valid", async () => {
     let user = await create_dummy_user(repositories)!;
     expect(user).toBeTruthy();

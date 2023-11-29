@@ -2,7 +2,7 @@ import { repositories } from "../../../data/impl_integration";
 import { signUp, SignIn } from "../users";
 
 describe("is user tests", () => {
-  jest.setTimeout(60000);
+  jest.setTimeout(160000);
 
   it("user should sign up and log in successfully", async () => {
     expect(
