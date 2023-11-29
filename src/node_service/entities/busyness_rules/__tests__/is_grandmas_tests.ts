@@ -3,6 +3,7 @@ import { create_dummy_user, create_grandma_for_user } from "../is_utils";
 import { repositories } from "../../../data/impl_integration";
 
 describe("isGetGrandmas", () => {
+  jest.setTimeout(60000);
   test("should get grandma by username", async () => {
     let user = await create_dummy_user(repositories)!;
     let grandma = await create_grandma_for_user(repositories, user.username);

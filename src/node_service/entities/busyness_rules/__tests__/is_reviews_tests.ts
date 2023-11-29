@@ -46,6 +46,8 @@ async function create_dummy_order() {
 }
 
 describe("isGetReviews", () => {
+  jest.setTimeout(60000);
+
   it("should add a review", async () => {
     let { meal, order, grandma, user, user_claim } = await create_dummy_order();
     expect(order).toBeTruthy();

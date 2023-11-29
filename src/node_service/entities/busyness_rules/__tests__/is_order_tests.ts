@@ -13,6 +13,7 @@ import {
 } from "../orders";
 
 describe("isOrder", () => {
+  jest.setTimeout(60000);
   it("should create and cancel successfully", async () => {
     let user = await create_dummy_user(repositories)!;
     expect(user).toBeTruthy();
@@ -101,7 +102,7 @@ describe("isOrder", () => {
 
     try {
       await cancelOrder(repositories, other_claim, order.id);
-    } catch { }
+    } catch {}
 
     let orderUpdated = await repositories.orderRepository.getSingle(order!.id);
     expect(orderUpdated?.statusId == OrderStatusEnum.Initialized);

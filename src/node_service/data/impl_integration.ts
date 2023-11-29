@@ -4,13 +4,7 @@
 import { PrismaClient } from "@prisma/client";
 import { IRepositories } from "../entities/repository";
 
-export let client = new PrismaClient({
-  datasources: {
-    db: {
-      url: "postgresql://postgres:postgres@db-test:5432/postgres?schema=public",
-    },
-  },
-});
+export let client = new PrismaClient();
 
 import { OrderItem, OrderStatus } from "../entities/generated_models";
 
