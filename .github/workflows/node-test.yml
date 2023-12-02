@@ -22,3 +22,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
           ACCESS_PRIVATE_KEY: TESTKEY
+      - uses: actions/upload-artifact@v3
+        with:
+          name: test_report.html
+          path: ./src/test-report.html
